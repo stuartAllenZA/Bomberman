@@ -1,10 +1,9 @@
-#ifndef INCLUDE_GRAPHICS_HANDLER_HPP_
-#define INCLUDE_GRAPHICS_HANDLER_HPP_
+#ifndef INCLUDE_GRAPHICS_HANDLER_HPP
+#define INCLUDE_GRAPHICS_HANDLER_HPP
 
 #include <string>
-#include <iostream>
 #include <dlfcn.h>
-#include <GameClass.hpp>
+#include <Game.hpp>
 
 class GraphicsHandler {
 	public:
