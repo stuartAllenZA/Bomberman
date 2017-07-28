@@ -6,7 +6,9 @@ I = -I include
 
 SP = ./src/
 
-SRC = $(SP)main.cpp
+SRC = $(SP)main.cpp\
+	  $(SP)GameClass.cpp\
+	  $(SP)GraphicsHandler.cpp
 
 all : $(TARGET)
 
