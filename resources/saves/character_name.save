@@ -1,0 +1,15 @@
+playerHP:40,
+playerSpeed:100,
+;player weapon?
+;player damage?
+bossHP:9,
+bossX:2,
+bossY:5,
+;boss weapon?
+;boss damage?
+numberEnemies:1,
+enemyX:[9],
+enemyY:[4],
+;enemy damage?
+mapDifficulty:1,
+aiDifficulty:2
