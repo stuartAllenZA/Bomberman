@@ -19,6 +19,10 @@ class Game {
 		void					setExit(const bool newExit);
 		int						getGameInput() const;
 		void					setGameInput(const int newInput);
+		Settings				getSettings() const;
+		void					setSettings(const Settings newSettings);
+		Character				getPlayer() const;
+		void					setPlayer(const Player newPlayer);
 		std::vector<Character>	getEnemies() const;
 		void					setEnemies(const std::vector<Character> newEnemies);
 

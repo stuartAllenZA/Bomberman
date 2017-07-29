@@ -18,12 +18,12 @@ $(TARGET):
 	@clang++ $(FLAGS) $(SRC) -o $(TARGET)
 	@echo "$(TARGET) compiled sucsessfully."
 
-clean:
-	@rm $(TARGET)
+fclean:
+	@rm -f $(TARGET)
 	@echo "$(TARGET) cleaned."
 
 mclean:
 	@find . -name '._*' -type f -delete
 	@echo "Removed hidden ._ files."
 
-re: clean all
+re: fclean all
