@@ -1,22 +1,22 @@
 #include <Player.hpp>
 
 Player::Player(std::string name) : _name(name), _level(1), _experience(0) {
-	std::cout << "Player with name" << name << " Default Constructed\n";
+	std::cout << "Player with name" << this->_name << " Default Constructed\n";
 }
 
 Player::Player(Player const & src) {
-	std::cout << "Player with name" << name << " Copy-Constructed\n";
+	std::cout << "Player with name" << this->_name << " Copy-Constructed\n";
 	*this = src;
 }
 
 Player::~Player() {
-	std::cout << "Player with name" << name << " De-Constructed\n";
+	std::cout << "Player with name" << this->_name << " De-Constructed\n";
 }
 
 Player &			Player::operator=(Player const & src) {
-	this->_name = src.getXY();
-	this->_level = src.getSpeed();
-	this->_experience = src.getHealth();
+	this->_name = src.getName();
+	this->_level = src.getLevel();
+	this->_experience = src.getExperience();
 	return (*this);
 }
 

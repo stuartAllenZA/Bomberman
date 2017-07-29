@@ -1,6 +1,6 @@
 #include <Settings.hpp>
 
-Settings::Settings() : _resolution(std::make_pair(800, 600)), _windowed(false), _upKey(119), _downKey(115), _leftKey(97), rightKey(100), _musicVol(100), _FXVol(100) {
+Settings::Settings() : _resolution(std::make_pair(800, 600)), _windowed(false), _upKey(119), _downKey(115), _leftKey(97), _rightKey(100), _musicVol(100), _FXVol(100) {
 	std::cout << "Settings Default Constructed\n";
 }
 
@@ -14,14 +14,14 @@ Settings::~Settings() {
 }
 
 Settings &			Settings::operator=(Settings const & src) {
-	this->_resolution = src.getXY();
-	this->_windowed = src.getSpeed();
-	this->_upKey = src.getHealth();
-	this->_downKey = src.getLives();
-	this->_leftKey = src.getLives();
-	this->_rightKey = src.getLives();
-	this->_musicVol = src.getLives();
-	this->_FXVol = src.getLives();
+	this->_resolution = src.getResolution();
+	this->_windowed = src.getWindowded();
+	this->_upKey = src.getUpKey();
+	this->_downKey = src.getDownKey();
+	this->_leftKey = src.getLeftKey();
+	this->_rightKey = src.getRightKey();
+	this->_musicVol = src.getMusicVol();
+	this->_FXVol = src.getFXVol();
 	return (*this);
 }
 
@@ -85,6 +85,6 @@ int 				Settings::getFXVol() const {
 	return (this->_FXVol);
 }
 
-void				Settings::setUpKey(const int newVol) {
+void				Settings::setFXVol(const int newVol) {
 	this->_FXVol = newVol;
 }

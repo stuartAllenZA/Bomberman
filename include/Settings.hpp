@@ -1,7 +1,9 @@
 #ifndef SETTINGS_HPP
 #define SETTINGS_HPP
 
-#include <Game.hpp>
+#include <string>
+#include <iostream>
+#include <vector>
 
 class Settings
 {

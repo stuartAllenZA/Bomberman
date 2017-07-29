@@ -13,7 +13,9 @@
 #ifndef CHARACTER_HPP
 #define CHARACTER_HPP
 
-#include <Game.hpp>
+#include <string>
+#include <iostream>
+#include <vector>
 
 class Character
 {

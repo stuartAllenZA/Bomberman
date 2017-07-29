@@ -29,5 +29,8 @@ void		GraphicsHandler::getGameEvents(Game &game) {
 }
 
 void	GraphicsHandler::renderGraphics(Game &game) {
+	if(game.getEnemies().size() > 0) {
+		//render enimies
+	}
 }
 

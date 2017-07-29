@@ -4,10 +4,13 @@ FLAGS = -Wall -Werror -Wextra -g -g3 -I include
 
 SP = ./src/
 
-SRC = $(SP)main.cpp\
+SRC = $(SP)Character.cpp\
 	  $(SP)Game.cpp\
 	  $(SP)GraphicsHandler.cpp\
-	  $(SP)Character.cpp\
+	  $(SP)main.cpp\
+	  $(SP)Player.cpp\
+	  $(SP)Settings.cpp\
+	  
 
 all : $(TARGET)
 

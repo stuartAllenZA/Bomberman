@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 #include <Exceptions.hpp>
 #include <Character.hpp>
 #include <Settings.hpp>
@@ -13,13 +14,15 @@ class Game {
 		Game();
 		Game(Game const & src);
 		~Game();
-		Game & 	operator=(Game const & src);
-		bool	getExit() const;
-		void	setExit(const bool newExit);
-		int		getGameInput() const;
-		void	setGameInput(const int newInput);
+		Game & 					operator=(Game const & src);
+		bool					getExit() const;
+		void					setExit(const bool newExit);
+		int						getGameInput() const;
+		void					setGameInput(const int newInput);
+		std::vector<Character>	getEnemies() const;
+		void					setEnemies(const std::vector<Character> newEnemies);
 
-		void	loadStuff();
+		void					loadStuff();
 
 	private:
 		bool					_exit;
