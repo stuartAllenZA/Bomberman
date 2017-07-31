@@ -11,12 +11,14 @@ extern "C" void	handleInput(int	gameInput) {
 extern "C" void	updateGameData() {
 }
 
+extern "C" void addToRenderBuff(int x, int y, char symbol) {
+	(void)x;
+	(void)y;
+	(void)symbol;
+}
+
 extern "C" void render() {
-	// vector<game.enemies>::iterator begin;
-	// for (begin = game.begin();begin < game.end(); begin++) {
-	//	openGLRender(begin.x, begin.y, 'E');
-	// }
-	//
+
 }
 
 extern "C" void	destroy() {

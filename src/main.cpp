@@ -1,7 +1,7 @@
 #include <header.hpp>
 
 int main(int argc, char **argv) {
-	GraphicsHandler		graphics("libopengl.so");
+	GraphicsHandler		graphics("libopengl_x86_64_Darwin.so");
 	Game				game;
 
 	if (argc > 1) {
@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 			// getInput
 			// updateGameState
 			// render
-			graphics.renderGraphics(game);
+			graphics.render();
 		}
 	}
 

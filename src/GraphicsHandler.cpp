@@ -28,9 +28,16 @@ void		GraphicsHandler::getGameEvents(Game &game) {
 	getGameEvents(game.getGameInput());
 }
 
-void	GraphicsHandler::renderGraphics() {
-	typedef void (*renderGame_t)();
-	renderGame_t	renderGame = (renderGame_t) dlsym(_handle, "render");
-	renderGame();
+void		GraphicsHandler::addToRenderBuff(int x, int y, char symbol) {
+	typedef void (*addToRenderBuff_t)(int,int,char);
+	addToRenderBuff_t	addToRenderBuff = (addToRenderBuff_t) dlsym(_handle, "addToRenderBuff");
+	addToRenderBuff(x, y, symbol);
+	
+}
+
+void		GraphicsHandler::render() {
+	typedef void (*render_t)();
+	render_t	render= (render_t) dlsym(_handle, "render");
+	render();
 }
 
