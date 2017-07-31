@@ -97,9 +97,9 @@ void					Game::saveSettings() {
 }
 
 void					Game::savePlayer() {
-	std::ofstream profileFileOut("resources/profiles/" + this->_player.getName() + ".player", std::ofstream::out);
-	profileFileOut << "level:" + (std::to_string(this->_player.getLevel()))+"\n";
-	profileFileOut << "experience:" + (std::to_string(this->_player.getExperience()))+"\n";
+	std::ofstream profileFileOut("resources/profiles/" + this->_player->getName() + ".player", std::ofstream::out);
+	profileFileOut << "level:" + (std::to_string(this->_player->getLevel()))+"\n";
+	profileFileOut << "experience:" + (std::to_string(this->_player->getExperience()))+"\n";
 	profileFileOut.close();
 }
 

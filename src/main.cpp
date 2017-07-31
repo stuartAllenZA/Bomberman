@@ -11,7 +11,6 @@ int main(int argc, char **argv) {
 
 	try {
 		std::string line;
-		game.setCurrentLevel(2);
 		//graphics.init();
 		while (game.getExit() == false) {
 			// getInput

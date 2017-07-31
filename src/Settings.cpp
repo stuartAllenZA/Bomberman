@@ -16,7 +16,7 @@ Settings::~Settings() {
 Settings &			Settings::operator=(Settings const & src) {
 	this->_resolution = src.getResolution();
 	this->_lastPlayer = src.getLastPlayer();
-	this->_windowed = src.getWindowded();
+	this->_windowed = src.getWindowed();
 	this->_upKey = src.getUpKey();
 	this->_downKey = src.getDownKey();
 	this->_leftKey = src.getLeftKey();
