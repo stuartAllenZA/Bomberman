@@ -13,7 +13,8 @@ class GraphicsHandler {
 		void	init();
 		void	getGameEvents(Game&);
 		void	updateGameData();
-		void	renderGraphics(Game&);
+		void	addToRenderBuff(int x, int y, char symbol);
+		void	render();
 	
 	private:
 		void	*_handle;

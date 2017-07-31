@@ -1,7 +1,7 @@
 #include <header.hpp>
 
 int main(int argc, char **argv) {
-	GraphicsHandler		graphics;
+	GraphicsHandler		graphics("libopengl_x86_64_Darwin.so");
 	Game				game;
 
 	if (argc > 1) {
@@ -11,13 +11,13 @@ int main(int argc, char **argv) {
 
 	try {
 		std::string line;
+		game.setCurrentLevel(2);
 		//graphics.init();
-		game.setUsername("stuart");
 		while (game.getExit() == false) {
-			std::getline(std::cin, line);
 			// getInput
 			// updateGameState
 			// render
+			graphics.render();
 		}
 	}
 

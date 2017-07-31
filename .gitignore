@@ -1,5 +1,6 @@
 *.sw*
 *._*
 *.DS*
+*.so
 resources/
 bomberman
