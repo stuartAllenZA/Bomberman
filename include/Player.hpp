@@ -1,7 +1,7 @@
 #ifndef Player_HPP
 #define Player_HPP
 
-#include <Character.hpp>
+#include "Character.hpp"
 
 class Player : public Character
 {

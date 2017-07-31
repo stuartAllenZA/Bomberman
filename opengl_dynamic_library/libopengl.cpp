@@ -11,7 +11,7 @@ extern "C" void	handleInput(int	gameInput) {
 extern "C" void	updateGameData() {
 }
 
-extern "C" void render(Game &game) {
+extern "C" void render() {
 	// vector<game.enemies>::iterator begin;
 	// for (begin = game.begin();begin < game.end(); begin++) {
 	//	openGLRender(begin.x, begin.y, 'E');

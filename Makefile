@@ -17,6 +17,9 @@ $(TARGET):
 	@clang++ $(FLAGS) $(SRC) -o $(TARGET)
 	@echo "$(TARGET) compiled sucsessfully."
 
+opengl_loader:
+	g++ -shared -fPIC -o libopengl.so opengl_dynamic_library/libopengl.cpp -ldl
+
 clean:
 	@rm $(TARGET)
 	@echo "$(TARGET) cleaned."

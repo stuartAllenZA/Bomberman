@@ -28,9 +28,9 @@ void		GraphicsHandler::getGameEvents(Game &game) {
 	getGameEvents(game.getGameInput());
 }
 
-void	GraphicsHandler::renderGraphics(Game &game) {
-	if(game.getEnemies().size() > 0) {
-		//render enimies
-	}
+void	GraphicsHandler::renderGraphics() {
+	typedef void (*renderGame_t)();
+	renderGame_t	renderGame = (renderGame_t) dlsym(_handle, "render");
+	renderGame();
 }
 
