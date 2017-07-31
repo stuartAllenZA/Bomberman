@@ -5,7 +5,7 @@ extern "C" void	init() {
 }
 
 extern "C" void	handleInput(int	gameInput) {
-	
+	gameInput = 0;
 }
 
 extern "C" void	updateGameData() {

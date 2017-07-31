@@ -1,6 +1,18 @@
 #include <Player.hpp>
 
-Player::Player(std::string name) : _name(name), _level(1), _experience(0) {
+Player::Player(std::pair<int, int> xy, int lives, std::string name) : Character(xy, lives), _name(name), _level(1), _experience(0) {
+	std::cout << "Player with name" << this->_name << ", XY & Lives Constructed\n";
+}
+
+Player::Player(std::pair<int, int> xy, std::string name) : Character(xy), _name(name), _level(1), _experience(0) {
+	std::cout << "Player with name" << this->_name << "& XY Constructed\n";
+}
+
+Player::Player(int lives, std::string name) : Character(lives), _name(name), _level(1), _experience(0) {
+	std::cout << "Player with name" << this->_name << " & Lives Constructed\n";
+}
+
+Player::Player(std::string name) : Character(), _name(name), _level(1), _experience(0) {
 	std::cout << "Player with name" << this->_name << " Default Constructed\n";
 }
 
@@ -13,7 +25,7 @@ Player::~Player() {
 	std::cout << "Player with name" << this->_name << " De-Constructed\n";
 }
 
-Player &			Player::operator=(Player const & src) {
+Player &	Player::operator=(Player const & src) {
 	this->_name = src.getName();
 	this->_level = src.getLevel();
 	this->_experience = src.getExperience();
