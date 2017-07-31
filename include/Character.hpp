@@ -25,7 +25,7 @@ public:
 	Character(int lives);
 	Character();
 	Character(Character const & src);
-	~Character();
+	virtual ~Character() =0;
 	Character &			operator=(Character const & src);
 	std::pair<int, int>	getXY() const;
 	void				setXY(const std::pair<int, int> xy);
@@ -35,6 +35,8 @@ public:
 	void				setHealth(const int newHealth);
 	int					getLives() const;
 	void				setLives(const int newLives);
+	virtual std::string	getName() const =0;
+	virtual void		setName(const std::string newName) =0;
 
 private:
 	std::pair<int, int>	_xy;

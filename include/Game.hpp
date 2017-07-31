@@ -29,29 +29,21 @@ class Game {
 		void					setPlayer(const Player newPlayer);
 		std::vector<Character>	getEnemies() const;
 		void					setEnemies(const std::vector<Character> newEnemies);
-		int						getCurrentLevel();
-		int						getCurrentExp();
-		void					setCurrentLevel(int level);
-		void					setCurrentExp(int exp);
-		std::string				getUsername();
-		void					setUsername(std::string);
-		std::string				newUser();
+		
+		std::string				newUser(std::string playerName);
 		void					saveGame();
-		void					saveProfile();
-		void					loadUserProfile();
+		void					savePlayer();
+		void					saveSettings();
+		void					loadPlayer(std::string playerName);
 		void					loadGame();
 		void					loadSettings();
+		std::string				lexFile(std::string fileName, std::string find);
 
 	private:
-		std::string				_username;
-		std::string				_profileFile;
-		std::string				_saveFile;
-		int						_currentLevel;
-		int						_currentExp;
 		bool					_exit;
 		int						_gameInput;
 		Settings				_settings;
-		Character				_player;
+		Character				*_player;
 		std::vector<Character>	_enemies;
 };
 

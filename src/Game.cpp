@@ -2,6 +2,12 @@
 
 Game::Game() : _exit(false), _gameInput(0) {
 	this->_settings = Settings();
+	loadSettings();
+	if (!this->_settings.getLastPlayer().empty())
+	{
+		this->_player = new Player(this->_settings.getLastPlayer());
+		loadPlayer(this->_settings.getLastPlayer());
+	}
 	std::cout << "Game Constructed\n";
 }
 
@@ -11,6 +17,7 @@ Game::Game(Game const & src) {
 }
 
 Game::~Game() {
+	delete this->_player;
 	std::cout << "Game De-Constructed\n";
 }
 
@@ -60,48 +67,39 @@ void					Game::setEnemies(const std::vector<Character> newEnemies) {
 	this->_enemies = newEnemies;
 }
 
-int						Game::getCurrentLevel() {
-	return _currentLevel;
-}
-
-int						Game::getCurrentExp() {
-	return _currentExp;
-}
-
-void					Game::setCurrentLevel(int level) {
-	_currentLevel = level;
-}
-
-void					Game::setCurrentExp(int exp) {
-	_currentExp = exp;
-}
-
-std::string				Game::getUsername() {
-	return _username;
-}
-
-void					Game::setUsername(std::string username) {
-	_username = username;
-	_profileFile = _username+".profile";
-	_saveFile = _username+".save";
-}
-
-std::string				Game::newUser() {
+std::string				Game::newUser(std::string playerName) {
 	DIR	*directory = opendir("resources/profiles/");
 	struct dirent *contents;
 	while ((contents = readdir(directory)) != NULL) {
-		if (contents->d_name == _profileFile)
+		if (contents->d_name == playerName)
 			return "user already exists";
 	}
-	saveProfile();
+	savePlayer();
 	closedir(directory);
 	return "success message";
 }
 
-void					Game::saveProfile() {
-	std::ofstream profileFileOut("resources/profiles/"+_profileFile, std::ofstream::out);
-	profileFileOut << "currentLevel:"+(std::to_string(_currentLevel))+"\n";
-	profileFileOut << "exp:"+(std::to_string(_currentExp))+"\n";
+void					Game::saveSettings() {
+	std::ofstream settingsOut("resources/bomberman.config", std::ofstream::out);
+	settingsOut << "resolutionX:" + (std::to_string(this->_settings.getResolutionX()))+"\n";
+	settingsOut << "resolutionY:" + (std::to_string(this->_settings.getResolutionY()))+"\n";
+	if (this->_settings.getWindowed())
+		settingsOut << "windowed:true\n";
+	else
+		settingsOut << "windowed:false\n";
+	settingsOut << "upKey:" + (std::to_string(this->_settings.getUpKey()))+"\n";
+	settingsOut << "downKey:" + (std::to_string(this->_settings.getDownKey()))+"\n";
+	settingsOut << "leftKey:" + (std::to_string(this->_settings.getLeftKey()))+"\n";
+	settingsOut << "rightKey:" + (std::to_string(this->_settings.getRightKey()))+"\n";
+	settingsOut << "musicVol:" + (std::to_string(this->_settings.getMusicVol()))+"\n";
+	settingsOut << "FXVol:" + (std::to_string(this->_settings.getFXVol()))+"\n";
+	settingsOut.close();
+}
+
+void					Game::savePlayer() {
+	std::ofstream profileFileOut("resources/profiles/" + this->_player.getName() + ".player", std::ofstream::out);
+	profileFileOut << "level:" + (std::to_string(this->_player.getLevel()))+"\n";
+	profileFileOut << "experience:" + (std::to_string(this->_player.getExperience()))+"\n";
 	profileFileOut.close();
 }
 
@@ -112,42 +110,38 @@ void					Game::saveGame() {
 	saveFileOut.close();
 }
 
-void					Game::loadUserProfile() {
-	std::ifstream handle("resources/profiles/"+_profileFile);
-	std::string line;
-	std::string key;
-	std::string value;
-	
-	while (std::getline(handle, line)) {
-		std::istringstream	iss(line);
-		if (iss >> key >> value) {
-			if (key == "currentLevel")
-				_currentLevel = std::stoi(value);
-			else if (key == "exp")
-				_currentExp = std::stoi(value);
-			// etc ...
-		}
-	}
+void					Game::loadPlayer(std::string playerName) {
+	std::string fileName = "resources/profiles/" + playerName + ".profile";
+	this->_player.setLevel(std::stoi(lexFile(fileName, "level")));
+	this->_player.setExperience(std::stoi(lexFile(fileName, "experience")));
 }
 
 void					Game::loadGame() {
-	std::ifstream handle("resources/saves/"+_saveFile);
-	std::string line;
-	std::string key;
-	std::string value;
-	
-	while (std::getline(handle, line)) {
-		std::istringstream	iss(line);
-		if (iss >> key >> value) {
-			if (key == "playerHP")
-				_player.setHealth(std::stoi(value));
-			// etc ...
-		}
-	}
 }
 
 void					Game::loadSettings() {
-	std::ifstream handle("bomberman.config");
+	std::string fileName = "resources/bomberman.config";
+	int resX = std::stoi(lexFile(fileName, "resolutionX"));
+	int resY = std::stoi(lexFile(fileName, "resolutionY"));
+	std::pair<int, int> resolution = std::make_pair(resX, resY);
+	this->_settings.setResolution(resolution);
+
+	std::string ret = lexFile(fileName, "windowed");
+	if (ret = "false")
+		this->_settings.setWindowded(false);
+	else
+		this->_settings.setWindowded(true);
+
+	this->_settings.setUpKey(std::stoi(lexFile(fileName, "upKey")));
+	this->_settings.setDownKey(std::stoi(lexFile(fileName, "downKey")));
+	this->_settings.setLeftKey(std::stoi(lexFile(fileName, "leftKey")));
+	this->_settings.setRightKey(std::stoi(lexFile(fileName, "rightKey")));
+	this->_settings.setMusicVol(std::stoi(lexFile(fileName, "musicVol")));
+	this->_settings.setFXVol(std::stoi(lexFile(fileName, "FXVol")));
+}
+
+std::string				Game::lexFile(std::string fileName, std::string find) {
+	std::ifstream handle(fileName);
 	std::string line;
 	std::string key;
 	std::string value;
@@ -155,10 +149,8 @@ void					Game::loadSettings() {
 	while (std::getline(handle, line)) {
 		std::istringstream	iss(line);
 		if (iss >> key >> value) {
-			if (key == "windowRes")
-				_settings.setWindowded(std::stoi(value));
-			// etc ...
+			if (key == find)
+				return value;
 		}
 	}
 }
-
