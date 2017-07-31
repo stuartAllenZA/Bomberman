@@ -3,7 +3,7 @@
 
 #include <string>
 #include <dlfcn.h>
-#include <Game.hpp>
+#include "Game.hpp"
 
 class GraphicsHandler {
 	public:

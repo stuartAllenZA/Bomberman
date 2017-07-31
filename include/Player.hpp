@@ -1,11 +1,14 @@
 #ifndef Player_HPP
 #define Player_HPP
 
-#include <Character.hpp>
+#include "Character.hpp"
 
 class Player : public Character
 {
 public:
+	Player(std::pair<int, int> xy, int lives, std::string name);
+	Player(std::pair<int, int> xy, std::string name);
+	Player(int lives, std::string name);
 	Player(std::string name);
 	Player(Player const & src);
 	~Player();

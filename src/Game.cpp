@@ -36,6 +36,22 @@ void					Game::setGameInput(const int newInput) {
 	this->_gameInput = newInput;
 }
 
+Settings				Game::getSettings() const {
+	return (this->_settings);
+}
+
+void					Game::setSettings(const Settings newSettings) {
+	this->_settings = newSettings;
+}
+
+Character				Game::getPlayer() const {
+	return (this->_player);
+}
+
+void					Game::setPlayer(const Player newPlayer) {
+	this->_player = newPlayer;
+}
+
 std::vector<Character>	Game::getEnemies() const {
 	return (this->_enemies);
 }
