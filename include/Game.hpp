@@ -8,6 +8,10 @@
 #include <Character.hpp>
 #include <Settings.hpp>
 #include <Player.hpp>
+#include <sys/types.h>
+#include <dirent.h>
+#include <fstream>
+#include <sstream>
 
 class Game {
 	public:
@@ -25,10 +29,25 @@ class Game {
 		void					setPlayer(const Player newPlayer);
 		std::vector<Character>	getEnemies() const;
 		void					setEnemies(const std::vector<Character> newEnemies);
-
-		void					loadStuff();
+		int						getCurrentLevel();
+		int						getCurrentExp();
+		void					setCurrentLevel(int level);
+		void					setCurrentExp(int exp);
+		std::string				getUsername();
+		void					setUsername(std::string);
+		std::string				newUser();
+		void					saveGame();
+		void					saveProfile();
+		void					loadUserProfile();
+		void					loadGame();
+		void					loadSettings();
 
 	private:
+		std::string				_username;
+		std::string				_profileFile;
+		std::string				_saveFile;
+		int						_currentLevel;
+		int						_currentExp;
 		bool					_exit;
 		int						_gameInput;
 		Settings				_settings;

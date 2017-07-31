@@ -9,8 +9,7 @@ SRC = $(SP)Character.cpp\
 	  $(SP)GraphicsHandler.cpp\
 	  $(SP)main.cpp\
 	  $(SP)Player.cpp\
-	  $(SP)Settings.cpp\
-	  
+	  $(SP)Settings.cpp
 
 all : $(TARGET)
 
