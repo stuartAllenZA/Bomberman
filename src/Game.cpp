@@ -44,6 +44,47 @@ void					Game::setEnemies(const std::vector<Character> newEnemies) {
 	this->_enemies = newEnemies;
 }
 
-void					Game::loadStuff() {
-
+std::string				Game::getUsername() {
+	return _username;
 }
+
+void					Game::setUsername(std::string username) {
+	_username = username;
+	_profileFile = _username+".profile";
+}
+
+std::string				Game::newUser() {
+	DIR	*directory = opendir("resources/profiles/");
+	struct dirent *contents;
+	while ((contents = readdir(directory)) != NULL) {
+		if (contents->d_name == _profileFile)
+			return "user already exists";
+	}
+	saveProfile();
+	closedir(directory);
+	return "success message";
+}
+
+void					Game::saveProfile() {
+	std::ofstream profileFileOut("resources/profiles/"+_profileFile, std::ofstream::out);
+	profileFileOut << "currentLevel:"+(std::to_string(_currentLevel))+"\n";
+	profileFileOut << "exp:"+(std::to_string(_currentExp))+"\n";
+	profileFileOut.close();
+}
+
+void					Game::saveGame() {
+	// write save data to resources/saves/_username.save
+}
+
+void					Game::loadUserProfile() {
+	// save data from resources/profiles/_username.profile into memory
+}
+
+void					Game::loadGame() {
+	// save data from resources/saves/_username.save into memory
+}
+
+void					Game::loadSettings() {
+	// save data from bomberman.config into memory
+}
+
