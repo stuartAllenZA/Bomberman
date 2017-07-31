@@ -12,10 +12,9 @@ int main(int argc, char **argv) {
 	try {
 		std::string line;
 		//graphics.init();
-		game.setUsername("gladwin");
+		game.setUsername("stuart");
 		while (game.getExit() == false) {
 			std::getline(std::cin, line);
-			std::cout << game.newUser() << std::endl;
 			// getInput
 			// updateGameState
 			// render

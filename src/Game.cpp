@@ -44,6 +44,22 @@ void					Game::setEnemies(const std::vector<Character> newEnemies) {
 	this->_enemies = newEnemies;
 }
 
+int						Game::getCurrentLevel() {
+	return _currentLevel;
+}
+
+int						Game::getCurrentExp() {
+	return _currentExp;
+}
+
+void					Game::setCurrentLevel(int level) {
+	_currentLevel = level;
+}
+
+void					Game::setCurrentExp(int exp) {
+	_currentExp = exp;
+}
+
 std::string				Game::getUsername() {
 	return _username;
 }
@@ -51,6 +67,7 @@ std::string				Game::getUsername() {
 void					Game::setUsername(std::string username) {
 	_username = username;
 	_profileFile = _username+".profile";
+	_saveFile = _username+".save";
 }
 
 std::string				Game::newUser() {
@@ -73,18 +90,59 @@ void					Game::saveProfile() {
 }
 
 void					Game::saveGame() {
-	// write save data to resources/saves/_username.save
+	std::ofstream saveFileOut("resources/save/"+_saveFile, std::ofstream::out);
+	// insert save data here
+	// e.g.	saveFileOut << "playerHP:"+(std::to_string(_player->getHP()))+"\n";
+	saveFileOut.close();
 }
 
 void					Game::loadUserProfile() {
-	// save data from resources/profiles/_username.profile into memory
+	std::ifstream handle("resources/profiles/"+_profileFile);
+	std::string line;
+	std::string key;
+	std::string value;
+	
+	while (std::getline(handle, line)) {
+		std::istringstream	iss(line);
+		if (iss >> key >> value) {
+			if (key == "currentLevel")
+				_currentLevel = std::stoi(value);
+			else if (key == "exp")
+				_currentExp = std::stoi(value);
+			// etc ...
+		}
+	}
 }
 
 void					Game::loadGame() {
-	// save data from resources/saves/_username.save into memory
+	std::ifstream handle("resources/saves/"+_saveFile);
+	std::string line;
+	std::string key;
+	std::string value;
+	
+	while (std::getline(handle, line)) {
+		std::istringstream	iss(line);
+		if (iss >> key >> value) {
+			if (key == "playerHP")
+				_player.setHealth(std::stoi(value));
+			// etc ...
+		}
+	}
 }
 
 void					Game::loadSettings() {
-	// save data from bomberman.config into memory
+	std::ifstream handle("bomberman.config");
+	std::string line;
+	std::string key;
+	std::string value;
+	
+	while (std::getline(handle, line)) {
+		std::istringstream	iss(line);
+		if (iss >> key >> value) {
+			if (key == "windowRes")
+				_settings.setWindowded(std::stoi(value));
+			// etc ...
+		}
+	}
 }
 

@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <fstream>
+#include <sstream>
 
 class Game {
 	public:
@@ -24,6 +25,10 @@ class Game {
 		void					setGameInput(const int newInput);
 		std::vector<Character>	getEnemies() const;
 		void					setEnemies(const std::vector<Character> newEnemies);
+		int						getCurrentLevel();
+		int						getCurrentExp();
+		void					setCurrentLevel(int level);
+		void					setCurrentExp(int exp);
 		std::string				getUsername();
 		void					setUsername(std::string);
 		std::string				newUser();
@@ -36,6 +41,7 @@ class Game {
 	private:
 		std::string				_username;
 		std::string				_profileFile;
+		std::string				_saveFile;
 		int						_currentLevel;
 		int						_currentExp;
 		bool					_exit;
