@@ -13,23 +13,35 @@
 #ifndef CHARACTER_HPP
 #define CHARACTER_HPP
 
+#include <string>
 #include <iostream>
+#include <vector>
 
 class Character
 {
 public:
+	Character(std::pair<int, int> xy, int lives);
+	Character(std::pair<int, int> xy);
+	Character(int lives);
 	Character();
 	Character(Character const & src);
 	~Character();
-	Character & 			operator=(Character const & src);
-	std::string				getDirection() const;
-	void					setDirection(std::string name);
+	Character &			operator=(Character const & src);
+	std::pair<int, int>	getXY() const;
+	void				setXY(const std::pair<int, int> xy);
+	int					getSpeed() const;
+	void				setSpeed(const int newSpeed);
+	int					getHealth() const;
+	void				setHealth(const int newHealth);
+	int					getLives() const;
+	void				setLives(const int newLives);
 
 private:
-	std::string				direction;
-	int						speed;
-	int						x;
-	int						y;
+	std::pair<int, int>	_xy;
+	int					_speed;
+	int					_health;
+	int					_lives;
+	
 };
 
 #endif

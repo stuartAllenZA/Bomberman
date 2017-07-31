@@ -1,10 +1,13 @@
 #ifndef INCLUDE_HEADER_HPP_
 #define INCLUDE_HEADER_HPP_
 
-#include <iostream>
+#include "Character.hpp"
 #include "Exceptions.hpp"
-#include "GameClass.hpp"
+#include "Game.hpp"
 #include "GraphicsHandler.hpp"
+#include "Player.hpp"
+#include "Settings.hpp"
+#include <iostream>
 
 #endif
 
