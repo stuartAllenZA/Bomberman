@@ -5,18 +5,21 @@ extern "C" void	init() {
 }
 
 extern "C" void	handleInput(int	gameInput) {
-	
+	gameInput = 0;
 }
 
 extern "C" void	updateGameData() {
 }
 
 extern "C" void render(Game &game) {
-	// vector<game.enemies>::iterator begin;
-	// for (begin = game.begin();begin < game.end(); begin++) {
-	//	openGLRender(begin.x, begin.y, 'E');
-	// }
-	//
+	std::vector<Character>::iterator begin;
+	std::vector<Character> enemies = game.getEnemies();
+	for (begin = enemies.begin(); begin < enemies.end(); begin++) {
+		std::pair<int, int> xy = begin->getXY();
+		// openGLRender(xy.first, xy.second, 'E');
+		xy.first = 0;
+	}
+	
 }
 
 extern "C" void	destroy() {

@@ -2,8 +2,8 @@
 #define OPENGL_DYNAMIC_LIBRARY_LIBOPENGL_HPP_
 
 #include <unistd.h>
-#include "include/GraphicsInterface.hpp"
-#include "include/GameClass.hpp"
+#include "../include/GraphicsInterface.hpp"
+#include "../include/Game.hpp"
 
 class Libopengl : IGraphics { };
 
