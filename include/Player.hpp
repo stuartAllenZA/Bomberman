@@ -5,9 +5,10 @@
 // Add variable checklist
 
 //		1. Getter & Setter
-//		1. Game::loadPlayer
-//		3. Game::savePlayer
-//		3. Character::*your method* virtual member
+//		2. Add to << overload
+//		3. Game::loadPlayer
+//		4. Game::savePlayer
+//		5. Character::*your method* virtual member
 
 class Player : public Character
 {
@@ -35,5 +36,7 @@ private:
 	int			_experience;
 	
 };
+
+//std::ostream &					operator<<(std::ostream & o, Player const & rhs);
 
 #endif

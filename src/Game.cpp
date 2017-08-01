@@ -2,7 +2,12 @@
 
 Game::Game() : _exit(false), _gameInput(0) {
 	this->_settings = Settings();
-	loadSettings();
+	try {
+		loadSettings();
+	}
+	catch (Exceptions::LexOpenFileError const & exception) {
+		std::cerr << "Exceptions::LexOpenFileError: " << exception.what() << std::endl;
+	}
 	if (!this->_settings.getLastPlayer().empty())
 	{
 		this->_player = new Player(this->_settings.getLastPlayer());
@@ -94,6 +99,7 @@ void					Game::saveSettings() {
 	settingsOut << "musicVol:" + (std::to_string(this->_settings.getMusicVol()))+"\n";
 	settingsOut << "FXVol:" + (std::to_string(this->_settings.getFXVol()))+"\n";
 	settingsOut.close();
+	std::cout << "Settings saved to ./resources/bomberman.config.\n";
 }
 
 void					Game::savePlayer() {
@@ -101,13 +107,15 @@ void					Game::savePlayer() {
 	profileFileOut << "level:" + (std::to_string(this->_player->getLevel()))+"\n";
 	profileFileOut << "experience:" + (std::to_string(this->_player->getExperience()))+"\n";
 	profileFileOut.close();
+	std::cout << "Player saved to ./resources/profiles/" << this->_player->getName() << ".player\n";
 }
 
 void					Game::saveGame() {
-	std::ofstream saveFileOut("resources/save/"+ this->_player->getName() + ".save", std::ofstream::out);
+	std::ofstream saveFileOut("resources/save/" + this->_player->getName() + ".save", std::ofstream::out);
 	// insert save data here
 	// e.g.	saveFileOut << "playerHP:"+(std::to_string(_player->getHP()))+"\n";
 	saveFileOut.close();
+	std::cout << "Game saved to ./resources/profiles/" << this->_player->getName() << ".save\n";
 }
 
 void					Game::loadPlayer(std::string playerName) {
@@ -167,4 +175,20 @@ std::string				Game::lexFile(std::string fileName, std::string find) {
 	}
 	throw (Exceptions::LexKeyNotFound(find));
 	return ("ERROR");
+}
+
+std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
+	int num = 0;
+	o << "Dumping Game State\nExit: " << rhs.getExit() << "\nGame Input: " << rhs.getGameInput() << std::endl;
+	if (rhs.getEnemies().size() > 0) {
+		for (std::vector<Character*>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it)
+		{
+			num++;
+			o << "Enemy" << num << ": " << *it << std::endl;
+		}
+	}
+	else
+		o << "Enemies: 0\n";
+	o << rhs.getSettings() << std::endl;
+	return o;
 }
