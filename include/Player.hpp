@@ -2,11 +2,12 @@
 #define Player_HPP
 
 #include "Character.hpp"
-
 // Add variable checklist
+
 //		1. Getter & Setter
 //		1. Game::loadPlayer
 //		3. Game::savePlayer
+//		3. Character::*your method* virtual member
 
 class Player : public Character
 {

@@ -28,6 +28,18 @@ int main(int argc, char **argv) {
 		std::cerr << "undefined symbol exception: " << exception.what() << std::endl;
 	}
 
+	catch (Exceptions::LexOpenFileError const & exception) {
+		std::cerr << "Exceptions::LexOpenFileError: " << exception.what() << std::endl;
+	}
+
+	catch (Exceptions::LexFormatError const & exception) {
+		std::cerr << "Exceptions::LexFormatError: " << exception.what() << std::endl;
+	}
+
+	catch (Exceptions::LexKeyNotFound const & exception) {
+		std::cerr << "Exceptions::LexKeyNotFound: " << exception.what() << std::endl;
+	}
+
 	catch (std::exception const & exception) {
 		std::cerr << "std::exception: " << exception.what() << std::endl;
 	}

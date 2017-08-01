@@ -51,19 +51,19 @@ void					Game::setSettings(const Settings newSettings) {
 	this->_settings = newSettings;
 }
 
-Character				Game::getPlayer() const {
+Character	*			Game::getPlayer() const {
 	return (this->_player);
 }
 
-void					Game::setPlayer(const Player newPlayer) {
+void					Game::setPlayer(Player *newPlayer) {
 	this->_player = newPlayer;
 }
 
-std::vector<Character>	Game::getEnemies() const {
+std::vector<Character*>	Game::getEnemies() const {
 	return (this->_enemies);
 }
 
-void					Game::setEnemies(const std::vector<Character> newEnemies) {
+void					Game::setEnemies(const std::vector<Character*> newEnemies) {
 	this->_enemies = newEnemies;
 }
 
@@ -104,7 +104,7 @@ void					Game::savePlayer() {
 }
 
 void					Game::saveGame() {
-	std::ofstream saveFileOut("resources/save/"+_saveFile, std::ofstream::out);
+	std::ofstream saveFileOut("resources/save/"+ this->_player->getName() + ".save", std::ofstream::out);
 	// insert save data here
 	// e.g.	saveFileOut << "playerHP:"+(std::to_string(_player->getHP()))+"\n";
 	saveFileOut.close();
@@ -112,8 +112,8 @@ void					Game::saveGame() {
 
 void					Game::loadPlayer(std::string playerName) {
 	std::string fileName = "resources/profiles/" + playerName + ".profile";
-	this->_player.setLevel(std::stoi(lexFile(fileName, "level")));
-	this->_player.setExperience(std::stoi(lexFile(fileName, "experience")));
+	this->_player->setLevel(std::stoi(lexFile(fileName, "level")));
+	this->_player->setExperience(std::stoi(lexFile(fileName, "experience")));
 }
 
 void					Game::loadGame() {
@@ -127,10 +127,10 @@ void					Game::loadSettings() {
 	this->_settings.setResolution(resolution);
 
 	std::string ret = lexFile(fileName, "windowed");
-	if (ret = "false")
-		this->_settings.setWindowded(false);
+	if (ret == "false")
+		this->_settings.setWindowed(false);
 	else
-		this->_settings.setWindowded(true);
+		this->_settings.setWindowed(true);
 
 	this->_settings.setUpKey(std::stoi(lexFile(fileName, "upKey")));
 	this->_settings.setDownKey(std::stoi(lexFile(fileName, "downKey")));
@@ -145,12 +145,24 @@ std::string				Game::lexFile(std::string fileName, std::string find) {
 	std::string line;
 	std::string key;
 	std::string value;
-	
+	int			num;
+
+	num = 0;
+	if (!handle)
+		throw (Exceptions::LexOpenFileError(fileName));
 	while (std::getline(handle, line)) {
+		num++;
 		std::istringstream	iss(line);
-		if (iss >> key >> value) {
-			if (key == find)
-				return value;
+		if (line.c_str()[0] != ';' && line.c_str()[0] != '[')
+		{
+			if (iss >> key >> value) {
+				if (key == find)
+					return value;
+			}
+			else
+				throw (Exceptions::LexFormatError(num, line));
 		}
 	}
+	throw (Exceptions::LexKeyNotFound(find));
+	return ("ERROR");
 }

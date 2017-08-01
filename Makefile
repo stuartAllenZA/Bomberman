@@ -11,6 +11,7 @@ LFLAGS = -Wall -Werror -Wextra -shared -o
 SP = ./src/
 
 SRC = $(SP)Character.cpp\
+	  $(SP)Exceptions.cpp\
 	  $(SP)Game.cpp\
 	  $(SP)GraphicsHandler.cpp\
 	  $(SP)main.cpp\

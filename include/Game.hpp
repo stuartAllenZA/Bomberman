@@ -1,7 +1,6 @@
 #ifndef INCLUDE_GAME_HPP
 #define INCLUDE_GAME_HPP
 
-#include <string>
 #include <iostream>
 #include <vector>
 #include "Exceptions.hpp"
@@ -12,6 +11,7 @@
 #include <dirent.h>
 #include <fstream>
 #include <sstream>
+#include <string>
 
 class Game {
 	public:
@@ -25,10 +25,10 @@ class Game {
 		void					setGameInput(const int newInput);
 		Settings				getSettings() const;
 		void					setSettings(const Settings newSettings);
-		Character				getPlayer() const;
-		void					setPlayer(const Player newPlayer);
-		std::vector<Character>	getEnemies() const;
-		void					setEnemies(const std::vector<Character> newEnemies);
+		Character	*			getPlayer() const;
+		void					setPlayer(Player *newPlayer);
+		std::vector<Character*>	getEnemies() const;
+		void					setEnemies(const std::vector<Character*> newEnemies);
 		
 		std::string				newUser(std::string playerName);
 		void					saveGame();
@@ -44,7 +44,7 @@ class Game {
 		int						_gameInput;
 		Settings				_settings;
 		Character				*_player;
-		std::vector<Character>	_enemies;
+		std::vector<Character*>	_enemies;
 };
 
 #endif
