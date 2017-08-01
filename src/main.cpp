@@ -14,9 +14,13 @@ int main(int argc, char **argv) {
 		game.setCurrentLevel(2);
 		//graphics.init();
 		while (game.getExit() == false) {
+			std::getline(std::cin, line);
+			if (line == "exit" || line == "q")
+				game.setExit(true);
 			// getInput
 			// updateGameState
 			// render
+			graphics.loadGameToRenderBuff(game);	
 			graphics.render();
 		}
 	}

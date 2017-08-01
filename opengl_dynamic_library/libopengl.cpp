@@ -1,7 +1,7 @@
 #include "libopengl.hpp"
 
 extern "C" void	init() {
-	std::cout << "OpenGl Renderer constructed" << std::endl;
+
 }
 
 extern "C" void	handleInput(int	gameInput) {
@@ -22,6 +22,6 @@ extern "C" void render() {
 }
 
 extern "C" void	destroy() {
-	// any opengl destruction can be triggered here
+
 }
 
