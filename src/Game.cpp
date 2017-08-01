@@ -152,15 +152,17 @@ std::string				Game::lexFile(std::string fileName, std::string find) {
 		throw (Exceptions::LexOpenFileError(fileName));
 	while (std::getline(handle, line)) {
 		num++;
-		std::istringstream	iss(line);
-		if (line.c_str()[0] != ';' && line.c_str()[0] != '[')
-		{
-			if (iss >> key >> value) {
-				if (key == find)
-					return value;
+		if (!line.empty()) {
+			std::istringstream	iss(line);
+			if (line.c_str()[0] != ';' && line.c_str()[0] != '[')
+			{
+				if (iss >> key >> value) {
+					if (key == find)
+						return value;
+				}
+				else
+					throw (Exceptions::LexFormatError(num, line));
 			}
-			else
-				throw (Exceptions::LexFormatError(num, line));
 		}
 	}
 	throw (Exceptions::LexKeyNotFound(find));
