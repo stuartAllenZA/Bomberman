@@ -29,18 +29,18 @@ void		GraphicsHandler::getGameEvents(Game &game) {
 }
 
 void		GraphicsHandler::loadGameToRenderBuff(Game &game) {
-	std::vector<Character>enemies = game.getEnemies();
-	std::vector<Character>::iterator	enemy;
-	Character	player = game.getPlayer();
+	std::vector<Character*>enemies = game.getEnemies();
+//	std::vector<Character*>::iterator	enemy;
+	Character	*player = game.getPlayer();
 	std::pair<int, int> coords;
 	int x, y;
-	for (enemy = enemies.begin(); enemy < enemies.end(); enemy++) {
-		coords = enemy->getXY();
+	for (size_t i = 0; i < enemies.size(); i++) {
+		coords = enemies[i]->getXY();
 		x = coords.first;
 		y = coords.second;
 		addToRenderBuff(x, y, 'e');
 	}
-	coords = player.getXY();
+	coords = player->getXY();
 	x = coords.first;
 	y = coords.second;
 	addToRenderBuff(x, y, 'c');
