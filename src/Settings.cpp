@@ -105,3 +105,16 @@ int					Settings::getResolutionX() const {
 int					Settings::getResolutionY() const {
 	return (this->_resolution.second);
 }
+
+std::ostream & 			operator<<(std::ostream & o, Settings const & rhs) {
+	o << "\n\nDumping Current Settings\nResolution: " << rhs.getResolutionX() << "x" << rhs.getResolutionY() <<
+	"\nLast Player: " << rhs.getLastPlayer() <<
+	"\nWindowed: " << std::boolalpha << rhs.getWindowed() <<
+	"\nUp Key: " << rhs.getUpKey() <<
+	"\nDown Key: " << rhs.getDownKey() <<
+	"\nLeft Key: " << rhs.getLeftKey() <<
+	"\nRight Key: " << rhs.getRightKey() <<
+	"\nMusic Volume: " << rhs.getMusicVol() <<
+	"\nFX Volume: " << rhs.getFXVol();
+	return o;
+}

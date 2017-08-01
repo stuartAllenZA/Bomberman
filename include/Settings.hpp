@@ -51,4 +51,6 @@ private:
 	int					_FXVol;	
 };
 
+std::ostream &					operator<<(std::ostream & o, Settings const & rhs);
+
 #endif

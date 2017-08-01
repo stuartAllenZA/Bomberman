@@ -47,4 +47,6 @@ class Game {
 		std::vector<Character*>	_enemies;
 };
 
+std::ostream &					operator<<(std::ostream & o, Game const & rhs);
+
 #endif
