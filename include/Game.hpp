@@ -1,7 +1,6 @@
 #ifndef INCLUDE_GAME_HPP
 #define INCLUDE_GAME_HPP
 
-#include <string>
 #include <iostream>
 #include <vector>
 #include "Exceptions.hpp"
@@ -12,6 +11,7 @@
 #include <dirent.h>
 #include <fstream>
 #include <sstream>
+#include <string>
 
 class Game {
 	public:
@@ -25,34 +25,26 @@ class Game {
 		void					setGameInput(const int newInput);
 		Settings				getSettings() const;
 		void					setSettings(const Settings newSettings);
-		Character				getPlayer() const;
-		void					setPlayer(const Player newPlayer);
-		std::vector<Character>	getEnemies() const;
-		void					setEnemies(const std::vector<Character> newEnemies);
-		int						getCurrentLevel();
-		int						getCurrentExp();
-		void					setCurrentLevel(int level);
-		void					setCurrentExp(int exp);
-		std::string				getUsername();
-		void					setUsername(std::string);
-		std::string				newUser();
+		Character	*			getPlayer() const;
+		void					setPlayer(Player *newPlayer);
+		std::vector<Character*>	getEnemies() const;
+		void					setEnemies(const std::vector<Character*> newEnemies);
+		
+		std::string				newUser(std::string playerName);
 		void					saveGame();
-		void					saveProfile();
-		void					loadUserProfile();
+		void					savePlayer();
+		void					saveSettings();
+		void					loadPlayer(std::string playerName);
 		void					loadGame();
 		void					loadSettings();
+		std::string				lexFile(std::string fileName, std::string find);
 
 	private:
-		std::string				_username;
-		std::string				_profileFile;
-		std::string				_saveFile;
-		int						_currentLevel;
-		int						_currentExp;
 		bool					_exit;
 		int						_gameInput;
 		Settings				_settings;
-		Character				_player;
-		std::vector<Character>	_enemies;
+		Character				*_player;
+		std::vector<Character*>	_enemies;
 };
 
 #endif

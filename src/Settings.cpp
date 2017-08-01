@@ -15,7 +15,8 @@ Settings::~Settings() {
 
 Settings &			Settings::operator=(Settings const & src) {
 	this->_resolution = src.getResolution();
-	this->_windowed = src.getWindowded();
+	this->_lastPlayer = src.getLastPlayer();
+	this->_windowed = src.getWindowed();
 	this->_upKey = src.getUpKey();
 	this->_downKey = src.getDownKey();
 	this->_leftKey = src.getLeftKey();
@@ -33,11 +34,19 @@ void				Settings::setResolution(const std::pair<int, int> wh) {
 	this->_resolution = wh;
 }
 
-bool				Settings::getWindowded() const {
+std::string			Settings::getLastPlayer() const {
+	return (this->_lastPlayer);
+}
+
+void				Settings::setLastPlayer(const std::string newLastPlayer) {
+	this->_lastPlayer = newLastPlayer;
+}
+
+bool				Settings::getWindowed() const {
 	return (this->_windowed);
 }
 
-void				Settings::setWindowded(const bool newWin) {
+void				Settings::setWindowed(const bool newWin) {
 	this->_windowed = newWin;
 }
 
@@ -87,4 +96,12 @@ int 				Settings::getFXVol() const {
 
 void				Settings::setFXVol(const int newVol) {
 	this->_FXVol = newVol;
+}
+
+int					Settings::getResolutionX() const {
+	return (this->_resolution.first);
+}
+
+int					Settings::getResolutionY() const {
+	return (this->_resolution.second);
 }

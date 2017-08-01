@@ -5,6 +5,11 @@
 #include <iostream>
 #include <vector>
 
+// Add variable checklist
+//		1. Getter & Setter
+//		1. Game::loadSettings
+//		3. Game::saveSettings
+
 class Settings
 {
 public:
@@ -14,8 +19,10 @@ public:
 	Settings &			operator=(Settings const & src);
 	std::pair<int, int>	getResolution() const;
 	void				setResolution(const std::pair<int, int> wh);
-	bool				getWindowded() const;
-	void				setWindowded(const bool newWin);
+	std::string			getLastPlayer() const;
+	void				setLastPlayer(const std::string newLastPlayer);
+	bool				getWindowed() const;
+	void				setWindowed(const bool newWin);
 	int					getUpKey() const;
 	void				setUpKey(const int newKey);
 	int					getDownKey() const;
@@ -29,8 +36,12 @@ public:
 	int					getFXVol() const;
 	void				setFXVol(const int newVol);
 
+	int					getResolutionX() const;
+	int					getResolutionY() const;
+
 private:
 	std::pair<int, int>	_resolution;
+	std::string 		_lastPlayer;
 	bool				_windowed;
 	int					_upKey;
 	int					_downKey;

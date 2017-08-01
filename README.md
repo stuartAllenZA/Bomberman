@@ -2,7 +2,6 @@
 ## Introduction
 Everybody loves playing Bomberman. Good news. The goal of this projet is to create a full implementation of a 3D Bomberman video game.
 * An overview of existing Bomberman games for inspiration: http://www.uvlist.net/groups/info/bomberman.
-* An online version of Bomberman for... You know... science! http://www.letsplaysnes.com/play-super-bomberman-5-online/?play=true#content
 
 ## Objectives
 There are several distinct objectives in this project.

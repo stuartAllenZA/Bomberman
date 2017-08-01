@@ -11,7 +11,6 @@ int main(int argc, char **argv) {
 
 	try {
 		std::string line;
-		game.setCurrentLevel(2);
 		//graphics.init();
 		while (game.getExit() == false) {
 			std::getline(std::cin, line);
@@ -31,6 +30,18 @@ int main(int argc, char **argv) {
 
 	catch (Exceptions::UndefinedSymbol const & exception) {
 		std::cerr << "undefined symbol exception: " << exception.what() << std::endl;
+	}
+
+	catch (Exceptions::LexOpenFileError const & exception) {
+		std::cerr << "Exceptions::LexOpenFileError: " << exception.what() << std::endl;
+	}
+
+	catch (Exceptions::LexFormatError const & exception) {
+		std::cerr << "Exceptions::LexFormatError: " << exception.what() << std::endl;
+	}
+
+	catch (Exceptions::LexKeyNotFound const & exception) {
+		std::cerr << "Exceptions::LexKeyNotFound: " << exception.what() << std::endl;
 	}
 
 	catch (std::exception const & exception) {

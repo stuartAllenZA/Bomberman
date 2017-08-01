@@ -1,18 +1,22 @@
 #include <Player.hpp>
 
 Player::Player(std::pair<int, int> xy, int lives, std::string name) : Character(xy, lives), _name(name), _level(1), _experience(0) {
+	this->_fileLocation = "resources/profiles/" + name + ".player";
 	std::cout << "Player with name" << this->_name << ", XY & Lives Constructed\n";
 }
 
 Player::Player(std::pair<int, int> xy, std::string name) : Character(xy), _name(name), _level(1), _experience(0) {
+	this->_fileLocation = "resources/profiles/" + name + ".player";
 	std::cout << "Player with name" << this->_name << "& XY Constructed\n";
 }
 
 Player::Player(int lives, std::string name) : Character(lives), _name(name), _level(1), _experience(0) {
+	this->_fileLocation = "resources/profiles/" + name + ".player";
 	std::cout << "Player with name" << this->_name << " & Lives Constructed\n";
 }
 
 Player::Player(std::string name) : Character(), _name(name), _level(1), _experience(0) {
+	this->_fileLocation = "resources/profiles/" + name + ".player";
 	std::cout << "Player with name" << this->_name << " Default Constructed\n";
 }
 
@@ -26,11 +30,21 @@ Player::~Player() {
 }
 
 Player &	Player::operator=(Player const & src) {
+	this->_fileLocation = src.getFileLocation();
 	this->_name = src.getName();
 	this->_level = src.getLevel();
 	this->_experience = src.getExperience();
 	return (*this);
 }
+
+std::string	Player::getFileLocation() const {
+	return (this->_fileLocation);
+}
+
+void		Player::setFileLocation(const std::string newLocation) {
+	this->_fileLocation = newLocation;
+}
+
 
 std::string	Player::getName() const {
 	return (this->_name);
