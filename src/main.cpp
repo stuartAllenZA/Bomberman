@@ -6,9 +6,13 @@ int main(int argc, char **argv) {
 			std::cout << "Please run Bomberman without any arguments as all configs are done in game.\n";
 	}
 
+	std::string hostype(getenv("HOSTTYPE"));
+	std::string libname("libopengl_" + hostype + ".so");
+
 	try {
-		GraphicsHandler		graphics("libopengl_x86_64_Darwin.so");
 		Game				game;
+		GraphicsHandler		graphics(libname);
+
 		std::cout << game << std::endl;
 		std::string line;
 		//graphics.init();

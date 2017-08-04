@@ -2,12 +2,6 @@
 
 Game::Game() : _exit(false), _gameInput(0) {
 	this->_settings = Settings();
-	try {
-		loadSettings();
-	}
-	catch (Exceptions::LexOpenFileError const & exception) {
-		std::cerr << "Exceptions::LexOpenFileError: " << exception.what() << std::endl;
-	}
 	if (!this->_settings.getLastPlayer().empty())
 	{
 		this->_player = new Player(this->_settings.getLastPlayer());
@@ -149,32 +143,37 @@ void					Game::loadSettings() {
 }
 
 std::string				Game::lexFile(std::string fileName, std::string find) {
-	std::ifstream handle(fileName);
-	std::string line;
-	std::string key;
-	std::string value;
-	int			num;
+	try {
+		std::ifstream handle(fileName);
+		std::string line;
+		std::string key;
+		std::string value;
+		int			num;
 
-	num = 0;
-	if (!handle)
-		throw (Exceptions::LexOpenFileError(fileName));
-	while (std::getline(handle, line)) {
-		num++;
-		if (!line.empty()) {
-			std::istringstream	iss(line);
-			if (line.c_str()[0] != ';' && line.c_str()[0] != '[')
-			{
-				if (iss >> key >> value) {
-					if (key == find)
-						return value;
+		num = 0;
+		if (!handle)
+			throw (Exceptions::LexOpenFileError(fileName));
+		while (std::getline(handle, line)) {
+			num++;
+			if (!line.empty()) {
+				std::istringstream	iss(line);
+				if (line.c_str()[0] != ';' && line.c_str()[0] != '[')
+				{
+					if (iss >> key >> value) {
+						if (key == find)
+							return value;
+					}
+					else
+						throw (Exceptions::LexFormatError(num, line));
 				}
-				else
-					throw (Exceptions::LexFormatError(num, line));
 			}
 		}
-	}
-	throw (Exceptions::LexKeyNotFound(find));
-	return ("ERROR");
+		throw (Exceptions::LexKeyNotFound(find));
+		return ("ERROR");
+		}
+		catch (Exceptions::LexOpenFileError const & exception) {
+			std::cerr << "Exceptions::LexOpenFileError: " << exception.what() << std::endl;
+		}
 }
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {

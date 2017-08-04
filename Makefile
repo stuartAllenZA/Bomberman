@@ -5,8 +5,8 @@ endif
 TARGET =  bomberman
 LNAME = libopengl_$(HOSTTYPE).so
 
-FLAGS = -Wall -Werror -Wextra -g -g3 -I include
-LFLAGS = -Wall -Werror -Wextra -shared -o
+FLAGS = -Wall -Werror -Wextra -std=c++11 -ldl -g -g3 -I include
+LFLAGS = -Wall -Werror -Wextra -fPIC -shared -o
 
 SP = ./src/
 
@@ -31,7 +31,7 @@ $(TARGET):
 	@echo "$(TARGET) compiled sucsessfully."
 
 $(LNAME):
-	@clang++ $(LFLAGS) $(LNAME) $(CLFILES)
+	@clang++ $(LFLAGS) $(LNAME) $(LFILES)
 	@echo $(LNAME) "compiled"
 
 inj:
