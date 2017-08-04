@@ -1,7 +1,9 @@
 #ifndef INCLUDE_UNBREAKABLE_BOX_CLASS_HPP_
 #define INCLUDE_UNBREAKABLE_BOX_CLASS_HPP_
 
-class UnbreakableBox {
+#include "Box.hpp"
+
+class UnbreakableBox : public Box {
 	public:
 		UnbreakableBox();
 		~UnbreakableBox();
