@@ -1,6 +1,6 @@
 #include <Settings.hpp>
 
-Settings::Settings() : _resolution(std::make_pair(800, 600)), _windowed(false), _upKey(119), _downKey(115), _leftKey(97), _rightKey(100), _musicVol(100), _FXVol(100) {
+Settings::Settings() : _resolution(std::make_pair(800, 600)), _windowed(false), _upKey(119), _downKey(115), _leftKey(97), _rightKey(100), _actionKey(32), _musicVol(100), _FXVol(100) {
 	std::cout << "Settings Default Constructed\n";
 }
 
@@ -21,6 +21,7 @@ Settings &			Settings::operator=(Settings const & src) {
 	this->_downKey = src.getDownKey();
 	this->_leftKey = src.getLeftKey();
 	this->_rightKey = src.getRightKey();
+	this->_actionKey = src.getActionKey();
 	this->_musicVol = src.getMusicVol();
 	this->_FXVol = src.getFXVol();
 	return (*this);
@@ -80,6 +81,14 @@ int 				Settings::getRightKey() const {
 
 void				Settings::setRightKey(const int newKey) {
 	this->_rightKey = newKey;
+}
+
+int 				Settings::getActionKey() const {
+	return (this->_actionKey);
+}
+
+void				Settings::setActionKey(const int newKey) {
+	this->_actionKey = newKey;
 }
 
 int 				Settings::getMusicVol() const {
