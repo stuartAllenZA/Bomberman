@@ -11,7 +11,7 @@ class GraphicsHandler {
 		~GraphicsHandler();
 		GraphicsHandler(std::string);
 		void	init();
-		void	getGameEvents(Game&);
+		int		getUserInput();
 		void	updateGameData();
 		void	loadGameToRenderBuff(Game &game);
 		void	addToRenderBuff(int x, int y, char symbol);

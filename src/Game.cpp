@@ -192,3 +192,35 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	o << rhs.getSettings() << std::endl;
 	return o;
 }
+void				Game::up() {
+	// update coords x++;
+}
+
+void				Game::updateGameData() {
+	switch (_gameInput) {
+		case UP:
+		case DOWN:
+		case LEFT:
+		case RIGHT:
+		case SPACE:
+		case ESC:
+	}
+	// detectCollisions
+	// AIBehaveUpdate
+	// detectCollisions
+}
+
+void			Game::mapGenerator(int xmax, int y) {
+	for (int xmin = 0; xmin < xmax; xmin++) {
+		
+	}
+}
+
+void			Game::mapGenerator() {
+
+}
+
+void			Game::mapGenerator(std::vector<std::pair<int,int>> xyVect) {
+	map.push_back(new wall(iterXYVECY));
+}
+
