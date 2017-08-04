@@ -9,6 +9,7 @@
 #include "Settings.hpp"
 #include <iostream>
 #include <string.h>
+#include <sys/utsname.h>
 
 #endif
 

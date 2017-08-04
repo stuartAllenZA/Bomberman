@@ -8,6 +8,7 @@
 #include "Settings.hpp"
 #include "Player.hpp"
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 #include <fstream>
 #include <sstream>

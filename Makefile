@@ -5,7 +5,7 @@ endif
 TARGET =  bomberman
 LNAME = libopengl_$(HOSTTYPE).so
 
-FLAGS = -Wall -Werror -Wextra -std=c++11 -ldl -g -g3 -I include
+FLAGS = -Wall -Werror -Wextra -std=c++11 -g -g3 -I include -ldl
 LFLAGS = -Wall -Werror -Wextra -fPIC -shared -o
 
 SP = ./src/
@@ -22,7 +22,7 @@ LDIR = opengl_dynamic_library/
 
 LFILES = $(LDIR)libopengl.cpp
 
-all : $(TARGET)
+all : lib $(TARGET)
 
 lib: $(LNAME)
 
@@ -32,7 +32,7 @@ $(TARGET):
 
 $(LNAME):
 	@clang++ $(LFLAGS) $(LNAME) $(LFILES)
-	@echo $(LNAME) "compiled"
+	@echo $(LNAME) "compiled sucsessfully."
 
 inj:
 	export DYLD_LIBRARY_PATH=${PWD}/$(LDIR)
@@ -42,8 +42,8 @@ inj:
 	@echo $(LNAME) "injected"
 
 fclean:
-	@rm -f $(TARGET)
-	@echo "$(TARGET) cleaned."
+	@rm -f $(TARGET) $(LNAME)
+	@echo "$(TARGET) & $(LNAME) deleted."
 
 mclean:
 	@find . -name '._*' -type f -delete
