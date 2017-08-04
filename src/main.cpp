@@ -20,9 +20,8 @@ int main(int argc, char **argv) {
 			std::getline(std::cin, line);
 			if (line == "exit" || line == "q")
 				game.setExit(true);
-			// getInput
-			// updateGameState
-			// render
+			game.setGameInput(graphics.getInput());
+			game.updateGameData();
 			graphics.loadGameToRenderBuff(game);	
 			graphics.render();
 		}

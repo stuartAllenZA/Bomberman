@@ -39,6 +39,8 @@ class Game {
 		void					loadSettings();
 		std::string				lexFile(std::string fileName, std::string find);
 
+		void					updateGameData();
+
 	private:
 		bool					_exit;
 		int						_gameInput;

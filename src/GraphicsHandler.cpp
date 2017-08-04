@@ -22,10 +22,11 @@ GraphicsHandler::GraphicsHandler(std::string name) {
 	}
 }
 
-void		GraphicsHandler::getGameEvents(Game &game) {
+int		GraphicsHandler::getUserInput() {
 	typedef void (*getGameEvents_t)(int);
 	getGameEvents_t getGameEvents = (getGameEvents_t) dlsym(_handle, "getGameEvents");
-	getGameEvents(game.getGameInput());
+	int input = getGameEvents(game.getGameInput());
+	return input;
 }
 
 void		GraphicsHandler::loadGameToRenderBuff(Game &game) {
