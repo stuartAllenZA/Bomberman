@@ -48,6 +48,7 @@ class Game {
 		Settings				_settings;
 		Character				*_player;
 		std::vector<Character*>	_enemies;
+		std::vector<Box>		_unbreakableWalls;
 };
 
 std::ostream &					operator<<(std::ostream & o, Game const & rhs);
