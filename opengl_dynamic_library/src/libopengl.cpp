@@ -1,7 +1,11 @@
-#include "libopengl.hpp"
+//#include <libopengl.hpp>
+//#include <Window.hpp>
+#include "../include/Window.hpp"
+#include "../include/libopengl.hpp"
 
 extern "C" void	init() {
-
+    Window Test;
+    //Test.init();
 }
 
 extern "C" void	handleInput(int	gameInput) {
