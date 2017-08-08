@@ -57,7 +57,7 @@ void Window::input() {
     while (SDL_PollEvent(&evnt)) {
         switch (evnt.type) {
             case SDL_QUIT :
-                _GameState = GameState::EXIT;
+                _gameState = GameState::EXIT;
                 break;
             case SDL_MOUSEMOTION:
                 std::cout << evnt.motion.x << " " << evnt.motion.y << std::endl;
@@ -67,7 +67,7 @@ void Window::input() {
 }
 
 void Window::gameLoop() {
-    while (_GameState != GameState::EXIT) {
+    while (_gameState != GameState::EXIT) {
         input();
         drawGame();
     }

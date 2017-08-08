@@ -18,7 +18,7 @@ private:
     SDL_Window *_win;
     int _width = 800;
     int _height = 600;
-    GameState _GameState;
+    GameState _gameState;
 
 public:
     Window();
