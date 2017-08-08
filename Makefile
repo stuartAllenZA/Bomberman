@@ -10,7 +10,9 @@ LFLAGS = -Wall -Werror -Wextra -fPIC -shared -o
 
 SP = ./src/
 
-SRC = $(SP)Character.cpp\
+SRC = $(SP)Bomb.cpp\
+	  $(SP)BreakableBox.cpp\
+	  $(SP)Character.cpp\
 	  $(SP)Exceptions.cpp\
 	  $(SP)Game.cpp\
 	  $(SP)GraphicsHandler.cpp\

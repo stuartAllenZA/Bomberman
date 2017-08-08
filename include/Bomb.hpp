@@ -1,20 +1,31 @@
 #ifndef INCLUDE_BOMB_CLASS_HPP_
 #define INCLUDE_BOMB_CLASS_HPP_
 
-class Bomb {
-	public:
-		Bomb();
-		~Bomb();
-		Bomb(Bomb const & src);
-		Bomb	&operator=(Bomb const &src);
-		void	setEffect(Drop	&drop);
+#include <iostream>
 
-	private:
-		std::pair<int, int>		_xy;
-		int						_blastRange;
-		int						_timeToDetonate;
-		int						_numberCanLaunch;
-		bool					_canBeRemoteDetonated;
+class Bomb {
+public:
+	Bomb(std::pair<int, int> xy, int blastRange, int timeToDetonate, int numberCanLaunch, bool canBeRemoteDetonated);
+	~Bomb();
+	Bomb(Bomb const & src);
+	Bomb	&operator=(Bomb const &src);
+	std::pair<int, int>	getXY() const;
+	void				setXY(const std::pair<int, int> xy);
+	int					getBlastRange() const;
+	void				setBlastRange(const int newBlastRange);
+	int					getTimeToDetonate() const;
+	void				setTimeToDetonate(const int newTTD);
+	int					getNumberCanLaunch() const;
+	void				setNumberCanLaunch(const int newNCL);
+	bool				getCanBeRemoteDetonated() const;
+	void				setCanBeRemoteDetonated(const bool newCBRD);
+
+private:
+	std::pair<int, int>		_xy;
+	int						_blastRange;
+	int						_timeToDetonate;
+	int						_numberCanLaunch;
+	bool					_canBeRemoteDetonated;
 };
 
 #endif

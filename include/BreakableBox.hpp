@@ -4,21 +4,18 @@
 #include "Drops.hpp"
 
 class BreakableBox : public Box {
-	public:
-		BreakableBox();
-		~BreakableBox();
-		BreakableBox(BreakableBox const &src);
-		BreakableBox			&operator=(BreakableBox const &src);
+public:
+	BreakableBox(std::pair<int, int> xy;);
+	~BreakableBox();
+	BreakableBox(BreakableBox const &src);
+	BreakableBox		&operator=(BreakableBox const &src);
+	std::pair<int, int>	getXY() const;
+	void				setXY(const std::pair<int, int> xy);
+	Drop				*getDrop();
+	void				setDrop(const Drop *newDrop) const;
 
-		void					setHasDrop(bool hasDrop);;
-		void					setDrop(Drop const &drop) const;
-
-		bool					getHasDrop();
-		Drop					*getDrop();
-
-	private:
-		bool					_hasDrop;
-		Drop					*_drop;
+private:
+	Drop					*_drop;
 };
 
 #endif

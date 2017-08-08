@@ -7,6 +7,7 @@
 #include "Character.hpp"
 #include "Settings.hpp"
 #include "Player.hpp"
+#include "Box.hpp"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
