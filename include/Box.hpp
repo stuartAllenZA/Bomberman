@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-class Box {
+class IBox {
 public:
 	virtual ~Box() {}
 

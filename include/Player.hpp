@@ -28,12 +28,15 @@ public:
 	void		setLevel(const int newLevel);
 	int			getExperience() const;
 	void		setExperience(const int newExp);
+	int			getNumberOfBombs();
+	void		setNumberOfBombs();
 
 private:
 	std::string	_fileLocation;
 	std::string	_name;
 	int			_level;
 	int			_experience;
+	int			_numberOfBombs;
 	
 };
 

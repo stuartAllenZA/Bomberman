@@ -15,8 +15,6 @@ public:
 	void				setBlastRange(const int newBlastRange);
 	int					getTimeToDetonate() const;
 	void				setTimeToDetonate(const int newTTD);
-	int					getNumberCanLaunch() const;
-	void				setNumberCanLaunch(const int newNCL);
 	bool				getCanBeRemoteDetonated() const;
 	void				setCanBeRemoteDetonated(const bool newCBRD);
 
@@ -24,7 +22,6 @@ private:
 	std::pair<int, int>		_xy;
 	int						_blastRange;
 	int						_timeToDetonate;
-	int						_numberCanLaunch;
 	bool					_canBeRemoteDetonated;
 };
 
