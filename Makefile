@@ -23,7 +23,7 @@ SRC = $(SP)Character.cpp\
 LDIR = opengl_dynamic_library/src/
 
 LFILES = $(LDIR)libopengl.cpp\
-         $(LDIR)Window.cpp
+         $(LDIR)Window.cpp\
 
 all : lib $(TARGET)
 
