@@ -11,7 +11,7 @@
 #include <SDL2/SDL.h>
 #include "../../../.brew/Cellar/glew/2.1.0/include/GL/glew.h"
 
-enum class GameState {PLAY, EXIT};
+enum class GameState {PLAY, EXIT, MENU};
 
 class Window {
 private:

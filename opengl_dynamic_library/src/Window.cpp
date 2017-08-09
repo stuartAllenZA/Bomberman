@@ -16,7 +16,7 @@ void fatalError(std::string errorString) {
 
 Window::Window() {
     _win = nullptr;
-    _GameState = GameState::PLAY;
+    _gameState = GameState::PLAY;
     init();
     gameLoop();
 
@@ -49,7 +49,7 @@ void Window::init() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    glClearColor(0, 0, 1, 1);
+    glClearColor(255, 0, 1, 1);
 }
 
 void Window::input() {
@@ -62,6 +62,8 @@ void Window::input() {
             case SDL_MOUSEMOTION:
                 std::cout << evnt.motion.x << " " << evnt.motion.y << std::endl;
                 break;
+            case SDL_KEYDOWN:
+                std::cout << "key pressed" << std::endl;
         }
     }
 }
