@@ -1,5 +1,4 @@
 #include <Bomb.hpp>
-
 Bomb::Bomb(std::pair<int, int> xy, int blastRange, int timeToDetonate, bool canBeRemoteDetonated) : _xy(xy), _blastRange(blastRange), _timeToDetonate(timeToDetonate), _canBeRemoteDetonated(canBeRemoteDetonated) {
 	std::cout << "Bomb at x: " << xy.first << " y: " << xy.second << " Constructed\n";
 }
