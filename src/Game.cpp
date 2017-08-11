@@ -1,6 +1,6 @@
 #include <Game.hpp>
 
-Game::Game() : _exit(false), _gameInput(0) {
+Game::Game() : _state(GameState::MENU), _gameInput(0) {
 	this->_settings = Settings();
 	if (!this->_settings.getLastPlayer().empty())
 	{
@@ -21,17 +21,17 @@ Game::~Game() {
 }
 
 Game &					Game::operator=(Game const & src) {
-	this->_exit = src.getExit();
+	this->_state = src.getState();
 	this->_gameInput = src.getGameInput();
 	return (*this);
 }
 
-bool					Game::getExit() const {
-	return (this->_exit);
+GameState				Game::getState() const {
+	return (this->_state);
 }
 
-void					Game::setExit(const bool newExit) {
-	this->_exit = newExit;
+void					Game::setExit(const GameState newState) {
+	this->_state = newState;
 }
 
 int						Game::getGameInput() const {

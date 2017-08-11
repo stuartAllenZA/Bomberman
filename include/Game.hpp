@@ -15,19 +15,28 @@
 #include <sstream>
 #include <string>
 
+clas enum GameState
+{
+	PLAY,
+	EXIT,
+	LOAD,
+	SET,
+	SAVE
+};
+
 class Game {
 	public:
 		Game();
 		Game(Game const & src);
 		~Game();
 		Game & 					operator=(Game const & src);
-		bool					getExit() const;
-		void					setExit(const bool newExit);
+		GameState				getState() const;
+		void					setState(const GameState newState);
 		int						getGameInput() const;
 		void					setGameInput(const int newInput);
 		Settings				getSettings() const;
 		void					setSettings(const Settings newSettings);
-		Character	*			getPlayer() const;
+		Character				*getPlayer() const;
 		void					setPlayer(Player *newPlayer);
 		std::vector<Character*>	getEnemies() const;
 		void					setEnemies(const std::vector<Character*> newEnemies);
@@ -46,7 +55,7 @@ class Game {
 		void					updateGameData();
 
 	private:
-		bool					_exit;
+		GameState				_state;
 		int						_gameInput;
 		Settings				_settings;
 		Character				*_player;
