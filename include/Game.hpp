@@ -41,6 +41,8 @@ class Game {
 		void					loadSettings();
 		std::string				lexFile(std::string fileName, std::string find);
 
+		void					randomlyAssignDropToBox();
+		
 		void					updateGameData();
 
 	private:
@@ -50,6 +52,8 @@ class Game {
 		Character				*_player;
 		std::vector<Character*>	_enemies;
 		std::vector<Box>		_unbreakableWalls;
+		std::vector<Box>		_breakableBox;
+		std::vector<Drop>		_drops;
 };
 
 std::ostream &					operator<<(std::ostream & o, Game const & rhs);

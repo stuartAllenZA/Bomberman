@@ -2,6 +2,17 @@ ifeq ($(HOSTTYPE),)
 HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
+UNAME := $(shell uname)
+
+ifeq ($(UNAME), Linux)
+	DEP = $(LINUX_DEP) 
+else ifeq ($(UNAME), Darwin)
+	DEP = $(UNIX_DEP)
+endif
+
+LINUX_DEP = sudo apt-get update && sudo apt-get install libXmu-dev libXi-dev libgl-dev dos2unix libsdl2-dev
+UNIX_DEP = brew install sdl && brew install glew
+
 TARGET =  bomberman
 LNAME = libopengl_$(HOSTTYPE).so
 
@@ -29,6 +40,7 @@ all : lib $(TARGET)
 lib: $(LNAME)
 
 $(TARGET):
+	#@cd ~ && $(DEP) #need to trigger condition as to when it will install dependencies, i.e. if dependencies are missing only
 	@clang++ $(FLAGS) $(SRC) -o $(TARGET)
 	@echo "$(TARGET) compiled sucsessfully."
 
