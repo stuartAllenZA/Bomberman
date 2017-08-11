@@ -9,14 +9,14 @@ class Exceptions {
 		class UndefinedObject: public std::exception {
 			public:
 				virtual const char*	what() const throw() {
-					return "Shared object does not exist";
+					return "Shared object does not exist.";
 				}
 		};
 
 		class UndefinedSymbol: public std::exception {
 			public:
 				virtual const char*	what() const throw() {
-					return "Method does not exist in external library";
+					return "Method does not exist in external library.";
 				}
 		};
 
@@ -45,6 +45,13 @@ class Exceptions {
 				virtual const char*	what() const throw();
 			private:
 				std::string _msg;
+		};
+
+		class EmptyUnameData: public std::exception {
+			public:
+				virtual const char*	what() const throw() {
+					return "Unable to generate libray name. Function call to 'uname()' returned -1.";
+				}
 		};
 };
 

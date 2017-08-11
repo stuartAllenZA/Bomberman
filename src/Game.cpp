@@ -1,6 +1,6 @@
 #include <Game.hpp>
 
-Game::Game() : _exit(false), _gameInput(0) {
+Game::Game() : _state(GameState::MENU), _gameInput(0) {
 	this->_settings = Settings();
 	if (!this->_settings.getLastPlayer().empty())
 	{
@@ -21,17 +21,17 @@ Game::~Game() {
 }
 
 Game &					Game::operator=(Game const & src) {
-	this->_exit = src.getExit();
+	this->_state = src.getState();
 	this->_gameInput = src.getGameInput();
 	return (*this);
 }
 
-bool					Game::getExit() const {
-	return (this->_exit);
+GameState				Game::getState() const {
+	return (this->_state);
 }
 
-void					Game::setExit(const bool newExit) {
-	this->_exit = newExit;
+void					Game::setExit(const GameState newState) {
+	this->_state = newState;
 }
 
 int						Game::getGameInput() const {
@@ -90,6 +90,7 @@ void					Game::saveSettings() {
 	settingsOut << "downKey:" + (std::to_string(this->_settings.getDownKey()))+"\n";
 	settingsOut << "leftKey:" + (std::to_string(this->_settings.getLeftKey()))+"\n";
 	settingsOut << "rightKey:" + (std::to_string(this->_settings.getRightKey()))+"\n";
+	settingsOut << "actionKey:" + (std::to_string(this->_settings.getActionKey()))+"\n";
 	settingsOut << "musicVol:" + (std::to_string(this->_settings.getMusicVol()))+"\n";
 	settingsOut << "FXVol:" + (std::to_string(this->_settings.getFXVol()))+"\n";
 	settingsOut.close();
@@ -123,6 +124,9 @@ void					Game::loadGame() {
 
 void					Game::loadSettings() {
 	std::string fileName = "resources/bomberman.config";
+	struct stat buffer;   
+  	if (stat(fileName.c_str(), &buffer) == 0)
+  		std::cout << "Cannot find file '" << fileName << "'. Using default settings.";
 	int resX = std::stoi(lexFile(fileName, "resolutionX"));
 	int resY = std::stoi(lexFile(fileName, "resolutionY"));
 	std::pair<int, int> resolution = std::make_pair(resX, resY);
@@ -138,21 +142,23 @@ void					Game::loadSettings() {
 	this->_settings.setDownKey(std::stoi(lexFile(fileName, "downKey")));
 	this->_settings.setLeftKey(std::stoi(lexFile(fileName, "leftKey")));
 	this->_settings.setRightKey(std::stoi(lexFile(fileName, "rightKey")));
+	this->_settings.setActionKey(std::stoi(lexFile(fileName, "actionKey")));
 	this->_settings.setMusicVol(std::stoi(lexFile(fileName, "musicVol")));
 	this->_settings.setFXVol(std::stoi(lexFile(fileName, "FXVol")));
 }
 
 std::string				Game::lexFile(std::string fileName, std::string find) {
-	try {
-		std::ifstream handle(fileName);
-		std::string line;
-		std::string key;
-		std::string value;
-		int			num;
+	std::ifstream handle(fileName);
+	std::string line;
+	std::string key;
+	std::string value;
+	int			num;
 
-		num = 0;
-		if (!handle)
-			throw (Exceptions::LexOpenFileError(fileName));
+	num = 0;
+	if (!handle)
+		throw (Exceptions::LexOpenFileError(fileName));
+	else
+	{
 		while (std::getline(handle, line)) {
 			num++;
 			if (!line.empty()) {
@@ -169,11 +175,8 @@ std::string				Game::lexFile(std::string fileName, std::string find) {
 			}
 		}
 		throw (Exceptions::LexKeyNotFound(find));
-		return ("ERROR");
-		}
-		catch (Exceptions::LexOpenFileError const & exception) {
-			std::cerr << "Exceptions::LexOpenFileError: " << exception.what() << std::endl;
-		}
+	}		
+	return ("ERROR");
 }
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
@@ -191,6 +194,8 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	o << rhs.getSettings() << std::endl;
 	return o;
 }
+
+/*
 void				Game::up() {
 	// update coords x++;
 }
@@ -228,3 +233,4 @@ void				Game::mapGenerator(int xMax, int yMax) {
 	}
 }
 
+*/

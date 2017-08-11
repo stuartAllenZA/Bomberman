@@ -7,6 +7,7 @@
 
 // Add variable checklist
 //		1. Getter & Setter
+//		1. Constructor & = operator
 //		1. Game::loadSettings
 //		3. Game::saveSettings
 
@@ -31,6 +32,8 @@ public:
 	void				setLeftKey(const int newKey);
 	int					getRightKey() const;
 	void				setRightKey(const int newKey);
+	int					getActionKey() const;
+	void				setActionKey(const int newKey);
 	int					getMusicVol() const;
 	void				setMusicVol(const int newVol);
 	int					getFXVol() const;
@@ -47,6 +50,7 @@ private:
 	int					_downKey;
 	int					_leftKey;
 	int					_rightKey;
+	int					_actionKey;
 	int					_musicVol;
 	int					_FXVol;	
 };

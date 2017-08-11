@@ -9,8 +9,8 @@ GraphicsHandler::~GraphicsHandler() {
 }
 
 GraphicsHandler::GraphicsHandler(std::string name) {
-	std::cout << "Graphics Handler Constructed\n";
-	_handle = dlopen(name.c_str(), RTLD_LAZY | RTLD_LOCAL);
+	if (name.length() > 0)
+		_handle = dlopen(name.c_str(), RTLD_LAZY | RTLD_LOCAL);
 	if (!_handle)
 		throw Exceptions::UndefinedObject();
 	else {
@@ -20,12 +20,13 @@ GraphicsHandler::GraphicsHandler(std::string name) {
 			throw Exceptions::UndefinedSymbol();
 		else (*init)();
 	}
+	std::cout << "Graphics Handler " << name << " Constructed\n";
 }
 
 int		GraphicsHandler::getUserInput() {
-	typedef void (*getGameEvents_t)(int);
+	typedef int (*getGameEvents_t)();
 	getGameEvents_t getGameEvents = (getGameEvents_t) dlsym(_handle, "getGameEvents");
-	int input = getGameEvents(game.getGameInput());
+	int input = getGameEvents();
 	return input;
 }
 
