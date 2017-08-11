@@ -11,7 +11,7 @@ else ifeq ($(UNAME), Darwin)
 endif
 
 LINUX_DEP = sudo apt-get update && sudo apt-get install libXmu-dev libXi-dev libgl-dev dos2unix libsdl2-dev
-UNIX_DEP = git clone https://github.com/Tolsadus/42homebrewfix.git && brew install sdl && brew install glew
+UNIX_DEP = git clone https://github.com/Tolsadus/42homebrewfix.git && cd 42homebrewfix && sh install.sh && cd ~ && brew install sdl && brew install glew
 
 TARGET =  bomberman
 LNAME = libopengl_$(HOSTTYPE).so
