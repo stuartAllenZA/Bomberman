@@ -4,7 +4,8 @@
 #include "../../include/GraphicsInterface.hpp"
 #include "../../include/Game.hpp"
 
-class Libopengl : IGraphics { };
+class Libopengl : IGraphics {
+};
 
 #endif
 

@@ -14,11 +14,11 @@ GraphicsHandler::GraphicsHandler(std::string name) {
 	if (!_handle)
 		throw Exceptions::UndefinedObject();
 	else {
-		typedef void (*init_t)();
+		typedef Window* (*init_t);
 		init_t init = (init_t) dlsym(_handle, "init");
 		if (!init)
 			throw Exceptions::UndefinedSymbol();
-		else (*init)();
+		else (_window = *init);
 	}
 	std::cout << "Graphics Handler " << name << " Constructed\n";
 }

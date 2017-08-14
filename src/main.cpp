@@ -30,12 +30,13 @@ int main(int argc, char **argv) {
 		//Init grapics & start loop
 		// graphics.init();
 		while (game.getExit() == false) {
+			std::cout << "so called 'main loop'" << std::endl;
 			std::getline(std::cin, line);
 			if (line == "exit" || line == "q")
 				game.setExit(true);
 			// game.setGameInput(graphics.getUserInput());
 			// game.updateGameData();
-			// graphics.loadGameToRenderBuff(game);	
+			// graphics.loadGameToRenderBuff(game);
 			// graphics.render();
 		}
 	}

@@ -3,9 +3,16 @@
 #include "../include/Window.hpp"
 #include "../include/libopengl.hpp"
 
-extern "C" void	init() {
-    Window Test;
-    //Test.init();
+//Libopengl::Libopengl() {
+//	std::cout << "Lib constructed\n";
+//	//_window = new Window;
+//}
+
+extern "C" Window*	init() {
+    Window* test = new Window;
+    //Test->init();
+	return (test);
+	//TODO delete window
 }
 
 extern "C" void	handleInput(int	gameInput) {
@@ -28,4 +35,9 @@ extern "C" void render() {
 extern "C" void	destroy() {
 
 }
+
+
+//Libopengl::~Libopengl() {
+//	std::cout << "lib Destructed\n";
+//}
 

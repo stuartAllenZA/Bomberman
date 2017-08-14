@@ -4,6 +4,7 @@
 #include <string>
 #include <dlfcn.h>
 #include "Game.hpp"
+#include "../opengl_dynamic_library/include/Window.hpp"
 
 class GraphicsHandler {
 	public:
@@ -19,6 +20,7 @@ class GraphicsHandler {
 	
 	private:
 		void	*_handle;
+		Window	*_window;
 };
 
 #endif

@@ -18,7 +18,7 @@ Window::Window() {
 	_win = nullptr;
 	_gameState = GameState::PLAY;
 	init();
-	gameLoop();
+	//gameLoop();
 
 }
 
@@ -58,7 +58,7 @@ void Window::input() {
 	const Uint8*	keyPressArr = SDL_GetKeyboardState(NULL); // var to hold the current keypress, SEE https://wiki.libsdl.org/SDL_GetKeyboardState (Liam)
 
 	SDL_Event evnt;
-	while (SDL_PollEvent(&evnt)) {
+	if (SDL_PollEvent(&evnt)) {
 		switch (evnt.type) {
 			case SDL_QUIT :
 				_gameState = GameState::EXIT;
@@ -69,9 +69,8 @@ void Window::input() {
 			case SDL_KEYDOWN:
 				std::cout << "key pressed" << std::endl;
 		}
-		if (keyPressArr[SDL_SCANCODE_RIGHT]) {
+		if (keyPressArr[SDL_SCANCODE_RIGHT])
     		std::cout << "right key" << std::endl;
-}
 	}
 }
 

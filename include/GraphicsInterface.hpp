@@ -1,6 +1,8 @@
 #ifndef INCLUDE_GRAPHICS_INTERFACE_HPP_
 #define INCLUDE_GRAPHICS_INTERFACE_HPP_
 
+#include "../opengl_dynamic_library/include/Window.hpp"
+
 class IGraphics {
 	public:
 		virtual void 	init(...)=0;
