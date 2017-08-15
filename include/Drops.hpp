@@ -4,15 +4,17 @@
 #include "Bomb.hpp"
 
 class Drop {
-	public:
-		virtual void setSpawnPoint(...)=0
-		virtual	void getEffect(...)=0;
-		virtual void ~Drop()=0;
-		virtual void setSymbol(char symbol)=0;
-		virtual char getSymol()=0;
-	private:
-		std::pair<int, int>		_xy;
-		char					_symbol;
+public:
+	virtual void		~Drop()=0;
+	std::pair<int, int>	getXY() const;
+	void				setXY(const std::pair<int, int> xy);
+	virtual void		setSymbol(const char symbol)=0;
+	virtual char		getSymbol() const=0;
+	virtual void		setSpawnPoint(...)=0
+	virtual	void		getEffect(...) const=0;
+private:
+	std::pair<int, int>		_xy;
+	char					_symbol;
 };
 
 #endif

@@ -11,7 +11,6 @@ else ifeq ($(UNAME), Darwin)
 endif
 
 LINUX_DEP = sudo apt-get update && sudo apt-get install libXmu-dev libXi-dev libgl-dev dos2unix libsdl2-dev
-UNIX_DEP = git clone https://github.com/Tolsadus/42homebrewfix.git && cd 42homebrewfix && sh install.sh && cd ~ && brew install sdl && brew install glew
 
 TARGET =  bomberman
 LNAME = libopengl_$(HOSTTYPE).so
@@ -26,28 +25,54 @@ SP = ./src/
 SRC = $(SP)Bomb.cpp\
 	  $(SP)BreakableBox.cpp\
 	  $(SP)Character.cpp\
+	  $(SP)EnemyDrop.cpp\
 	  $(SP)Exceptions.cpp\
+	  $(SP)ExtraBomb.cpp\
 	  $(SP)Game.cpp\
 	  $(SP)GraphicsHandler.cpp\
+	  $(SP)LevelHatch.cpp\
 	  $(SP)main.cpp\
 	  $(SP)Player.cpp\
-	  $(SP)Settings.cpp
+	  $(SP)RangeExtender.cpp\
+	  $(SP)RemoteDetonation.cpp\
+	  $(SP)Settings.cpp\
+	  $(SP)UnbreakableBox.cpp
 
 LDIR = opengl_dynamic_library/src/
 
 LFILES = $(LDIR)libopengl.cpp\
          $(LDIR)Window.cpp
 
+ifneq ("$(wildcard ~/.brew)","")
+INSTALLBREW = 
+else
+INSTALLBREW = $(shell sh -c "$(curl -fsSL https://raw.githubusercontent.com/Tolsadus/42homebrewfix/master/install.sh)")
+endif
+
+ifneq ("$(wildcard ~/.brew/Cellar/sdl2/2.0.5/include/SDL2/SDL.h)","")
+INSTALLSDL = 
+else
+INSTALLSDL = brew install sdl2
+endif
+
+ifneq ("$(wildcard ~/.brew/Cellar/glew/2.1.0/include/GL/glew.h)","")
+INSTALLGLEW = 
+else
+INSTALLGLEW = brew install glew
+endif
+
 all : lib $(TARGET)
 
 lib: $(LNAME)
 
 $(TARGET):
-	#@cd ~ && $(DEP) #need to trigger condition as to when it will install dependencies, i.e. if dependencies are missing only
 	@clang++ $(FLAGS) $(SRC) -o $(TARGET)
 	@echo "$(TARGET) compiled sucsessfully."
 
 $(LNAME):
+	$(INSTALLBREW)
+	$(INSTALLSDL)
+	$(INSTALLGLEW)
 	@clang++ $(LFLAGS) $(LNAME) $(LFILES)
 	@echo $(LNAME) "compiled sucsessfully."
 
