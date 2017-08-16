@@ -13,7 +13,7 @@ BreakableBox::~BreakableBox() {
 	std::cout << "BreakableBox De-Constructed\n";
 }
 
-BreakableBox &			BreakableBox::operator=(BreakableBox const & src) {
+BreakableBox &		BreakableBox::operator=(BreakableBox const & src) {
 	this->_xy = src.getXY();
 	this->_drop = src.getDrop();
 	return (*this);
