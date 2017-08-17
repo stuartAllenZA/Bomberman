@@ -214,17 +214,22 @@ void				Game::updateGameData() {
 	// detectCollisions
 }
 
-void			Game::mapGenerator(int xmax, int y) {
+// map has to have an odd number of x's and y's
+// i.e. maxX and maxY must be even numbers (starting at 0)
+void				Game::mapGenerator(int xMax, int yMax) {
 	for (int xmin = 0; xmin < xmax; xmin++) {
-		
+		for (int ymin = 0; ymin < ymax; ymin++) {
+			if (xmin != 0 && ymin != 0 && xmin != xmax && ymin != ymax) {
+				if (xmin % 2 == 0 && ymin % 2 == 0) {
+					unbreakableWallTemp	unbreakableWall(xmin, ymin);
+					_unbreakableWalls.push_back(*unbreakableWall);
+				}
+			}
+			else if (xmin == 0 || xmin == xmax || ymin == 0 || ymin == ymax) {
+				unbreakableWallTemp	unbreakableWall(xmin, ymin);
+				_unbreakableWalls.push_back(*unbreakableWall);
+			}
+		}
 	}
-}
-
-void			Game::mapGenerator() {
-
-}
-
-void			Game::mapGenerator(std::vector<std::pair<int,int>> xyVect) {
-	map.push_back(new wall(iterXYVECY));
 }
 */

@@ -51,6 +51,18 @@ else
 INSTALLSDL = brew install sdl2
 endif
 
+ifneq ("$(wildcard ~/.brew)","")
+INSTALLBREW = 
+else
+INSTALLBREW = $(shell sh -c "$(curl -fsSL https://raw.githubusercontent.com/Tolsadus/42homebrewfix/master/install.sh)")
+endif
+
+ifneq ("$(wildcard ~/.brew/Cellar/sdl2/2.0.5/include/SDL2/SDL.h)","")
+INSTALLSDL = 
+else
+INSTALLSDL = brew install sdl2
+endif
+
 ifneq ("$(wildcard ~/.brew/Cellar/glew/2.1.0/include/GL/glew.h)","")
 INSTALLGLEW = 
 else
