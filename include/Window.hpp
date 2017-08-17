@@ -10,7 +10,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include "../../.brew/Cellar/glew/2.1.0/include/GL/glew.h"
-extern "C" {
+
 enum class GameState {PLAY, EXIT};
 
 class Window {
@@ -30,7 +30,6 @@ public:
     void gameLoop();
     void drawGame();
     _key getAsciiKey(const Uint8*	keyPressArr);
-};
 };
 
 
