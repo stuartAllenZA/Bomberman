@@ -25,6 +25,7 @@ SP = ./src/
 SRC = $(SP)Bomb.cpp\
 	  $(SP)BreakableBox.cpp\
 	  $(SP)Character.cpp\
+	  $(SP)Core.cpp\
 	  $(SP)EnemyDrop.cpp\
 	  $(SP)Exceptions.cpp\
 	  $(SP)ExtraBomb.cpp\
@@ -37,7 +38,6 @@ SRC = $(SP)Bomb.cpp\
 	  $(SP)RemoteDetonation.cpp\
 	  $(SP)Settings.cpp\
 	  $(SP)UnbreakableBox.cpp\
-	  $(SP)Window.cpp
 
 ifneq ("$(wildcard ~/.brew)","")
 INSTALLBREW = 

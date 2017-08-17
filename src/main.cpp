@@ -1,5 +1,4 @@
-#include <Window.hpp>
-//#include <Exceptions.hpp>
+#include <header.hpp>
 
 int main(int argc, char **argv) {
 	//Check for start arguments
@@ -9,8 +8,10 @@ int main(int argc, char **argv) {
 			std::cout << "Please run Bomberman without any arguments as all configs are done in game.\n";
 	}
 
-		Window window;
-/*
+	try {
+		Core core;
+	}
+
 	//Catch Fatal Exceptions
 	catch (Exceptions::UndefinedObject const & exception) {
 		std::cerr << "undefined object exception: " << exception.what() << std::endl;
@@ -43,6 +44,6 @@ int main(int argc, char **argv) {
 	catch (...) {
 		std::cerr << "unknown exception: " << std::endl;
 	}
-*/
+
 	return (0);
 }
