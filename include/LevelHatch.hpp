@@ -1,7 +1,7 @@
 #ifndef INCLUDE_LEVEL_HATCH_HPP_
 #define INCLUDE_LEVEL_HATCH_HPP_
 
-#include "Drops.hpp"
+#include "Drop.hpp"
 
 class LevelHatch : public : Drop {
 	public:

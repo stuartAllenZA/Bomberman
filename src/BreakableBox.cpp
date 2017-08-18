@@ -1,7 +1,25 @@
 #include <BreakableBox.hpp>
 
-BreakableBox::BreakableBox() {
-	std::cout << "BreakableBox at " << xy << " Constructed\n";
+BreakableBox::BreakableBox() : Box() {
+	std::cout << "BreakableBox Constructed\n";
+}
+
+BreakableBox::BreakableBox(Drop *drop) : Box(drop) {
+	if (drop)
+		std::cout << "BreakableBox with drop Constructed\n";
+	else
+		std::cout << "BreakableBox was passed a NULL drop, Constructed\n";
+}
+
+BreakableBox::BreakableBox(std::pair<int, int> xy) : Box(xy) {
+	std::cout << "BreakableBox at x: " << xy.first << " y: " << xy.second << " Constructed\n";
+}
+
+BreakableBox::BreakableBox(std::pair<int, int> xy, Drop *drop) : Box(xy, drop) {
+	if (drop)
+		std::cout << "BreakableBox with drop at x: " << xy.first << " y: " << xy.second << " Constructed\n";
+	else
+		std::cout << "BreakableBox at x: " << xy.first << " y: " << xy.second << " was passed a NULL drop, Constructed\n";
 }
 
 BreakableBox::BreakableBox(BreakableBox const & src) {
@@ -17,20 +35,4 @@ BreakableBox &		BreakableBox::operator=(BreakableBox const & src) {
 	this->_xy = src.getXY();
 	this->_drop = src.getDrop();
 	return (*this);
-}
-
-std::pair<int, int>	BreakableBox::getXY() const {
-	return (this->_xy);
-}
-
-void				BreakableBox::setXY(const std::pair<int, int> xy) {
-	this->_xy = xy;
-}
-
-Drop 				BreakableBox::getDrop() const {
-	return (this->_drop);
-}
-
-void				BreakableBox::setDrop(const Drop *newDrop) {
-	this->_drop = newDrop;
 }

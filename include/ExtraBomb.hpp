@@ -1,7 +1,7 @@
 #ifndef INCLUDE_EXTRA_BOMB_HPP_
 #define INCLUDE_EXTRA_BOMB_HPP_
 
-#include "Drops.hpp"
+#include "Drop.hpp"
 
 class ExtraBomb : public Drop {
 	public:

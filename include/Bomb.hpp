@@ -8,7 +8,7 @@ public:
 	Bomb(std::pair<int, int> xy, int blastRange, int timeToDetonate, int numberCanLaunch, bool canBeRemoteDetonated);
 	~Bomb();
 	Bomb(Bomb const & src);
-	Bomb	&operator=(Bomb const &src);
+	Bomb &				operator=(Bomb const &src);
 	std::pair<int, int>	getXY() const;
 	void				setXY(const std::pair<int, int> xy);
 	int					getBlastRange() const;
