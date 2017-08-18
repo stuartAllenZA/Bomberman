@@ -9,35 +9,7 @@ int main(int argc, char **argv) {
 	}
 
 	try {
-		//Generate Library Name
-		struct utsname unameData;
-		if (uname(&unameData) == -1)
-			throw (Exceptions::EmptyUnameData());
-		std::stringstream ss;
-		ss << "libopengl_" << unameData.machine << "_" << unameData.sysname << ".so";
-		std::string libname = ss.str();
-
-		//Construct Objects & declare vars
-		std::cout << "Constructing Game\n";
-		Game				game;
-		std::cout << "Constructing Graphics\n";
-		GraphicsHandler		graphics(libname);
-		std::string line;
-
-		//Dump status of Game
-		std::cout << game << std::endl;
-		
-		//Init grapics & start loop
-		// graphics.init();
-		while (game.getExit() == false) {
-			std::getline(std::cin, line);
-			if (line == "exit" || line == "q")
-				game.setExit(true);
-			// game.setGameInput(graphics.getUserInput());
-			// game.updateGameData();
-			// graphics.loadGameToRenderBuff(game);	
-			// graphics.render();
-		}
+		Core core;
 	}
 
 	//Catch Fatal Exceptions

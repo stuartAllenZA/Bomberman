@@ -7,6 +7,7 @@
 #include "Character.hpp"
 #include "Settings.hpp"
 #include "Player.hpp"
+#include "Box.hpp"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -14,8 +15,9 @@
 #include <sstream>
 #include <string>
 
-clas enum GameState
+enum class GameState
 {
+	MENU,
 	PLAY,
 	EXIT,
 	LOAD,
@@ -49,6 +51,8 @@ class Game {
 		void					loadSettings();
 		std::string				lexFile(std::string fileName, std::string find);
 
+		void					randomlyAssignDropToBox();
+		
 		void					updateGameData();
 
 	private:
@@ -57,6 +61,9 @@ class Game {
 		Settings				_settings;
 		Character				*_player;
 		std::vector<Character*>	_enemies;
+		std::vector<Box>		_unbreakableWalls;
+		std::vector<Box>		_breakableBox;
+		std::vector<Drop>		_drops;
 };
 
 std::ostream &					operator<<(std::ostream & o, Game const & rhs);

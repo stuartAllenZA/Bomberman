@@ -30,7 +30,7 @@ GameState				Game::getState() const {
 	return (this->_state);
 }
 
-void					Game::setExit(const GameState newState) {
+void					Game::setState(const GameState newState) {
 	this->_state = newState;
 }
 
@@ -181,7 +181,7 @@ std::string				Game::lexFile(std::string fileName, std::string find) {
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	int num = 0;
-	o << "Dumping Game State\nExit: " << rhs.getExit() << "\nGame Input: " << rhs.getGameInput() << std::endl;
+	o << "Dumping Game State\nExit: " << static_cast<std::underlying_type<GameState>::type>(rhs.getState()) << "\nGame Input: " << rhs.getGameInput() << std::endl;
 	if (rhs.getEnemies().size() > 0) {
 		for (std::vector<Character*>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it)
 		{
@@ -214,17 +214,22 @@ void				Game::updateGameData() {
 	// detectCollisions
 }
 
-void			Game::mapGenerator(int xmax, int y) {
+// map has to have an odd number of x's and y's
+// i.e. maxX and maxY must be even numbers (starting at 0)
+void				Game::mapGenerator(int xMax, int yMax) {
 	for (int xmin = 0; xmin < xmax; xmin++) {
-		
+		for (int ymin = 0; ymin < ymax; ymin++) {
+			if (xmin != 0 && ymin != 0 && xmin != xmax && ymin != ymax) {
+				if (xmin % 2 == 0 && ymin % 2 == 0) {
+					unbreakableWallTemp	unbreakableWall(xmin, ymin);
+					_unbreakableWalls.push_back(*unbreakableWall);
+				}
+			}
+			else if (xmin == 0 || xmin == xmax || ymin == 0 || ymin == ymax) {
+				unbreakableWallTemp	unbreakableWall(xmin, ymin);
+				_unbreakableWalls.push_back(*unbreakableWall);
+			}
+		}
 	}
-}
-
-void			Game::mapGenerator() {
-
-}
-
-void			Game::mapGenerator(std::vector<std::pair<int,int>> xyVect) {
-	map.push_back(new wall(iterXYVECY));
 }
 */
