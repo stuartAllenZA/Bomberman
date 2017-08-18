@@ -5,7 +5,7 @@
 
 class RangeExtender : public Drop {
 	public:
-		RangeExtender();
+		RangeExtender(std::pair<int, int> xy);
 		~RangeExtender();
 		RangeExtender(RangeExtender const & src);
 		RangeExtender	&operator=(RangeExtender const &src);

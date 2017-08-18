@@ -23,9 +23,11 @@ FLAGS = -Wall -Werror -Wextra -std=c++11 -g -g3 -I include\
 SP = ./src/
 
 SRC = $(SP)Bomb.cpp\
+	  $(SP)Box.cpp\
 	  $(SP)BreakableBox.cpp\
 	  $(SP)Character.cpp\
 	  $(SP)Core.cpp\
+	  $(SP)Drop.cpp\
 	  $(SP)EnemyDrop.cpp\
 	  $(SP)Exceptions.cpp\
 	  $(SP)ExtraBomb.cpp\
@@ -35,7 +37,7 @@ SRC = $(SP)Bomb.cpp\
 	  $(SP)main.cpp\
 	  $(SP)Player.cpp\
 	  $(SP)RangeExtender.cpp\
-	  $(SP)RemoteDetonation.cpp\
+	  $(SP)RemoteDetonator.cpp\
 	  $(SP)Settings.cpp\
 	  $(SP)UnbreakableBox.cpp\
 
@@ -79,8 +81,8 @@ $(TARGET):
 	@echo "$(TARGET) compiled sucsessfully."
 
 fclean:
-	@rm -f $(TARGET) $(LNAME)
-	@echo "$(TARGET) & $(LNAME) deleted."
+	@rm -f $(TARGET)
+	@echo "$(TARGET) deleted."
 
 mclean:
 	@find . -name '._*' -type f -delete

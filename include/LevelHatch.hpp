@@ -3,9 +3,9 @@
 
 #include "Drop.hpp"
 
-class LevelHatch : public : Drop {
+class LevelHatch : public Drop {
 	public:
-		LevelHatch();
+		LevelHatch(std::pair<int, int> xy);
 		~LevelHatch();
 		LevelHatch(LevelHatch const & src);
 		LevelHatch	&operator=(LevelHatch const &src);

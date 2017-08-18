@@ -5,7 +5,7 @@
 
 class EnemyDrop : public Drop {
 	public:
-		EnemyDrop();
+		EnemyDrop(std::pair<int, int> xy);
 		~EnemyDrop();
 		EnemyDrop(EnemyDrop const & src);
 		EnemyDrop	&operator=(EnemyDrop const &src);

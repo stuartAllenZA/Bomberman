@@ -13,8 +13,6 @@
 #include "Player.hpp"
 #include "Settings.hpp"
 
-enum class GameState {PLAY, EXIT};
-
 class Core {
 private:
     SDL_Window *_win;

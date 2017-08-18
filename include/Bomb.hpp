@@ -5,7 +5,7 @@
 
 class Bomb {
 public:
-	Bomb(std::pair<int, int> xy, int blastRange, int timeToDetonate, int numberCanLaunch, bool canBeRemoteDetonated);
+	Bomb(std::pair<int, int> xy, int blastRange, int timeToDetonate, bool canBeRemoteDetonated);
 	~Bomb();
 	Bomb(Bomb const & src);
 	Bomb &				operator=(Bomb const &src);

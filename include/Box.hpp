@@ -2,6 +2,7 @@
 #define INCLUDE_BOX_CLASS_HPP_
 
 #include <iostream>
+#include "Drop.hpp"
 
 class Box {
 public:
@@ -15,7 +16,7 @@ public:
 	std::pair<int, int>	getXY() const;
 	void				setXY(const std::pair<int, int> xy);
 	Drop				*getDrop() const;
-	void				setDrop(const Drop *newDrop);
+	void				setDrop(Drop *newDrop);
 
 	void				placeRandomly();
 

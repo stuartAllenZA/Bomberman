@@ -5,7 +5,7 @@
 
 class ExtraBomb : public Drop {
 	public:
-		ExtraBomb();
+		ExtraBomb(std::pair<int, int> xy);
 		~ExtraBomb();
 		ExtraBomb(ExtraBomb const & src);
 		ExtraBomb	&operator=(ExtraBomb const &src);

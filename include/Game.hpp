@@ -15,8 +15,9 @@
 #include <sstream>
 #include <string>
 
-clas enum GameState
+enum class GameState
 {
+	MENU,
 	PLAY,
 	EXIT,
 	LOAD,

@@ -1,12 +1,20 @@
 #include <EnemyDrop.hpp>
 
-void	EnemyDrop::setSpawnPoint(Box &breakableWalls) {
-
-	// generate random number between 0 and breakableBox.size();
-	// iterate through breakableBox until index reached
-	// assign enemydrop coords to box's coords
+EnemyDrop::EnemyDrop(std::pair<int, int> xy) : Drop(xy) {
+	std::cout << "EnemyDrop at x: " << xy.first << " y: " << xy.second << " Constructed\n";
 }
 
-std::vector<Character>		EnemyDrop::getEffect() {
-	// return new enemies
+EnemyDrop::EnemyDrop(EnemyDrop const & src) {
+	std::cout << "EnemyDrop Copy-Constructed\n";
+	*this = src;
+}
+
+EnemyDrop::~EnemyDrop() {
+	std::cout << "EnemyDrop De-Constructed\n";
+}
+
+EnemyDrop &		EnemyDrop::operator=(EnemyDrop const & src) {
+	this->_xy = src.getXY();
+	this->_symbol = src.getSymbol();
+	return (*this);
 }

@@ -29,7 +29,7 @@ public:
 	int			getExperience() const;
 	void		setExperience(const int newExp);
 	int			getNumberOfBombs();
-	void		setNumberOfBombs();
+	void		setNumberOfBombs(int bombs);
 
 private:
 	std::string	_fileLocation;

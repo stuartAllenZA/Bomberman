@@ -30,7 +30,7 @@ GameState				Game::getState() const {
 	return (this->_state);
 }
 
-void					Game::setExit(const GameState newState) {
+void					Game::setState(const GameState newState) {
 	this->_state = newState;
 }
 
@@ -181,7 +181,7 @@ std::string				Game::lexFile(std::string fileName, std::string find) {
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	int num = 0;
-	o << "Dumping Game State\nExit: " << rhs.getExit() << "\nGame Input: " << rhs.getGameInput() << std::endl;
+	o << "Dumping Game State\nExit: " << static_cast<std::underlying_type<GameState>::type>(rhs.getState()) << "\nGame Input: " << rhs.getGameInput() << std::endl;
 	if (rhs.getEnemies().size() > 0) {
 		for (std::vector<Character*>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it)
 		{
