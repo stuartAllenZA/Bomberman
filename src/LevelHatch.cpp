@@ -15,6 +15,5 @@ LevelHatch::~LevelHatch() {
 
 LevelHatch &		LevelHatch::operator=(LevelHatch const & src) {
 	this->_xy = src.getXY();
-	this->_symbol = src.getSymbol();
 	return (*this);
 }
