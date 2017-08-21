@@ -15,6 +15,5 @@ EnemyDrop::~EnemyDrop() {
 
 EnemyDrop &		EnemyDrop::operator=(EnemyDrop const & src) {
 	this->_xy = src.getXY();
-	this->_symbol = src.getSymbol();
 	return (*this);
 }

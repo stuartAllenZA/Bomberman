@@ -15,6 +15,5 @@ ExtraBomb::~ExtraBomb() {
 
 ExtraBomb &		ExtraBomb::operator=(ExtraBomb const & src) {
 	this->_xy = src.getXY();
-	this->_symbol = src.getSymbol();
 	return (*this);
 }
