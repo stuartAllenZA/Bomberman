@@ -1,9 +1,4 @@
-//
-// Created by Adrian Degenaar on 2017/08/07.
-//
-
-//#include <Window.hpp>
-#include "../include/Window.hpp"
+#include <Core.hpp>
 
 void fatalError(std::string errorString) {
     std::cout << errorString << std::endl;
@@ -14,20 +9,26 @@ void fatalError(std::string errorString) {
     exit(1);
 }
 
-Window::Window() {
+Core::Core() {
     _win = nullptr;
     _gameState = GameState::PLAY;
-    init();
-    gameLoop();
-
+	_game = new Game;
 }
 
-Window::~Window() {
+Core::~Core() {
+	delete _game;
+	_game = nullptr;
     std::cout << "SDL is closed" << std::endl;
     SDL_Quit();
 }
 
-void Window::init() {
+void	Core::run() {
+    init();
+    gameLoop();
+	
+}
+
+void Core::init() {
     // Init SDL
     SDL_Init(SDL_INIT_EVERYTHING);
 
@@ -52,7 +53,7 @@ void Window::init() {
     glClearColor(0, 0, 0, 0);
 }
 
-Window::_key    Window::getAsciiKey(const Uint8*	keyPressArr){
+Core::_key    Core::getAsciiKey(const Uint8*	keyPressArr){
     if (keyPressArr[SDL_SCANCODE_LEFT])
         return _key::LEFT;
     else if (keyPressArr[SDL_SCANCODE_RIGHT])
@@ -71,7 +72,7 @@ Window::_key    Window::getAsciiKey(const Uint8*	keyPressArr){
         return _key::NONE;
 }
 
-void Window::input() {
+void Core::input() {
     SDL_Event evnt;
     const Uint8*	keyPressArr = SDL_GetKeyboardState(NULL); // var to hold the current keypress, SEE https://wiki.libsdl.org/SDL_GetKeyboardState (Liam)
 
@@ -117,14 +118,14 @@ void Window::input() {
     }
 }
 
-void Window::gameLoop() {
+void Core::gameLoop() {
     while (_gameState != GameState::EXIT) {
         input();
         drawGame();
     }
 }
 
-void Window::drawGame() {
+void Core::drawGame() {
     glClearDepth(1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

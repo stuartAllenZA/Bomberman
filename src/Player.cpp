@@ -69,3 +69,11 @@ int 		Player::getExperience() const {
 void		Player::setExperience(const int newExp) {
 	this->_experience = newExp;
 }
+
+int			Player::getNumberOfBombs() {
+	return (this->_numberOfBombs);
+}
+
+void		Player::setNumberOfBombs(int bombs) {
+	this->_numberOfBombs = bombs;
+}

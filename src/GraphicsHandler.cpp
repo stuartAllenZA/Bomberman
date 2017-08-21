@@ -30,6 +30,10 @@ int		GraphicsHandler::getUserInput() {
 	return input;
 }
 
+// vec enemy
+// vec walls
+//
+
 void		GraphicsHandler::loadGameToRenderBuff(Game &game) {
 	std::vector<Character*>enemies = game.getEnemies();
 //	std::vector<Character*>::iterator	enemy;

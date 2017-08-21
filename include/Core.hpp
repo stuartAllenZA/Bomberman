@@ -1,30 +1,32 @@
-//
-// Created by Adrian Degenaar on 2017/08/07.
-//
-
-#ifndef BOMBERMAN_WINDOW_HPP
-#define BOMBERMAN_WINDOW_HPP
+#ifndef CORE_CLASS_HPP_
+#define CORE_CLASS_HPP_
 
 #pragma once
 
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "../../../.brew/Cellar/glew/2.1.0/include/GL/glew.h"
+#include "../../.brew/Cellar/glew/2.1.0/include/GL/glew.h"
+#include "Character.hpp"
+#include "Exceptions.hpp"
+#include "Game.hpp"
+#include "GraphicsHandler.hpp"
+#include "Player.hpp"
+#include "Settings.hpp"
 
-enum class GameState {PLAY, EXIT};
-
-class Window {
+class Core {
 private:
     SDL_Window *_win;
     int _width = 800;
     int _height = 600;
     GameState _gameState;
     enum class _key {LEFT, RIGHT, UP, DOWN, SPACE, ENTER, ESC, NONE};
+	Game	*_game;
 
 public:
-    Window();
-    ~Window();
+    Core();
+    ~Core();
 
+	void run();
     void init();
     void input();
     void gameLoop();
@@ -33,4 +35,4 @@ public:
 };
 
 
-#endif //BOMBERMAN_WINDOW_HPP
+#endif
