@@ -13,6 +13,7 @@ Core::Core() {
     _win = nullptr;
     _gameState = GameState::PLAY;
 	_game = new Game;
+    run();
 }
 
 Core::~Core() {
@@ -50,7 +51,7 @@ void Core::init() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    glClearColor(0, 0, 0, 0);
+    //glClearColor(0, 0, 0, 0);
 }
 
 Core::_key    Core::getAsciiKey(const Uint8*	keyPressArr){
@@ -126,8 +127,8 @@ void Core::gameLoop() {
 }
 
 void Core::drawGame() {
-    glClearDepth(1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glClearDepth(1);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     SDL_GL_SwapWindow(_win);
 }
