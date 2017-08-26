@@ -1,14 +1,14 @@
-#ifndef Player_HPP
-#define Player_HPP
+#ifndef PLAYER_HPP
+#define PLAYER_HPP
 
 #include "Character.hpp"
 // Add variable checklist
 
-//		1. Getter & Setter
-//		2. Add to << overload
-//		3. Game::loadPlayer
-//		4. Game::savePlayer
-//		5. Character::*your method* virtual member
+//	1. Getter & Setter
+//	2. Add to << overload
+//	3. Game::loadPlayer
+//	4. Game::savePlayer
+//	5. Character::*your method* virtual member (Only if player polymorphs, which it isn't)
 
 class Player : public Character
 {
@@ -28,8 +28,8 @@ public:
 	void		setLevel(const int newLevel);
 	int			getExperience() const;
 	void		setExperience(const int newExp);
-	int			getNumberOfBombs();
-	void		setNumberOfBombs(int bombs);
+	int			getNumberOfBombs() const;
+	void		setNumberOfBombs(const int bombs);
 
 private:
 	std::string	_fileLocation;
@@ -40,6 +40,6 @@ private:
 	
 };
 
-//std::ostream &					operator<<(std::ostream & o, Player const & rhs);
+std::ostream &					operator<<(std::ostream & o, Player const & rhs);
 
 #endif

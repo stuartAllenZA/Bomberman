@@ -30,10 +30,12 @@ Player::~Player() {
 }
 
 Player &	Player::operator=(Player const & src) {
+	Character::operator=(src);
 	this->_fileLocation = src.getFileLocation();
 	this->_name = src.getName();
 	this->_level = src.getLevel();
 	this->_experience = src.getExperience();
+	this->_numberOfBombs = src.getNumberOfBombs();
 	return (*this);
 }
 
@@ -70,10 +72,24 @@ void		Player::setExperience(const int newExp) {
 	this->_experience = newExp;
 }
 
-int			Player::getNumberOfBombs() {
+int			Player::getNumberOfBombs() const {
 	return (this->_numberOfBombs);
 }
 
-void		Player::setNumberOfBombs(int bombs) {
+void		Player::setNumberOfBombs(const int bombs) {
 	this->_numberOfBombs = bombs;
+}
+
+std::ostream & 			operator<<(std::ostream & o, Player const & rhs) {
+	std::pair<int, int>	xy = rhs.getXY();
+	o << "Dumping Player State\nX: " << xy.first <<"\tY: " << xy.second <<
+	"\nSpeed: " << rhs.getSpeed() <<
+	"\nHealth: " << rhs.getHealth() <<
+	"\nLives: " << rhs.getLives() <<
+	"\nName: " << rhs.getName() <<
+	"\nLevel: " << rhs.getLevel() <<
+	"\nExperience: " << rhs.getExperience() <<
+	"\nNumber of Bombs: " << rhs.getNumberOfBombs() <<
+	"\nFile Location: " << rhs.getFileLocation() << std::endl;
+	return o;
 }

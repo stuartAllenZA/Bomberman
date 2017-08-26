@@ -1,5 +1,5 @@
-#ifndef CORE_CLASS_HPP_
-#define CORE_CLASS_HPP_
+#ifndef CORE_HPP
+#define CORE_HPP
 
 #pragma once
 
@@ -13,25 +13,45 @@
 #include "Player.hpp"
 #include "Settings.hpp"
 
+enum class		keys {
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN,
+	SPACE,
+	ENTER,
+	ESC,
+	NONE
+};
+
 class Core {
-private:
-    SDL_Window *_win;
-    int _width = 800;
-    int _height = 600;
-    GameState _gameState;
-    enum class _key {LEFT, RIGHT, UP, DOWN, SPACE, ENTER, ESC, NONE};
-	Game	*_game;
-
 public:
-    Core();
-    ~Core();
+	Core();
+	Core(Core const & src);
+	~Core();
+	Core & 		operator=(Core const & src);
+	SDL_Window	*getWin() const;
+	void		setWin(SDL_Window	*newWin);
+	Game		*getGame() const;
+	void		setGame(Game *newGame);
+	int			getWidth() const;
+	void		setWidth(const int newWidth);
+	int			getHeight() const;
+	void		setHeight(const int newHeight);
 
-	void run();
-    void init();
-    void input();
-    void gameLoop();
-    void drawGame();
-    _key getAsciiKey(const Uint8*	keyPressArr);
+	void		run();
+	void		init();
+	void		input();
+	void		gameLoop();
+	void		drawGame();
+	keys		getAsciiKey(const Uint8*	keyPressArr);
+	void		fatalError(std::string errorString);
+
+private:
+	SDL_Window	*_win;
+	Game		*_game;
+	int			_width;
+	int			_height;
 };
 
 

@@ -1,6 +1,7 @@
 #include <Game.hpp>
 
 Game::Game() : _state(GameState::MENU), _gameInput(0) {
+	std::cout << "Constructing Game\n";
 	this->_settings = Settings();
 	if (!this->_settings.getLastPlayer().empty())
 	{
@@ -16,6 +17,7 @@ Game::Game(Game const & src) {
 }
 
 Game::~Game() {
+	std::cout << "De-Constructing Game\n";
 	delete this->_player;
 	std::cout << "Game De-Constructed\n";
 }
@@ -50,7 +52,7 @@ void					Game::setSettings(const Settings newSettings) {
 	this->_settings = newSettings;
 }
 
-Character	*			Game::getPlayer() const {
+Player*				Game::getPlayer() const {
 	return (this->_player);
 }
 
@@ -181,12 +183,12 @@ std::string				Game::lexFile(std::string fileName, std::string find) {
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	int num = 0;
-	o << "Dumping Game State\nExit: " << static_cast<std::underlying_type<GameState>::type>(rhs.getState()) << "\nGame Input: " << rhs.getGameInput() << std::endl;
+	o << "Dumping Game State\nGame State: " << static_cast<std::underlying_type<GameState>::type>(rhs.getState()) << "\nGame Input: " << rhs.getGameInput() << std::endl;
 	if (rhs.getEnemies().size() > 0) {
 		for (std::vector<Character*>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it)
 		{
 			num++;
-			o << "Enemy" << num << ": " << *it << std::endl;
+			o << "Enemy " << num << ": " << *it << std::endl;
 		}
 	}
 	else

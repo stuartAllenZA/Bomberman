@@ -28,6 +28,7 @@ SRC = $(SP)Bomb.cpp\
 	  $(SP)Character.cpp\
 	  $(SP)Core.cpp\
 	  $(SP)Drop.cpp\
+	  $(SP)Enemy.cpp\
 	  $(SP)EnemyDrop.cpp\
 	  $(SP)Exceptions.cpp\
 	  $(SP)ExtraBomb.cpp\
@@ -44,19 +45,7 @@ SRC = $(SP)Bomb.cpp\
 ifneq ("$(wildcard ~/.brew)","")
 INSTALLBREW = 
 else
-INSTALLBREW = $(shell sh -c "$(curl -fsSL https://raw.githubusercontent.com/Tolsadus/42homebrewfix/master/install.sh)")
-endif
-
-ifneq ("$(wildcard ~/.brew/Cellar/sdl2/2.0.5/include/SDL2/SDL.h)","")
-INSTALLSDL = 
-else
-INSTALLSDL = brew install sdl2
-endif
-
-ifneq ("$(wildcard ~/.brew)","")
-INSTALLBREW = 
-else
-INSTALLBREW = $(shell sh -c "$(curl -fsSL https://raw.githubusercontent.com/Tolsadus/42homebrewfix/master/install.sh)")
+INSTALLBREW = $(shell echo "Please install brew before making.")
 endif
 
 ifneq ("$(wildcard ~/.brew/Cellar/sdl2/2.0.5/include/SDL2/SDL.h)","")
