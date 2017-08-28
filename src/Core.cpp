@@ -1,6 +1,5 @@
 #include <Core.hpp>
 
-<<<<<<< HEAD
 void fatalError(std::string errorString) {
     std::cout << errorString << std::endl;
     std::cout << "Press any key to exit" << std::endl;
