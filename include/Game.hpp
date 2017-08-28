@@ -15,14 +15,13 @@
 #include <sstream>
 #include <string>
 
-enum class GameState
-{
+enum class GameState {
 	MENU,
 	PLAY,
-	EXIT,
 	LOAD,
 	SET,
-	SAVE
+	SAVE,
+	EXIT
 };
 
 class Game {
@@ -37,7 +36,7 @@ class Game {
 		void					setGameInput(const int newInput);
 		Settings				getSettings() const;
 		void					setSettings(const Settings newSettings);
-		Character				*getPlayer() const;
+		Player					*getPlayer() const;
 		void					setPlayer(Player *newPlayer);
 		std::vector<Character*>	getEnemies() const;
 		void					setEnemies(const std::vector<Character*> newEnemies);
@@ -59,7 +58,7 @@ class Game {
 		GameState				_state;
 		int						_gameInput;
 		Settings				_settings;
-		Character				*_player;
+		Player					*_player;
 		std::vector<Character*>	_enemies;
 		std::vector<Box>		_unbreakableWalls;
 		std::vector<Box>		_breakableBox;

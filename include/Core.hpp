@@ -1,5 +1,5 @@
-#ifndef CORE_CLASS_HPP_
-#define CORE_CLASS_HPP_
+#ifndef CORE_HPP
+#define CORE_HPP
 
 #pragma once
 
@@ -15,25 +15,59 @@
 #include "Settings.hpp"
 
 class Core {
+public:
+    Core();
+
+    Core(Core const &src);
+
+    Core &operator=(Core const &src);
+
+    ~Core();
+
+    void run();
+
+    void init();
+
+    void input();
+
+    void gameLoop();
+
+    void drawGame();
+
+    //__________________________GETTERS AND SETTERS________________________________________
+
+    Game *getGame() const;
+
+    void setGame(Game *newGame);
+
+    GLFWwindow *getWin() const;
+
+    void setWin(GLFWwindow *win);
+
+    nanogui::Screen *getScreen() const;
+
+    void setScreen(nanogui::Screen *screen);
+
+    int getWidth() const;
+
+    void setWidth(const int newWidth);
+
+    int getHeight() const;
+
+    void setHeight(const int newHeight);
+
+    //__________________________________END______________________________________
+
 private:
+
     GLFWwindow *_win;
     nanogui::Screen *_screen;
     int _width = 800;
     int _height = 600;
     GameState _gameState;
-    enum class _key {LEFT, RIGHT, UP, DOWN, SPACE, ENTER, ESC, NONE};
-	Game	*_game;
-
-public:
-    Core();
-    ~Core();
-
-	void run();
-    void init();
-    void input();
-    void gameLoop();
-    void drawGame();
-    //_key getAsciiKey(const Uint8*	keyPressArr);
+    enum class _key {
+        LEFT, RIGHT, UP, DOWN, SPACE, ENTER, ESC, NONE};
+    Game *_game;
 };
 
 

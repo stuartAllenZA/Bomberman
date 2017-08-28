@@ -1,16 +1,12 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Character.cpp                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tmaske <marvin@42.fr>                      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/07/27 13:23:09 by tmaske            #+#    #+#             */
-/*   Updated: 2017/07/27 13:23:10 by tmaske           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <Character.hpp>
+
+Character::Character(std::pair<int, int> xy, int speed, int health, int lives) : _xy(xy), _speed(speed), _health(health), _lives(lives) {
+	std::cout << "Character with XY, Speed, Health & Lives Constructed\n";
+}
+
+Character::Character(std::pair<int, int> xy, int speed, int health) : _xy(xy), _speed(speed), _health(health), _lives(1) {
+	std::cout << "Character with XY, Speed & Health Constructed\n";
+}
 
 Character::Character(std::pair<int, int> xy, int lives) : _xy(xy), _speed(100), _health(100), _lives(lives) {
 	std::cout << "Character with XY & Lives Constructed\n";

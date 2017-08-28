@@ -1,5 +1,6 @@
 #include <Core.hpp>
 
+<<<<<<< HEAD
 void fatalError(std::string errorString) {
     std::cout << errorString << std::endl;
     std::cout << "Press any key to exit" << std::endl;
@@ -7,7 +8,7 @@ void fatalError(std::string errorString) {
     std::cin >> temp;
     exit(1);
 }
-
+//______________________CONSTRUCTORS AND DECONSTRUCTORS START_______________________________
 Core::Core() {
    // _win = nullptr;
    // _gameState = GameState::PLAY;
@@ -17,11 +18,27 @@ Core::Core() {
     run();
 }
 
+Core::Core(Core const & src) {
+    std::cout << "Core Copy-Constructed\n";
+    *this = src;
+}
+
+Core &              Core::operator=(Core const & src) {
+    this->_win = src.getWin();
+    this->_screen = src.getScreen();
+    this->_game = src.getGame();
+    this->_width = src.getWidth();
+    this->_height = src.getHeight();
+    return (*this);
+}
+
 Core::~Core() {
 	std::cout << "destructing core" << std::endl;
     //delete _game;
 	//_game = nullptr;
 }
+
+//___________________________________END________________________________________________
 
 void	Core::run() {
     std::cout << "initializing" << std::endl;
@@ -30,7 +47,7 @@ void	Core::run() {
 	
 }
 
-void Core::init() {
+void                Core::init() {
     _win = nullptr;
     std::cout << "creating glfw window" << std::endl;
     glfwInit();
@@ -91,7 +108,7 @@ void Core::init() {
 //        return _key::NONE;
 //}
 
-void Core::input() {
+void                Core::input() {
 
 
     int state = glfwGetKey(_win, GLFW_KEY_ESCAPE);
@@ -143,14 +160,14 @@ void Core::input() {
 //    }
 }
 
-void Core::gameLoop() {
+void                Core::gameLoop() {
     while (_gameState != GameState::EXIT && !glfwWindowShouldClose(_win)) {
         input();
         drawGame();
     }
 }
 
-void Core::drawGame() {
+void                Core::drawGame() {
     glfwGetFramebufferSize(_win, &_width, &_height);
 
     glViewport(0, 0, _width, _height);
@@ -159,3 +176,47 @@ void Core::drawGame() {
     glfwSwapBuffers(_win);
     glfwPollEvents();
 }
+
+//__________________________GETTERS AND SETTERS________________________________________
+
+Game		        *Core::getGame() const {
+    return (this->_game);
+}
+
+void		        Core::setGame(Game *newGame) {
+    this->_game = newGame;
+}
+
+GLFWwindow          *Core::getWin() const {
+    return (this->_win);
+}
+
+void                Core::setWin(GLFWwindow *win) {
+    this->_win = win;
+}
+
+nanogui::Screen     *Core::getScreen() const {
+    return (this->_screen);
+}
+
+void                Core::setScreen(nanogui::Screen *screen){
+    this->_screen = screen;
+}
+
+int			Core::getWidth() const {
+    return (this->_width);
+}
+
+void		Core::setWidth(const int newWidth) {
+    this->_width = newWidth;
+}
+
+int			Core::getHeight() const {
+    return (this->_height);
+}
+
+void		Core::setHeight(const int newHeight) {
+    this->_height = newHeight;
+}
+
+//__________________________________END______________________________________
