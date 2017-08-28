@@ -1,181 +1,221 @@
 #include <Core.hpp>
 
-Core::Core() : _win(nullptr) {
-	std::cout << "Constructing Core\n";
-	this->_game = new Game;
-	Settings settings = this->_game->getSettings();
-	this->_width = settings.getResolutionX();
-	this->_height = settings.getResolutionY();
-	std::cout << "Core Constructed\n";
+void fatalError(std::string errorString) {
+    std::cout << errorString << std::endl;
+    std::cout << "Press any key to exit" << std::endl;
+    int temp;
+    std::cin >> temp;
+    exit(1);
+}
+//______________________CONSTRUCTORS AND DECONSTRUCTORS START_______________________________
+Core::Core() {
+   // _win = nullptr;
+   // _gameState = GameState::PLAY;
+//	_game = new Game;
+    glfwInit();
+    std::cout << "running" << std::endl;
+    run();
 }
 
 Core::Core(Core const & src) {
-	std::cout << "Core Copy-Constructed\n";
-	*this = src;
+    std::cout << "Core Copy-Constructed\n";
+    *this = src;
+}
+
+Core &              Core::operator=(Core const & src) {
+    this->_win = src.getWin();
+    this->_screen = src.getScreen();
+    this->_game = src.getGame();
+    this->_width = src.getWidth();
+    this->_height = src.getHeight();
+    return (*this);
 }
 
 Core::~Core() {
-	std::cout << "De-Constructing Core\n";
-	delete this->_game;
-	this->_game = nullptr;
-	std::cout << "SDL is closed" << std::endl;
-	SDL_Quit();
-	std::cout << "Core De-Constructed\n";
+	std::cout << "destructing core" << std::endl;
+    //delete _game;
+	//_game = nullptr;
 }
 
-Core &		Core::operator=(Core const & src) {
-	this->_win = src.getWin();
-	this->_game = src.getGame();
-	this->_width = src.getWidth();
-	this->_height = src.getHeight();
-	return (*this);
+//___________________________________END________________________________________________
+
+void	Core::run() {
+    std::cout << "initializing" << std::endl;
+    init();
+    //gameLoop();
+	
 }
 
-SDL_Window	*Core::getWin() const {
-	return (this->_win);
+void                Core::init() {
+    _win = nullptr;
+    std::cout << "creating glfw window" << std::endl;
+    glfwInit();
+
+    glfwSetTime(0);
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    glfwWindowHint(GLFW_SAMPLES, 0);
+    glfwWindowHint(GLFW_RED_BITS, 8);
+    glfwWindowHint(GLFW_GREEN_BITS, 8);
+    glfwWindowHint(GLFW_BLUE_BITS, 8);
+    glfwWindowHint(GLFW_ALPHA_BITS, 8);
+    glfwWindowHint(GLFW_STENCIL_BITS, 8);
+    glfwWindowHint(GLFW_DEPTH_BITS, 24);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    _win = glfwCreateWindow(_width, _height, "Bomberman", nullptr, nullptr);
+    if (_win == nullptr)
+        fatalError("GLFW context is shot");
+    glfwMakeContextCurrent(_win);
+    glfwSwapInterval(1);
+    std::cout << "glfw window created" << std::endl;
+    std::cout << "creating nanogui screen" << std::endl;
+    _screen = new nanogui::Screen;
+    std::cout << "nanogui screen created" << std::endl;
+    std::cout << "initializing nanogui window" << std::endl;
+    _screen->initialize(_win, true);
+    std::cout << "nanogui window initialized, screen integrated with window" << std::endl;
+    std::cout << "visualizing screen" << std::endl;
+    _screen->setVisible(true);
+    _screen->performLayout();
+    std::cout << "starting screen loop" << std::endl;
+    nanogui::mainloop(100);
+    std::cout << "closing nanogui screen" << std::endl;
+    nanogui::shutdown();
+    std::cout << "nanogui screen closed successfully" << std::endl;
 }
 
-void		Core::setWin(SDL_Window	*newWin) {
-	this->_win = newWin;
+//Core::_key    Core::getAsciiKey(const Uint8*	keyPressArr){
+//    if (keyPressArr[SDL_SCANCODE_LEFT])
+//        return _key::LEFT;
+//    else if (keyPressArr[SDL_SCANCODE_RIGHT])
+//        return _key::RIGHT;
+//    else if (keyPressArr[SDL_SCANCODE_UP])
+//        return _key::UP;
+//    else if (keyPressArr[SDL_SCANCODE_DOWN])
+//        return _key::DOWN;
+//    else if (keyPressArr[SDL_SCANCODE_SPACE])
+//        return _key::SPACE;
+//    else if (keyPressArr[SDL_SCANCODE_RETURN])
+//        return _key::ENTER;
+//    else if (keyPressArr[SDL_SCANCODE_ESCAPE])
+//        return _key::ESC;
+//    else
+//        return _key::NONE;
+//}
+
+void                Core::input() {
+
+
+    int state = glfwGetKey(_win, GLFW_KEY_ESCAPE);
+    if (state == GLFW_PRESS)
+        _gameState = GameState::EXIT;
+
+//    SDL_Event evnt;
+//    const Uint8*	keyPressArr = SDL_GetKeyboardState(NULL); // var to hold the current keypress, SEE https://wiki.libsdl.org/SDL_GetKeyboardState (Liam)
+//
+//    _key     keyName;
+//
+//    while (SDL_PollEvent(&evnt)) {
+//        switch (evnt.type) {
+//            case SDL_QUIT :
+//                _gameState = GameState::EXIT;
+//                break;
+//            case SDL_MOUSEMOTION:
+//                std::cout << evnt.motion.x << " " << evnt.motion.y << std::endl;
+//                break;
+//        }
+//        keyName = getAsciiKey(keyPressArr);
+//        switch (keyName) {
+//            case _key::LEFT :
+//                std::cout << "LEFTKEY!" << std::endl;
+//                break;
+//            case _key::RIGHT :
+//                std::cout << "RIGHTKEY!" << std::endl;
+//                break;
+//            case _key::UP :
+//                std::cout << "UPKEY!" << std::endl;
+//                break;
+//            case _key::DOWN :
+//                std::cout << "DOWNKEY!" << std::endl;
+//                break;
+//            case _key::SPACE :
+//                std::cout << "SPACEKEY!" << std::endl;
+//                break;
+//            case _key::ENTER :
+//                std::cout << "ENTERKEY!" << std::endl;
+//                break;
+//            case _key::ESC :
+//                std::cout << "ESCAPEKEY!" << std::endl;
+//                break;
+//            case _key::NONE :
+//                std::cout << "NONE" << std::endl;
+//                break;
+//
+//        }
+//    }
 }
 
-Game		*Core::getGame() const {
-	return (this->_game);
+void                Core::gameLoop() {
+    while (_gameState != GameState::EXIT && !glfwWindowShouldClose(_win)) {
+        input();
+        drawGame();
+    }
 }
 
-void		Core::setGame(Game *newGame) {
-	this->_game = newGame;
+void                Core::drawGame() {
+    glfwGetFramebufferSize(_win, &_width, &_height);
+
+    glViewport(0, 0, _width, _height);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glfwSwapBuffers(_win);
+    glfwPollEvents();
+}
+
+//__________________________GETTERS AND SETTERS________________________________________
+
+Game		        *Core::getGame() const {
+    return (this->_game);
+}
+
+void		        Core::setGame(Game *newGame) {
+    this->_game = newGame;
+}
+
+GLFWwindow          *Core::getWin() const {
+    return (this->_win);
+}
+
+void                Core::setWin(GLFWwindow *win) {
+    this->_win = win;
+}
+
+nanogui::Screen     *Core::getScreen() const {
+    return (this->_screen);
+}
+
+void                Core::setScreen(nanogui::Screen *screen){
+    this->_screen = screen;
 }
 
 int			Core::getWidth() const {
-	return (this->_width);
+    return (this->_width);
 }
 
 void		Core::setWidth(const int newWidth) {
-	this->_width = newWidth;
+    this->_width = newWidth;
 }
 
 int			Core::getHeight() const {
-	return (this->_height);
+    return (this->_height);
 }
 
 void		Core::setHeight(const int newHeight) {
-	this->_height = newHeight;
+    this->_height = newHeight;
 }
 
-void		Core::run() {
-	init();
-	gameLoop();
-}
-
-void		Core::init() {
-	// Init SDL
-	SDL_Init(SDL_INIT_EVERYTHING);
-
-	_win = SDL_CreateWindow("Bomberman", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _width, _height, SDL_WINDOW_OPENGL);
-	if (_win == nullptr)
-		fatalError("SDL window broke");
-
-	SDL_GLContext contxt = SDL_GL_CreateContext(_win);
-	if (contxt == nullptr)
-		fatalError("Context went for a ball of shit");
-
-	GLenum error = glewInit();
-	if (error != GLEW_OK)
-		fatalError("GLEW is screwed");
-
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-	glClearColor(0, 0, 0, 0);
-}
-
-void		Core::input() {
-	SDL_Event evnt;
-	const Uint8*	keyPressArr = SDL_GetKeyboardState(NULL); // var to hold the current keypress, SEE https://wiki.libsdl.org/SDL_GetKeyboardState (Liam)
-
-	keys     keyName;
-
-	while (SDL_PollEvent(&evnt)) {
-		switch (evnt.type) {
-			case SDL_QUIT :
-			this->_game->setState(GameState::EXIT);
-			break;
-			case SDL_MOUSEMOTION:
-			std::cout << evnt.motion.x << " " << evnt.motion.y << std::endl;
-			break;
-		}
-		keyName = getAsciiKey(keyPressArr);
-		switch (keyName) {
-			case keys::LEFT :
-			std::cout << "LEFTKEY!" << std::endl;
-			break;
-			case keys::RIGHT :
-			std::cout << "RIGHTKEY!" << std::endl;
-			break;
-			case keys::UP :
-			std::cout << "UPKEY!" << std::endl;
-			break;
-			case keys::DOWN :
-			std::cout << "DOWNKEY!" << std::endl;
-			break;
-			case keys::SPACE :
-			std::cout << "SPACEKEY!" << std::endl;
-			break;
-			case keys::ENTER :
-			std::cout << "ENTERKEY!" << std::endl;
-			break;
-			case keys::ESC :
-			std::cout << "ESCAPEKEY!" << std::endl;
-			break;
-			case keys::NONE :
-			std::cout << "NONE" << std::endl;
-			break;
-
-		}
-	}
-}
-
-void		Core::gameLoop() {
-	while (this->_game->getState() != GameState::EXIT) {
-		input();
-		drawGame();
-	}
-}
-
-void		Core::drawGame() {
-	glClearDepth(1);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	SDL_GL_SwapWindow(_win);
-}
-
-keys		Core::getAsciiKey(const Uint8*	keyPressArr){
-	if (keyPressArr[SDL_SCANCODE_LEFT])
-		return keys::LEFT;
-	else if (keyPressArr[SDL_SCANCODE_RIGHT])
-		return keys::RIGHT;
-	else if (keyPressArr[SDL_SCANCODE_UP])
-		return keys::UP;
-	else if (keyPressArr[SDL_SCANCODE_DOWN])
-		return keys::DOWN;
-	else if (keyPressArr[SDL_SCANCODE_SPACE])
-		return keys::SPACE;
-	else if (keyPressArr[SDL_SCANCODE_RETURN])
-		return keys::ENTER;
-	else if (keyPressArr[SDL_SCANCODE_ESCAPE])
-		return keys::ESC;
-	else
-		return keys::NONE;
-}
-
-
-void		Core::fatalError(std::string errorString) {
-	std::cout << errorString << std::endl;
-	std::cout << "Press any key to exit" << std::endl;
-	int temp;
-	std::cin >> temp;
-	SDL_Quit();
-	exit(1);
-}
+//__________________________________END______________________________________

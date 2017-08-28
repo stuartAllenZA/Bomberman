@@ -9,6 +9,7 @@ int main(int argc, char **argv) {
 	}
 
 	try {
+		std::cout << "initializing core" << std::endl;
 		Core core;
 		// Spawn player
 		// Spawn u-box
@@ -52,6 +53,7 @@ int main(int argc, char **argv) {
 		// drop hatch
 		// move player
 		// finish demo
+		std::cout << "end of try" << std::endl;
 	}
 
 	//Catch Fatal Exceptions
