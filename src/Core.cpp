@@ -1,20 +1,14 @@
 #include <Core.hpp>
 
-void fatalError(std::string errorString) {
-    std::cout << errorString << std::endl;
-    std::cout << "Press any key to exit" << std::endl;
-    int temp;
-    std::cin >> temp;
-    exit(1);
-}
 //______________________CONSTRUCTORS AND DECONSTRUCTORS START_______________________________
 Core::Core() {
-   // _win = nullptr;
-   // _gameState = GameState::PLAY;
-//	_game = new Game;
+    std::cout << "Constructing Core\n";
+    this->_game = new Game;
+    Settings settings = this->_game->getSettings();
+    this->_width = settings.getResolutionX();
+    this->_height = settings.getResolutionY();
     glfwInit();
-    std::cout << "running" << std::endl;
-    run();
+    std::cout << "Core Constructed\n";
 }
 
 Core::Core(Core const & src) {
@@ -32,9 +26,13 @@ Core &              Core::operator=(Core const & src) {
 }
 
 Core::~Core() {
-	std::cout << "destructing core" << std::endl;
-    //delete _game;
-	//_game = nullptr;
+    std::cout << "De-Constructing Core\n";
+    delete this->_game;
+    this->_game = nullptr;
+    std::cout << "closing nanogui screen" << std::endl;
+    nanogui::shutdown();
+    std::cout << "nanogui screen closed successfully" << std::endl;
+    std::cout << "Core De-Constructed\n";
 }
 
 //___________________________________END________________________________________________
@@ -43,7 +41,6 @@ void	Core::run() {
     std::cout << "initializing" << std::endl;
     init();
     //gameLoop();
-	
 }
 
 void                Core::init() {
@@ -83,9 +80,6 @@ void                Core::init() {
     _screen->performLayout();
     std::cout << "starting screen loop" << std::endl;
     nanogui::mainloop(100);
-    std::cout << "closing nanogui screen" << std::endl;
-    nanogui::shutdown();
-    std::cout << "nanogui screen closed successfully" << std::endl;
 }
 
 //Core::_key    Core::getAsciiKey(const Uint8*	keyPressArr){
@@ -112,7 +106,7 @@ void                Core::input() {
 
     int state = glfwGetKey(_win, GLFW_KEY_ESCAPE);
     if (state == GLFW_PRESS)
-        _gameState = GameState::EXIT;
+        this->_game->setState(GameState::EXIT);
 
 //    SDL_Event evnt;
 //    const Uint8*	keyPressArr = SDL_GetKeyboardState(NULL); // var to hold the current keypress, SEE https://wiki.libsdl.org/SDL_GetKeyboardState (Liam)
@@ -160,7 +154,7 @@ void                Core::input() {
 }
 
 void                Core::gameLoop() {
-    while (_gameState != GameState::EXIT && !glfwWindowShouldClose(_win)) {
+    while (this->_game->getState() != GameState::EXIT && !glfwWindowShouldClose(_win)) {
         input();
         drawGame();
     }
@@ -219,3 +213,11 @@ void		Core::setHeight(const int newHeight) {
 }
 
 //__________________________________END______________________________________
+
+void		Core::fatalError(std::string errorString) {
+    std::cout << errorString << std::endl;
+    std::cout << "Press any key to exit" << std::endl;
+    int temp;
+    std::cin >> temp;
+    exit(1);
+}

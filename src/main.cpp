@@ -53,6 +53,8 @@ int main(int argc, char **argv) {
 		// drop hatch
 		// move player
 		// finish demo
+        std::cout << "running" << std::endl;
+        core.run();
 		std::cout << "end of try" << std::endl;
 	}
 
