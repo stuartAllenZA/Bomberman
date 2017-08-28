@@ -10,6 +10,48 @@ int main(int argc, char **argv) {
 
 	try {
 		Core core;
+		// Spawn player
+		// Spawn u-box
+		// Spawn box0 - empty
+		// Spawn box1 - enemy
+		// Spawn box2 - upgrade
+		// Spawn box3 - hatch
+		// Move player
+		// Place bomb
+		// move player
+		// detonate bomb
+		// destroy box
+		// Move player
+		// Place bomb
+		// move player
+		// explode bomb
+		// destroy box
+		// drop enemy
+		// move player
+		// move enemy
+		// place bomb
+		// move player
+		// move enemy
+		// detonate bomb
+		// kill enemy
+		// xp up player
+		// move player
+		// place bomb
+		// move player
+		// detonate bomb
+		// destroy box
+		// drop upgrade
+		// move player
+		// collect upgrade
+		// activate upgrade on player
+		// move player
+		// place bomb
+		// move player
+		// detonate bomb
+		// destroy box
+		// drop hatch
+		// move player
+		// finish demo
 	}
 
 	//Catch Fatal Exceptions
