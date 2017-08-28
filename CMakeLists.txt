@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 project(Bomberman_Liam)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -g3")
 
 if (NOT IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/DEPENDANTS/nanogui/build")
     message(ERROR "The NanoGUI dependency repositories (GLFW, etc.) are missing! "
@@ -53,32 +53,38 @@ set(SOURCE_FILES
 
 find_package(PkgConfig)
 
-pkg_search_module(SDL2 REQUIRED sdl2)
 pkg_search_module(GLEW REQUIRED glew)
 pkg_search_module(GLM REQUIRED glm)
 
 include_directories(
         include
+        DEPENDANTS/nanogui/ext/glfw/include
         DEPENDANTS/nanogui/include
-        DEPENDANTS/nanogui/ext_build
-        DEPENDANTS/nanogui/ext_build/glfw
-        ${SDL2_INCLUDE_DIR}
+        DEPENDANTS/nanogui/ext/eigen
+        DEPENDANTS/nanogui/ext/nanovg/src
         ${GLEW_INCLUDE_DIR}
         ${GLM_INCLUDE_DIR}
 )
 
 link_directories(
         ${PROJECT_SOURCE_DIR}/DEPENDANTS/nanogui/build
-        ${SDL2_LIBRARY_DIRS}
+        ${PROJECT_SOURCE_DIR}/DEPENDANTS/nanogui/ext/eigen
+        ${PROJECT_SOURCE_DIR}/DEPENDANTS/nanogui/ext_build/glfw/src
+        ${PROJECT_SOURCE_DIR}/DEPENDANTS/nanogui/ext/nanovg/src
         ${GLEW_LIBRARY_DIRS}
         ${GLM_LIBRARY_DIRS}
 )
+
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME}
         nanogui
         ${OPENGL_LIBRARIES}
-        ${SDL2_LIBRARIES}
         ${GLEW_LIBRARIES}
         ${GLM_LIBRARIES}
 )
+
+if (APPLE)
+    target_link_libraries(${PROJECT_NAME}
+            "-framework OpenGL")
+endif()

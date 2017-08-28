@@ -4,8 +4,9 @@
 #pragma once
 
 #include <iostream>
-#include <SDL2/SDL.h>
 #include "../../.brew/Cellar/glew/2.1.0/include/GL/glew.h"
+#include "../../.brew/include/nanogui/nanogui.h"
+#include "../../.brew/Cellar/glfw/3.2.1/include/GLFW/glfw3.h"
 #include "Character.hpp"
 #include "Exceptions.hpp"
 #include "Game.hpp"
@@ -15,7 +16,8 @@
 
 class Core {
 private:
-    SDL_Window *_win;
+    GLFWwindow *_win;
+    nanogui::Screen *_screen;
     int _width = 800;
     int _height = 600;
     GameState _gameState;
@@ -31,7 +33,7 @@ public:
     void input();
     void gameLoop();
     void drawGame();
-    _key getAsciiKey(const Uint8*	keyPressArr);
+    //_key getAsciiKey(const Uint8*	keyPressArr);
 };
 
 

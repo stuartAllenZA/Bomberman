@@ -28,9 +28,10 @@ set(CMAKE_CXX_COMPILER_ID "AppleClang")
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "include"
+  "DEPENDANTS/nanogui/ext/glfw/include"
   "DEPENDANTS/nanogui/include"
-  "DEPENDANTS/nanogui/ext_build"
-  "DEPENDANTS/nanogui/ext_build/glfw"
+  "DEPENDANTS/nanogui/ext/eigen"
+  "DEPENDANTS/nanogui/ext/nanovg/src"
   )
 
 # Targets to which this target links.
