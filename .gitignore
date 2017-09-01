@@ -2,8 +2,9 @@
 *._*
 *.DS*
 *.so
-misc/
 bomberman
 cmake-build-debug/
-CMakeLists.txt
+CMakeCache.txt
 .idea/
+CMakeFiles
+Makefile
