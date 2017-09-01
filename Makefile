@@ -39,19 +39,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /goinfre/lchimes/.brew/Cellar/cmake/3.9.1/bin/cmake
+CMAKE_COMMAND = /nfs/zfs-student-6/users/tmaske/.brew/Cellar/cmake/3.9.1/bin/cmake
 
 # The command to remove a file.
-RM = /goinfre/lchimes/.brew/Cellar/cmake/3.9.1/bin/cmake -E remove -f
+RM = /nfs/zfs-student-6/users/tmaske/.brew/Cellar/cmake/3.9.1/bin/cmake -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /goinfre/lchimes/Bomberman_Liam
+CMAKE_SOURCE_DIR = /nfs/zfs-student-6/users/tmaske/Bomberman
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /goinfre/lchimes/Bomberman_Liam
+CMAKE_BINARY_DIR = /nfs/zfs-student-6/users/tmaske/Bomberman
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -59,7 +59,7 @@ CMAKE_BINARY_DIR = /goinfre/lchimes/Bomberman_Liam
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/goinfre/lchimes/.brew/Cellar/cmake/3.9.1/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/nfs/zfs-student-6/users/tmaske/.brew/Cellar/cmake/3.9.1/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -69,8 +69,8 @@ rebuild_cache/fast: rebuild_cache
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/goinfre/lchimes/.brew/Cellar/cmake/3.9.1/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
+	/nfs/zfs-student-6/users/tmaske/.brew/Cellar/cmake/3.9.1/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /goinfre/lchimes/Bomberman_Liam/CMakeFiles /goinfre/lchimes/Bomberman_Liam/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /nfs/zfs-student-6/users/tmaske/Bomberman/CMakeFiles /nfs/zfs-student-6/users/tmaske/Bomberman/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /goinfre/lchimes/Bomberman_Liam/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /nfs/zfs-student-6/users/tmaske/Bomberman/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named Bomberman_Liam
+# Target rules for targets named Bomberman
 
 # Build rule for target.
-Bomberman_Liam: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 Bomberman_Liam
-.PHONY : Bomberman_Liam
+Bomberman: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 Bomberman
+.PHONY : Bomberman
 
 # fast build rule for target.
-Bomberman_Liam/fast:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/build
-.PHONY : Bomberman_Liam/fast
+Bomberman/fast:
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/build
+.PHONY : Bomberman/fast
 
 src/Bomb.o: src/Bomb.cpp.o
 
@@ -129,7 +129,7 @@ src/Bomb.o: src/Bomb.cpp.o
 
 # target to build an object file
 src/Bomb.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Bomb.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Bomb.cpp.o
 .PHONY : src/Bomb.cpp.o
 
 src/Bomb.i: src/Bomb.cpp.i
@@ -138,7 +138,7 @@ src/Bomb.i: src/Bomb.cpp.i
 
 # target to preprocess a source file
 src/Bomb.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Bomb.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Bomb.cpp.i
 .PHONY : src/Bomb.cpp.i
 
 src/Bomb.s: src/Bomb.cpp.s
@@ -147,7 +147,7 @@ src/Bomb.s: src/Bomb.cpp.s
 
 # target to generate assembly for a file
 src/Bomb.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Bomb.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Bomb.cpp.s
 .PHONY : src/Bomb.cpp.s
 
 src/Box.o: src/Box.cpp.o
@@ -156,7 +156,7 @@ src/Box.o: src/Box.cpp.o
 
 # target to build an object file
 src/Box.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Box.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Box.cpp.o
 .PHONY : src/Box.cpp.o
 
 src/Box.i: src/Box.cpp.i
@@ -165,7 +165,7 @@ src/Box.i: src/Box.cpp.i
 
 # target to preprocess a source file
 src/Box.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Box.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Box.cpp.i
 .PHONY : src/Box.cpp.i
 
 src/Box.s: src/Box.cpp.s
@@ -174,7 +174,7 @@ src/Box.s: src/Box.cpp.s
 
 # target to generate assembly for a file
 src/Box.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Box.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Box.cpp.s
 .PHONY : src/Box.cpp.s
 
 src/BreakableBox.o: src/BreakableBox.cpp.o
@@ -183,7 +183,7 @@ src/BreakableBox.o: src/BreakableBox.cpp.o
 
 # target to build an object file
 src/BreakableBox.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/BreakableBox.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/BreakableBox.cpp.o
 .PHONY : src/BreakableBox.cpp.o
 
 src/BreakableBox.i: src/BreakableBox.cpp.i
@@ -192,7 +192,7 @@ src/BreakableBox.i: src/BreakableBox.cpp.i
 
 # target to preprocess a source file
 src/BreakableBox.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/BreakableBox.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/BreakableBox.cpp.i
 .PHONY : src/BreakableBox.cpp.i
 
 src/BreakableBox.s: src/BreakableBox.cpp.s
@@ -201,7 +201,7 @@ src/BreakableBox.s: src/BreakableBox.cpp.s
 
 # target to generate assembly for a file
 src/BreakableBox.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/BreakableBox.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/BreakableBox.cpp.s
 .PHONY : src/BreakableBox.cpp.s
 
 src/Character.o: src/Character.cpp.o
@@ -210,7 +210,7 @@ src/Character.o: src/Character.cpp.o
 
 # target to build an object file
 src/Character.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Character.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Character.cpp.o
 .PHONY : src/Character.cpp.o
 
 src/Character.i: src/Character.cpp.i
@@ -219,7 +219,7 @@ src/Character.i: src/Character.cpp.i
 
 # target to preprocess a source file
 src/Character.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Character.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Character.cpp.i
 .PHONY : src/Character.cpp.i
 
 src/Character.s: src/Character.cpp.s
@@ -228,7 +228,7 @@ src/Character.s: src/Character.cpp.s
 
 # target to generate assembly for a file
 src/Character.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Character.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Character.cpp.s
 .PHONY : src/Character.cpp.s
 
 src/Core.o: src/Core.cpp.o
@@ -237,7 +237,7 @@ src/Core.o: src/Core.cpp.o
 
 # target to build an object file
 src/Core.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Core.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Core.cpp.o
 .PHONY : src/Core.cpp.o
 
 src/Core.i: src/Core.cpp.i
@@ -246,7 +246,7 @@ src/Core.i: src/Core.cpp.i
 
 # target to preprocess a source file
 src/Core.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Core.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Core.cpp.i
 .PHONY : src/Core.cpp.i
 
 src/Core.s: src/Core.cpp.s
@@ -255,7 +255,7 @@ src/Core.s: src/Core.cpp.s
 
 # target to generate assembly for a file
 src/Core.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Core.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Core.cpp.s
 .PHONY : src/Core.cpp.s
 
 src/Drop.o: src/Drop.cpp.o
@@ -264,7 +264,7 @@ src/Drop.o: src/Drop.cpp.o
 
 # target to build an object file
 src/Drop.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Drop.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Drop.cpp.o
 .PHONY : src/Drop.cpp.o
 
 src/Drop.i: src/Drop.cpp.i
@@ -273,7 +273,7 @@ src/Drop.i: src/Drop.cpp.i
 
 # target to preprocess a source file
 src/Drop.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Drop.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Drop.cpp.i
 .PHONY : src/Drop.cpp.i
 
 src/Drop.s: src/Drop.cpp.s
@@ -282,7 +282,7 @@ src/Drop.s: src/Drop.cpp.s
 
 # target to generate assembly for a file
 src/Drop.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Drop.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Drop.cpp.s
 .PHONY : src/Drop.cpp.s
 
 src/EnemyDrop.o: src/EnemyDrop.cpp.o
@@ -291,7 +291,7 @@ src/EnemyDrop.o: src/EnemyDrop.cpp.o
 
 # target to build an object file
 src/EnemyDrop.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/EnemyDrop.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/EnemyDrop.cpp.o
 .PHONY : src/EnemyDrop.cpp.o
 
 src/EnemyDrop.i: src/EnemyDrop.cpp.i
@@ -300,7 +300,7 @@ src/EnemyDrop.i: src/EnemyDrop.cpp.i
 
 # target to preprocess a source file
 src/EnemyDrop.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/EnemyDrop.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/EnemyDrop.cpp.i
 .PHONY : src/EnemyDrop.cpp.i
 
 src/EnemyDrop.s: src/EnemyDrop.cpp.s
@@ -309,7 +309,7 @@ src/EnemyDrop.s: src/EnemyDrop.cpp.s
 
 # target to generate assembly for a file
 src/EnemyDrop.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/EnemyDrop.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/EnemyDrop.cpp.s
 .PHONY : src/EnemyDrop.cpp.s
 
 src/Exceptions.o: src/Exceptions.cpp.o
@@ -318,7 +318,7 @@ src/Exceptions.o: src/Exceptions.cpp.o
 
 # target to build an object file
 src/Exceptions.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Exceptions.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Exceptions.cpp.o
 .PHONY : src/Exceptions.cpp.o
 
 src/Exceptions.i: src/Exceptions.cpp.i
@@ -327,7 +327,7 @@ src/Exceptions.i: src/Exceptions.cpp.i
 
 # target to preprocess a source file
 src/Exceptions.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Exceptions.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Exceptions.cpp.i
 .PHONY : src/Exceptions.cpp.i
 
 src/Exceptions.s: src/Exceptions.cpp.s
@@ -336,7 +336,7 @@ src/Exceptions.s: src/Exceptions.cpp.s
 
 # target to generate assembly for a file
 src/Exceptions.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Exceptions.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Exceptions.cpp.s
 .PHONY : src/Exceptions.cpp.s
 
 src/ExtraBomb.o: src/ExtraBomb.cpp.o
@@ -345,7 +345,7 @@ src/ExtraBomb.o: src/ExtraBomb.cpp.o
 
 # target to build an object file
 src/ExtraBomb.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/ExtraBomb.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/ExtraBomb.cpp.o
 .PHONY : src/ExtraBomb.cpp.o
 
 src/ExtraBomb.i: src/ExtraBomb.cpp.i
@@ -354,7 +354,7 @@ src/ExtraBomb.i: src/ExtraBomb.cpp.i
 
 # target to preprocess a source file
 src/ExtraBomb.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/ExtraBomb.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/ExtraBomb.cpp.i
 .PHONY : src/ExtraBomb.cpp.i
 
 src/ExtraBomb.s: src/ExtraBomb.cpp.s
@@ -363,7 +363,7 @@ src/ExtraBomb.s: src/ExtraBomb.cpp.s
 
 # target to generate assembly for a file
 src/ExtraBomb.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/ExtraBomb.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/ExtraBomb.cpp.s
 .PHONY : src/ExtraBomb.cpp.s
 
 src/Game.o: src/Game.cpp.o
@@ -372,7 +372,7 @@ src/Game.o: src/Game.cpp.o
 
 # target to build an object file
 src/Game.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Game.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Game.cpp.o
 .PHONY : src/Game.cpp.o
 
 src/Game.i: src/Game.cpp.i
@@ -381,7 +381,7 @@ src/Game.i: src/Game.cpp.i
 
 # target to preprocess a source file
 src/Game.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Game.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Game.cpp.i
 .PHONY : src/Game.cpp.i
 
 src/Game.s: src/Game.cpp.s
@@ -390,7 +390,7 @@ src/Game.s: src/Game.cpp.s
 
 # target to generate assembly for a file
 src/Game.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Game.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Game.cpp.s
 .PHONY : src/Game.cpp.s
 
 src/GraphicsHandler.o: src/GraphicsHandler.cpp.o
@@ -399,7 +399,7 @@ src/GraphicsHandler.o: src/GraphicsHandler.cpp.o
 
 # target to build an object file
 src/GraphicsHandler.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/GraphicsHandler.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/GraphicsHandler.cpp.o
 .PHONY : src/GraphicsHandler.cpp.o
 
 src/GraphicsHandler.i: src/GraphicsHandler.cpp.i
@@ -408,7 +408,7 @@ src/GraphicsHandler.i: src/GraphicsHandler.cpp.i
 
 # target to preprocess a source file
 src/GraphicsHandler.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/GraphicsHandler.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/GraphicsHandler.cpp.i
 .PHONY : src/GraphicsHandler.cpp.i
 
 src/GraphicsHandler.s: src/GraphicsHandler.cpp.s
@@ -417,7 +417,7 @@ src/GraphicsHandler.s: src/GraphicsHandler.cpp.s
 
 # target to generate assembly for a file
 src/GraphicsHandler.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/GraphicsHandler.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/GraphicsHandler.cpp.s
 .PHONY : src/GraphicsHandler.cpp.s
 
 src/LevelHatch.o: src/LevelHatch.cpp.o
@@ -426,7 +426,7 @@ src/LevelHatch.o: src/LevelHatch.cpp.o
 
 # target to build an object file
 src/LevelHatch.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/LevelHatch.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/LevelHatch.cpp.o
 .PHONY : src/LevelHatch.cpp.o
 
 src/LevelHatch.i: src/LevelHatch.cpp.i
@@ -435,7 +435,7 @@ src/LevelHatch.i: src/LevelHatch.cpp.i
 
 # target to preprocess a source file
 src/LevelHatch.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/LevelHatch.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/LevelHatch.cpp.i
 .PHONY : src/LevelHatch.cpp.i
 
 src/LevelHatch.s: src/LevelHatch.cpp.s
@@ -444,7 +444,7 @@ src/LevelHatch.s: src/LevelHatch.cpp.s
 
 # target to generate assembly for a file
 src/LevelHatch.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/LevelHatch.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/LevelHatch.cpp.s
 .PHONY : src/LevelHatch.cpp.s
 
 src/Player.o: src/Player.cpp.o
@@ -453,7 +453,7 @@ src/Player.o: src/Player.cpp.o
 
 # target to build an object file
 src/Player.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Player.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Player.cpp.o
 .PHONY : src/Player.cpp.o
 
 src/Player.i: src/Player.cpp.i
@@ -462,7 +462,7 @@ src/Player.i: src/Player.cpp.i
 
 # target to preprocess a source file
 src/Player.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Player.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Player.cpp.i
 .PHONY : src/Player.cpp.i
 
 src/Player.s: src/Player.cpp.s
@@ -471,7 +471,7 @@ src/Player.s: src/Player.cpp.s
 
 # target to generate assembly for a file
 src/Player.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Player.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Player.cpp.s
 .PHONY : src/Player.cpp.s
 
 src/RangeExtender.o: src/RangeExtender.cpp.o
@@ -480,7 +480,7 @@ src/RangeExtender.o: src/RangeExtender.cpp.o
 
 # target to build an object file
 src/RangeExtender.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/RangeExtender.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/RangeExtender.cpp.o
 .PHONY : src/RangeExtender.cpp.o
 
 src/RangeExtender.i: src/RangeExtender.cpp.i
@@ -489,7 +489,7 @@ src/RangeExtender.i: src/RangeExtender.cpp.i
 
 # target to preprocess a source file
 src/RangeExtender.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/RangeExtender.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/RangeExtender.cpp.i
 .PHONY : src/RangeExtender.cpp.i
 
 src/RangeExtender.s: src/RangeExtender.cpp.s
@@ -498,7 +498,7 @@ src/RangeExtender.s: src/RangeExtender.cpp.s
 
 # target to generate assembly for a file
 src/RangeExtender.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/RangeExtender.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/RangeExtender.cpp.s
 .PHONY : src/RangeExtender.cpp.s
 
 src/RemoteDetonator.o: src/RemoteDetonator.cpp.o
@@ -507,7 +507,7 @@ src/RemoteDetonator.o: src/RemoteDetonator.cpp.o
 
 # target to build an object file
 src/RemoteDetonator.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/RemoteDetonator.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/RemoteDetonator.cpp.o
 .PHONY : src/RemoteDetonator.cpp.o
 
 src/RemoteDetonator.i: src/RemoteDetonator.cpp.i
@@ -516,7 +516,7 @@ src/RemoteDetonator.i: src/RemoteDetonator.cpp.i
 
 # target to preprocess a source file
 src/RemoteDetonator.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/RemoteDetonator.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/RemoteDetonator.cpp.i
 .PHONY : src/RemoteDetonator.cpp.i
 
 src/RemoteDetonator.s: src/RemoteDetonator.cpp.s
@@ -525,7 +525,7 @@ src/RemoteDetonator.s: src/RemoteDetonator.cpp.s
 
 # target to generate assembly for a file
 src/RemoteDetonator.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/RemoteDetonator.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/RemoteDetonator.cpp.s
 .PHONY : src/RemoteDetonator.cpp.s
 
 src/Settings.o: src/Settings.cpp.o
@@ -534,7 +534,7 @@ src/Settings.o: src/Settings.cpp.o
 
 # target to build an object file
 src/Settings.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Settings.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Settings.cpp.o
 .PHONY : src/Settings.cpp.o
 
 src/Settings.i: src/Settings.cpp.i
@@ -543,7 +543,7 @@ src/Settings.i: src/Settings.cpp.i
 
 # target to preprocess a source file
 src/Settings.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Settings.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Settings.cpp.i
 .PHONY : src/Settings.cpp.i
 
 src/Settings.s: src/Settings.cpp.s
@@ -552,7 +552,7 @@ src/Settings.s: src/Settings.cpp.s
 
 # target to generate assembly for a file
 src/Settings.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/Settings.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/Settings.cpp.s
 .PHONY : src/Settings.cpp.s
 
 src/UnbreakableBox.o: src/UnbreakableBox.cpp.o
@@ -561,7 +561,7 @@ src/UnbreakableBox.o: src/UnbreakableBox.cpp.o
 
 # target to build an object file
 src/UnbreakableBox.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/UnbreakableBox.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/UnbreakableBox.cpp.o
 .PHONY : src/UnbreakableBox.cpp.o
 
 src/UnbreakableBox.i: src/UnbreakableBox.cpp.i
@@ -570,7 +570,7 @@ src/UnbreakableBox.i: src/UnbreakableBox.cpp.i
 
 # target to preprocess a source file
 src/UnbreakableBox.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/UnbreakableBox.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/UnbreakableBox.cpp.i
 .PHONY : src/UnbreakableBox.cpp.i
 
 src/UnbreakableBox.s: src/UnbreakableBox.cpp.s
@@ -579,7 +579,7 @@ src/UnbreakableBox.s: src/UnbreakableBox.cpp.s
 
 # target to generate assembly for a file
 src/UnbreakableBox.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/UnbreakableBox.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/UnbreakableBox.cpp.s
 .PHONY : src/UnbreakableBox.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -588,7 +588,7 @@ src/main.o: src/main.cpp.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/main.cpp.o
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -597,7 +597,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/main.cpp.i
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -606,7 +606,7 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) -f CMakeFiles/Bomberman_Liam.dir/build.make CMakeFiles/Bomberman_Liam.dir/src/main.cpp.s
+	$(MAKE) -f CMakeFiles/Bomberman.dir/build.make CMakeFiles/Bomberman.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
 # Help Target
@@ -617,7 +617,7 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... Bomberman_Liam"
+	@echo "... Bomberman"
 	@echo "... src/Bomb.o"
 	@echo "... src/Bomb.i"
 	@echo "... src/Bomb.s"

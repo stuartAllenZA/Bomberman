@@ -1,3 +1,0 @@
-/goinfre/lchimes/Bomberman_Liam/CMakeFiles/rebuild_cache.dir
-/goinfre/lchimes/Bomberman_Liam/CMakeFiles/edit_cache.dir
-/goinfre/lchimes/Bomberman_Liam/CMakeFiles/Bomberman_Liam.dir

@@ -4,9 +4,11 @@
 #pragma once
 
 #include <iostream>
-#include "../../.brew/Cellar/glew/2.1.0/include/GL/glew.h"
-#include "../../.brew/include/nanogui/nanogui.h"
-#include "../../.brew/Cellar/glfw/3.2.1/include/GLFW/glfw3.h"
+#include <GL/glew.h>
+#include <nanogui/nanogui.h>
+#include <nanogui/screen.h>
+#include <nanogui/widget.h>
+#include <GLFW/glfw3.h>
 #include "Character.hpp"
 #include "Exceptions.hpp"
 #include "Game.hpp"
