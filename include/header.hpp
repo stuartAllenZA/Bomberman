@@ -7,5 +7,7 @@
 #include <string.h>
 #include <sys/utsname.h>
 
+int		main(int argc, char **argv);
+
 #endif
 
