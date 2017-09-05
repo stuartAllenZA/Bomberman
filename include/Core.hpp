@@ -31,10 +31,12 @@ public:
     Core(Core const &src);
     Core &operator=(Core const &src);
     ~Core();
+    void        updateKeys();
     void        run();
     void        init();
     void        input();
     void        gameLoop();
+    void        mainMenu();
     void        drawGame();
     void		fatalError(std::string errorString);
 
@@ -50,6 +52,11 @@ public:
     void            setWidth(const int newWidth);
     int             getHeight() const;
     void            setHeight(const int newHeight);
+    keys            getKeyPressed() const;
+    void            setKeyPressed(const keys newkey);
+    keys            getPreKeyPressed() const;
+    void            setPreKeyPressed(const keys newkey);
+
     //__________________________________END______________________________________
 
 private:
@@ -59,6 +66,8 @@ private:
     int             _width;
     int             _height;
     Game            *_game;
+    keys            _keyPressed;
+    keys            _preKeyPressed;
 };
 
 

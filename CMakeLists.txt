@@ -67,21 +67,16 @@ include_directories(
 )
 
 link_directories(
-        ${PROJECT_SOURCE_DIR}/DEPENDANTS/nanogui/build
+        ${PROJECT_SOURCE_DIR}/DEPENDANTS/nanogui
         ${PROJECT_SOURCE_DIR}/DEPENDANTS/nanogui/ext/eigen
-        ${PROJECT_SOURCE_DIR}/DEPENDANTS/nanogui/ext_build/glfw/src
         ${PROJECT_SOURCE_DIR}/DEPENDANTS/nanogui/ext/nanovg/src
         ${GLEW_LIBRARY_DIRS}
-        ${GLM_LIBRARY_DIRS}
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME}
         nanogui
-        ${OPENGL_LIBRARIES}
-        ${GLEW_LIBRARIES}
-        ${GLM_LIBRARIES}
 )
 
 if (APPLE)
