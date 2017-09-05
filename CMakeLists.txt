@@ -22,25 +22,6 @@ if (NOT IS_DIRECTORY "${NANOGUI_DIR}")
 endif()
 
 set(SOURCE_FILES
-		include/Bomb.hpp
-		include/Box.hpp
-		include/BreakableBox.hpp
-		include/Character.hpp
-		include/Core.hpp
-		include/Drop.hpp
-		include/EnemyDrop.hpp
-		include/Exceptions.hpp
-		include/ExtraBomb.hpp
-		include/Game.hpp
-		include/GraphicsHandler.hpp
-		include/GraphicsInterface.hpp
-		include/header.hpp
-		include/LevelHatch.hpp
-		include/Player.hpp
-		include/RangeExtender.hpp
-		include/RemoteDetonator.hpp
-		include/Settings.hpp
-		include/UnbreakableBox.hpp
 		src/Bomb.cpp
 		src/Box.cpp
 		src/BreakableBox.cpp
@@ -81,6 +62,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME}
 		nanogui
+		GLEW
 )
 
 if (APPLE)
