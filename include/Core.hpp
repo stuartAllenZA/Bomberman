@@ -43,12 +43,26 @@ public:
 	void			setWidth(const int newWidth);
 	int				getHeight() const;
 	void			setHeight(const int newHeight);
+	keys			getKeyPressed() const;
+	void			setKeyPressed(const keys newkey);
+	keys			getPreKeyPressed() const;
+	void			setPreKeyPressed(const keys newkey);
+
 	void			run();
 	void			init();
-	void			input();
+	void			mainMenu();
+	void			updateKeys();
 	void			gameLoop();
+	void			input();
 	void			drawGame();
 	void			fatalError(std::string errorString);
+	void			newPlayer();
+	
+	void			initPlay();
+	void			load();
+	void			settings();
+	void			save();
+	void			exit();
 
 private:
 
@@ -57,6 +71,8 @@ private:
 	int				_width;
 	int				_height;
 	Game			*_game;
+	keys			_keyPressed;
+	keys			_preKeyPressed;
 };
 
 #endif

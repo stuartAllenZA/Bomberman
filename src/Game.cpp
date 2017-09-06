@@ -3,11 +3,6 @@
 Game::Game() : _state(GameState::MENU), _gameInput(0) {
 	std::cout << "Constructing Game\n";
 	this->_settings = Settings();
-	if (!this->_settings.getLastPlayer().empty())
-	{
-		this->_player = new Player(this->_settings.getLastPlayer());
-		loadPlayer(this->_settings.getLastPlayer());
-	}
 	std::cout << "Game Constructed\n";
 }
 
