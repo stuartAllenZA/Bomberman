@@ -13,7 +13,7 @@ Game::Game(Game const & src) {
 
 Game::~Game() {
 	std::cout << "De-Constructing Game\n";
-	delete this->_player;
+	//delete this->_player; THIS LINE CAUSES BUS ERRORS OCCASIONALLY
 	std::cout << "Game De-Constructed\n";
 }
 
