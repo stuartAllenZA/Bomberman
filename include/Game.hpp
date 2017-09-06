@@ -1,5 +1,5 @@
-#ifndef INCLUDE_GAME_HPP
-#define INCLUDE_GAME_HPP
+#ifndef GAME_HPP
+#define GAME_HPP
 
 #include <iostream>
 #include <vector>
@@ -15,6 +15,13 @@
 #include <sstream>
 #include <string>
 
+// Add variable checklist
+
+//		1. Getter & Setter
+//		2. Add to << operator overload
+//		3. Add to = operator overload
+//		4. Check if it can be default constructed, if so, add
+
 enum class GameState {
 	MENU,
 	PLAY,
@@ -24,14 +31,22 @@ enum class GameState {
 	EXIT
 };
 
+enum class PlayState {
+	PLAYER_SELECT,
+	GAME_LOAD,
+	GAME_PLAY
+};
+
 class Game {
 	public:
 		Game();
 		Game(Game const & src);
 		~Game();
 		Game & 					operator=(Game const & src);
-		GameState				getState() const;
-		void					setState(const GameState newState);
+		GameState				getGameState() const;
+		void					setGameState(const GameState newState);
+		PlayState				getPlayState() const;
+		void					setPlayState(const PlayState newState);
 		int						getGameInput() const;
 		void					setGameInput(const int newInput);
 		Settings				getSettings() const;
@@ -40,32 +55,22 @@ class Game {
 		void					setPlayer(Player *newPlayer);
 		std::vector<Character*>	getEnemies() const;
 		void					setEnemies(const std::vector<Character*> newEnemies);
-		bool 					getPlaying();
-		void					setPlaying(bool newPlaying);
-		
-		std::string				newUser(std::string playerName);
-		void					saveGame();
-		void					savePlayer();
+
 		void					saveSettings();
+		void					savePlayer();
+		void					saveGame();
 		void					loadPlayer(std::string playerName);
 		void					loadGame();
 		void					loadSettings();
 		std::string				lexFile(std::string fileName, std::string find);
 
-		void					randomlyAssignDropToBox();
-		
-		void					updateGameData();
-
 	private:
-		GameState				_state;
+		GameState				_gameState;
+		PlayState				_playState;
 		int						_gameInput;
 		Settings				_settings;
 		Player					*_player;
 		std::vector<Character*>	_enemies;
-		std::vector<Box>		_unbreakableWalls;
-		std::vector<Box>		_breakableBox;
-		std::vector<Drop>		_drops;
-		bool 					_playing;
 };
 
 std::ostream &					operator<<(std::ostream & o, Game const & rhs);

@@ -1,8 +1,7 @@
 #include <Game.hpp>
 
-Game::Game() : _state(GameState::MENU), _gameInput(0), _playing(false) {
+Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _gameInput(0), _settings(Settings()) {
 	std::cout << "Constructing Game\n";
-	this->_settings = Settings();
 	std::cout << "Game Constructed\n";
 }
 
@@ -13,24 +12,34 @@ Game::Game(Game const & src) {
 
 Game::~Game() {
 	std::cout << "De-Constructing Game\n";
-	//delete this->_player; THIS LINE CAUSES BUS ERRORS OCCASIONALLY
+	delete this->_player;
 	std::cout << "Game De-Constructed\n";
 }
 
 Game &					Game::operator=(Game const & src) {
-	this->_state = src.getState();
+	this->_gameState = src.getGameState();
+	this->_playState = src.getPlayState();
 	this->_gameInput = src.getGameInput();
+	this->_settings = src.getSettings();
+	this->_player = src.getPlayer();
+	this->_enemies = src.getEnemies();
 	return (*this);
 }
 
-GameState				Game::getState() const {
-	return (this->_state);
+GameState				Game::getGameState() const {
+	return (this->_gameState);
 }
 
-void					Game::setState(const GameState newState) {
-	this->_state = newState;
-	if (newState == GameState::PLAY)
-		_playing = true;
+void					Game::setGameState(const GameState newState) {
+	this->_gameState = newState;
+}
+
+PlayState				Game::getPlayState() const {
+	return (this->_playState);
+}
+
+void					Game::setPlayState(const PlayState newState) {
+	this->_playState = newState;
 }
 
 int						Game::getGameInput() const {
@@ -49,7 +58,7 @@ void					Game::setSettings(const Settings newSettings) {
 	this->_settings = newSettings;
 }
 
-Player*				Game::getPlayer() const {
+Player*					Game::getPlayer() const {
 	return (this->_player);
 }
 
@@ -63,26 +72,6 @@ std::vector<Character*>	Game::getEnemies() const {
 
 void					Game::setEnemies(const std::vector<Character*> newEnemies) {
 	this->_enemies = newEnemies;
-}
-
-bool 					Game::getPlaying(){
-	return (this->_playing);
-}
-
-void					Game::setPlaying(bool newPlaying){
-	this->_playing = newPlaying;
-}
-
-std::string				Game::newUser(std::string playerName) {
-	DIR	*directory = opendir("resources/profiles/");
-	struct dirent *contents;
-	while ((contents = readdir(directory)) != NULL) {
-		if (contents->d_name == playerName)
-			return "user already exists";
-	}
-	savePlayer();
-	closedir(directory);
-	return "success message";
 }
 
 void					Game::saveSettings() {
@@ -188,7 +177,11 @@ std::string				Game::lexFile(std::string fileName, std::string find) {
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	int num = 0;
-	o << "Dumping Game State\nGame State: " << static_cast<std::underlying_type<GameState>::type>(rhs.getState()) << "\nGame Input: " << rhs.getGameInput() << std::endl;
+	o << "Dumping Game State" <<
+	"\nGame State: " << static_cast<std::underlying_type<GameState>::type>(rhs.getGameState()) <<
+	"\nPlay State: " << static_cast<std::underlying_type<PlayState>::type>(rhs.getPlayState()) <<
+	"\nGame Input: " << rhs.getGameInput() << std::endl <<
+	"\nPlayer: " << *rhs.getPlayer();
 	if (rhs.getEnemies().size() > 0) {
 		for (std::vector<Character*>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it)
 		{
