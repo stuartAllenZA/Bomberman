@@ -4,9 +4,11 @@
 #pragma once
 
 #include <iostream>
-#include "../../.brew/Cellar/glew/2.1.0/include/GL/glew.h"
-#include "../../.brew/include/nanogui/nanogui.h"
-#include "../../.brew/Cellar/glfw/3.2.1/include/GLFW/glfw3.h"
+#include <GL/glew.h>
+#include <nanogui/nanogui.h>
+#include <nanogui/screen.h>
+#include <nanogui/widget.h>
+#include <GLFW/glfw3.h>
 #include "Character.hpp"
 #include "Exceptions.hpp"
 #include "Game.hpp"
@@ -15,14 +17,14 @@
 #include "Settings.hpp"
 
 enum class		keys {
-    LEFT,
-    RIGHT,
-    UP,
-    DOWN,
-    SPACE,
-    ENTER,
-    ESC,
-    NONE
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN,
+	SPACE,
+	ENTER,
+	ESC,
+	NONE
 };
 
 class Core {
@@ -39,6 +41,12 @@ public:
     void                gameLoop();
     void                mainMenu();
     void                drawGame();
+	void				newPlayer();
+    void	    		initPlay();
+    void		    	load();
+    void			    settings();
+    void			    save();
+    void			    exit();
     void		        fatalError(std::string errorString);
 
     //__________________________GETTERS AND SETTERS________________________________________
@@ -68,10 +76,9 @@ private:
     int                 _height;
     Game                *_game;
     keys                _keyPressed;
-    double                 _mouseX;
-    double                 _mouseY;
+    double              _mouseX;
+    double              _mouseY;
     keys                _preKeyPressed;
 };
-
 
 #endif

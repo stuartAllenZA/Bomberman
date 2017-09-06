@@ -2,8 +2,11 @@
 *._*
 *.DS*
 *.so
-misc/
-bomberman
+Bomberman
 cmake-build-debug/
-CMakeLists.txt
+CMakeCache.txt
 .idea/
+CMakeFiles
+Makefile
+.nanogui
+cmake_install.cmake
