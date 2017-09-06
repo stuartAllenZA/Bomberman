@@ -3,9 +3,8 @@
 Core::Core() {
 	std::cout << "Constructing Core\n";
 	this->_game = new Game;
-	Settings settings = this->_game->getSettings();
-	this->_width = settings.getResolutionX();
-	this->_height = settings.getResolutionY();
+	this->_width = this->_game->getSettings().getResolutionX();
+	this->_height = this->_game->getSettings().getResolutionY();
 	glfwInit();
 	std::cout << "Core Constructed\n";
 }
@@ -37,6 +36,8 @@ Core::~Core() {
 void			Core::run() {
 	std::cout << "initializing" << std::endl;
 	init();
+	gameLoop();
+	std::cout << "Done" << std::endl;
 	// Start main menu (set game state, render menu)
 	// Simulate selection of 'New Game'
 	// Spawn player
@@ -109,115 +110,44 @@ void			Core::init() {
 	glfwMakeContextCurrent(_win);
 	glfwSwapInterval(1);
 	std::cout << "glfw window created" << std::endl;
-	std::cout << "creating nanogui screen" << std::endl;
-	_screen = new nanogui::Screen;
-	std::cout << "nanogui screen created" << std::endl;
-	std::cout << "initializing nanogui window" << std::endl;
-	_screen->initialize(_win, true);
-	std::cout << "nanogui window initialized, screen integrated with window" << std::endl;
-	std::cout << "visualizing screen" << std::endl;
-	_screen->setVisible(true);
-	_screen->performLayout();
-	std::cout << "starting screen loop" << std::endl;
-	nanogui::mainloop(100);
-}
-
-//Core::_key    Core::getAsciiKey(const Uint8*	keyPressArr){
-//    if (keyPressArr[SDL_SCANCODE_LEFT])
-//        return _key::LEFT;
-//    else if (keyPressArr[SDL_SCANCODE_RIGHT])
-//        return _key::RIGHT;
-//    else if (keyPressArr[SDL_SCANCODE_UP])
-//        return _key::UP;
-//    else if (keyPressArr[SDL_SCANCODE_DOWN])
-//        return _key::DOWN;
-//    else if (keyPressArr[SDL_SCANCODE_SPACE])
-//        return _key::SPACE;
-//    else if (keyPressArr[SDL_SCANCODE_RETURN])
-//        return _key::ENTER;
-//    else if (keyPressArr[SDL_SCANCODE_ESCAPE])
-//        return _key::ESC;
-//    else
-//        return _key::NONE;
-//}
-
-void			Core::input() {
-	int state = glfwGetKey(_win, GLFW_KEY_ESCAPE);
-
-	if (state == GLFW_PRESS)
-		this->_game->setState(GameState::EXIT);
-//    SDL_Event evnt;
-//    const Uint8*	keyPressArr = SDL_GetKeyboardState(NULL); // var to hold the current keypress, SEE https://wiki.libsdl.org/SDL_GetKeyboardState (Liam)
-//
-//    _key     keyName;
-//
-//    while (SDL_PollEvent(&evnt)) {
-//        switch (evnt.type) {
-//            case SDL_QUIT :
-//                _gameState = GameState::EXIT;
-//                break;
-//            case SDL_MOUSEMOTION:
-//                std::cout << evnt.motion.x << " " << evnt.motion.y << std::endl;
-//                break;
-//        }
-//        keyName = getAsciiKey(keyPressArr);
-//        switch (keyName) {
-//            case _key::LEFT :
-//                std::cout << "LEFTKEY!" << std::endl;
-//                break;
-//            case _key::RIGHT :
-//                std::cout << "RIGHTKEY!" << std::endl;
-//                break;
-//            case _key::UP :
-//                std::cout << "UPKEY!" << std::endl;
-//                break;
-//            case _key::DOWN :
-//                std::cout << "DOWNKEY!" << std::endl;
-//                break;
-//            case _key::SPACE :
-//                std::cout << "SPACEKEY!" << std::endl;
-//                break;
-//            case _key::ENTER :
-//                std::cout << "ENTERKEY!" << std::endl;
-//                break;
-//            case _key::ESC :
-//                std::cout << "ESCAPEKEY!" << std::endl;
-//                break;
-//            case _key::NONE :
-//                std::cout << "NONE" << std::endl;
-//                break;
-//
-//        }
-//    }
 }
 
 void			Core::gameLoop() {
 	GameState gs;
+	bool loop = true;
 
-	while (!glfwWindowShouldClose(_win)) {
+	while (loop == true) {
+		input();
 		gs = this->_game->getState();
 		switch (gs) {
-			case gs::MENU :
-			// menu();
+			case GameState::MENU :
+			mainMenu();
 			break;
-			case gs::PLAY :
-			// init_play();
+			case GameState::PLAY :
+			initPlay();
 			break;
-			case gs::LOAD :
-			// load();
+			case GameState::LOAD :
+			load();
 			break;
-			case gs::SET :
-			// settings();
+			case GameState::SET :
+			settings();
 			break;
-			case gs::SAVE :
-			// save();
+			case GameState::SAVE :
+			save();
 			break;
-			case gs::EXIT :
-			// exit();
+			case GameState::EXIT :
+			loop = false;
 			break;
 		}
 		drawGame();
+		std::cout << "looping" << std::endl;
 	}
+}
+
+void			Core::input() {
+	int state = glfwGetKey(_win, GLFW_KEY_ESCAPE);
+	if (state == GLFW_PRESS)
+		this->_game->setState(GameState::EXIT);
 }
 
 void			Core::drawGame() {
@@ -228,6 +158,123 @@ void			Core::drawGame() {
 
 	glfwSwapBuffers(_win);
 	glfwPollEvents();
+}
+
+void			Core::mainMenu() {
+
+	#if defined(NANOGUI_GLAD)
+		std::cout << "initializing GLAD loader" << std::endl;
+		if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
+			throw std::runtime_error("Could not initialize GLAD!");
+		glGetError(); // pull and ignore unhandled errors like GL_INVALID_ENUM
+	#endif
+	std::cout << "creating nanogui screen" << std::endl;
+	_screen = new nanogui::Screen;
+	std::cout << "nanogui screen created" << std::endl;
+	std::cout << "initializing nanogui window" << std::endl;
+	_screen->initialize(_win, true);
+	std::cout << "nanogui window initialized, screen integrated with window" << std::endl;
+	nanogui::FormHelper *gui = new nanogui::FormHelper(_screen);
+
+	if (!this->_game->getSettings().getLastPlayer().empty())
+		this->_game->loadPlayer(this->_game->getSettings().getLastPlayer());
+	else
+		newPlayer();
+
+	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(10, 10), "Fuckyeah BITCH!");
+	gui->addButton("A button", []() { std::cout << "Button pressed." << std::endl; });
+	std::cout << "visualizing screen" << std::endl;
+	_screen->setVisible(true);
+	_screen->performLayout();
+	nanoguiWindow->center();
+
+	std::cout << "starting screen loop" << std::endl;
+	while (!glfwWindowShouldClose(_win)) {
+		glfwPollEvents();
+		updateKeys();
+		if (_keyPressed != keys::NONE)
+			std::cout << "KEY PRESSED" << std::endl;
+		glfwGetFramebufferSize(_win, &_width, &_height);
+		glViewport(0, 0, _width, _height);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		_screen->drawContents();
+		_screen->drawWidgets();
+		glfwSwapBuffers(_win);
+	}
+	this->_game->setState(GameState::EXIT);
+	glfwTerminate();
+}
+
+void			Core::updateKeys() {
+	int     state;
+	bool    pressed = false;
+
+	state = glfwGetKey(_win, GLFW_KEY_LEFT);
+	if (state == GLFW_PRESS) {
+		_keyPressed = keys::LEFT;
+		pressed = true;
+	}
+	state = glfwGetKey(_win, GLFW_KEY_RIGHT);
+	if (state == GLFW_PRESS && !pressed) {
+		_keyPressed = keys::RIGHT;
+		pressed = true;
+	}
+	state = glfwGetKey(_win, GLFW_KEY_UP);
+	if (state == GLFW_PRESS && !pressed) {
+		_keyPressed = keys::UP;
+		pressed = true;
+	}
+	state = glfwGetKey(_win, GLFW_KEY_DOWN);
+	if (state == GLFW_PRESS && !pressed) {
+		_keyPressed = keys::DOWN;
+		pressed = true;
+	}
+	state = glfwGetKey(_win, GLFW_KEY_SPACE);
+	if (state == GLFW_PRESS && !pressed) {
+		_keyPressed = keys::SPACE;
+		pressed = true;
+	}
+	state = glfwGetKey(_win, GLFW_KEY_ENTER);
+	if (state == GLFW_PRESS && !pressed) {
+		_keyPressed = keys::ENTER;
+		pressed = true;
+	}
+	state = glfwGetKey(_win, GLFW_KEY_ESCAPE);
+	if (state == GLFW_PRESS && !pressed) {
+		_keyPressed = keys::ESC;
+		pressed = true;
+	}
+	if (!pressed)
+		_keyPressed = keys::NONE;
+}
+
+void			Core::fatalError(std::string errorString) {
+	std::cout << errorString << std::endl;
+	std::cout << "Press any key to exit" << std::endl;
+	int temp;
+	std::cin >> temp;
+	std::exit(1);
+}
+
+void			Core::newPlayer() {
+	this->_game->setPlayer(new Player("Bob"));
+}
+
+void			Core::initPlay() {
+
+}
+
+void			Core::load() {
+
+}
+
+void			Core::settings() {
+
+}
+
+void			Core::save() {
+
 }
 
 Game			*Core::getGame() const {
@@ -270,10 +317,18 @@ void			Core::setHeight(const int newHeight) {
 	this->_height = newHeight;
 }
 
-void			Core::fatalError(std::string errorString) {
-	std::cout << errorString << std::endl;
-	std::cout << "Press any key to exit" << std::endl;
-	int temp;
-	std::cin >> temp;
-	exit(1);
+keys			Core::getKeyPressed() const {
+	return (this->_keyPressed);
+}
+
+void			Core::setKeyPressed(const keys newkey) {
+	this->_keyPressed  = newkey;
+}
+
+keys			Core::getPreKeyPressed() const {
+	return (this->_keyPressed);
+}
+
+void			Core::setPreKeyPressed(const keys newkey) {
+	this->_keyPressed  = newkey;
 }

@@ -24,11 +24,6 @@ enum class GameState {
 	EXIT
 };
 
-enum class PlayState {
-	PLAYER,
-	
-};
-
 class Game {
 	public:
 		Game();
