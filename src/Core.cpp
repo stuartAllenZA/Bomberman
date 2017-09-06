@@ -140,7 +140,7 @@ void			Core::gameLoop() {
 	GameState gs;
 	bool loop = true;
 
-	while (loop == true) {
+	while (loop == true && !glfwWindowShouldClose(_win)) {
 		input();
 		gs = this->_game->getState();
 		switch (gs) {
@@ -218,6 +218,13 @@ void    Core::mainMenu() {
             if (_keyPressed == keys::ENTER) {
                 this->_game->setState(GameState::PLAY);
             }
+			else if (_keyPressed == keys::ESC)
+			{
+				if (this->_game->getPlaying())
+					this->_game->setState(GameState::PLAY);
+				else
+					this->_game->setState(GameState::EXIT);
+			}
         }
         glfwGetFramebufferSize(_win, &_width, &_height);
         glViewport(0, 0, _width, _height);
@@ -285,7 +292,9 @@ void			Core::newPlayer() {
 }
 
 void			Core::initPlay() {
-
+	std::cout << "playing" << std::endl;
+	if (_keyPressed == keys::ESC)
+		this->_game->setState(GameState::MENU);
 }
 
 void			Core::load() {

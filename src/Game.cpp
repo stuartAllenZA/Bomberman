@@ -1,6 +1,6 @@
 #include <Game.hpp>
 
-Game::Game() : _state(GameState::MENU), _gameInput(0) {
+Game::Game() : _state(GameState::MENU), _gameInput(0), _playing(false) {
 	std::cout << "Constructing Game\n";
 	this->_settings = Settings();
 	std::cout << "Game Constructed\n";
@@ -29,6 +29,8 @@ GameState				Game::getState() const {
 
 void					Game::setState(const GameState newState) {
 	this->_state = newState;
+	if (newState == GameState::PLAY)
+		_playing = true;
 }
 
 int						Game::getGameInput() const {
@@ -61,6 +63,14 @@ std::vector<Character*>	Game::getEnemies() const {
 
 void					Game::setEnemies(const std::vector<Character*> newEnemies) {
 	this->_enemies = newEnemies;
+}
+
+bool 					Game::getPlaying(){
+	return (this->_playing);
+}
+
+void					Game::setPlaying(bool newPlaying){
+	this->_playing = newPlaying;
 }
 
 std::string				Game::newUser(std::string playerName) {
