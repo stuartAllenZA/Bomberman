@@ -16,16 +16,13 @@
 #include "Player.hpp"
 #include "Settings.hpp"
 
-enum class		keys {
-	LEFT,
-	RIGHT,
-	UP,
-	DOWN,
-	SPACE,
-	ENTER,
-	ESC,
-	NONE
-};
+#define UP      0
+#define DOWN    1
+#define LEFT    2
+#define RIGHT   3
+#define SPACE   4
+#define ENTER   5
+#define ESC     6
 
 class Core {
 public:
@@ -61,10 +58,8 @@ public:
     void                setWidth(const int newWidth);
     int                 getHeight() const;
     void                setHeight(const int newHeight);
-    keys                getKeyPressed() const;
-    void                setKeyPressed(const keys newkey);
-    keys                getPreKeyPressed() const;
-    void                setPreKeyPressed(const keys newkey);
+    bool *              getKeyPressArr();
+    void                setKeyPressArr(bool newUp, bool newDown, bool newlLeft, bool newRight, bool newSpace, bool newEnter, bool newEsc);
 
     //__________________________________END______________________________________
 
@@ -75,10 +70,9 @@ private:
     int                 _width;
     int                 _height;
     Game                *_game;
-    keys                _keyPressed;
     double              _mouseX;
     double              _mouseY;
-    keys                _preKeyPressed;
+    bool                _keyPressArr[7];
 };
 
 #endif

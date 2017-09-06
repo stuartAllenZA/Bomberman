@@ -40,6 +40,8 @@ class Game {
 		void					setPlayer(Player *newPlayer);
 		std::vector<Character*>	getEnemies() const;
 		void					setEnemies(const std::vector<Character*> newEnemies);
+		bool 					getPlaying();
+		void					setPlaying(bool newPlaying);
 		
 		std::string				newUser(std::string playerName);
 		void					saveGame();
@@ -63,6 +65,7 @@ class Game {
 		std::vector<Box>		_unbreakableWalls;
 		std::vector<Box>		_breakableBox;
 		std::vector<Drop>		_drops;
+		bool 					_playing;
 };
 
 std::ostream &					operator<<(std::ostream & o, Game const & rhs);
