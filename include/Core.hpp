@@ -43,12 +43,19 @@ public:
 	void			setWidth(const int newWidth);
 	int				getHeight() const;
 	void			setHeight(const int newHeight);
+
 	void			run();
 	void			init();
 	void			input();
 	void			gameLoop();
 	void			drawGame();
 	void			fatalError(std::string errorString);
+	void			menu();
+	void			init_play();
+	void			load();
+	void			settings();
+	void			save();
+	void			exit();
 
 private:
 

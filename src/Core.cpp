@@ -194,36 +194,28 @@ void			Core::input() {
 void			Core::gameLoop() {
 	GameState gs;
 
-	gs = this->_game->getState();
-	while (gs != GameState::EXIT && !glfwWindowShouldClose(_win)) {
-		input();
-
-		// switch (gs) {
-		// 	case gs::LEFT :
-		// 	std::cout << "LEFTKEY!" << std::endl;
-		// 	break;
-		// 	case gs::RIGHT :
-		// 	std::cout << "RIGHTKEY!" << std::endl;
-		// 	break;
-		// 	case gs::UP :
-		// 	std::cout << "UPKEY!" << std::endl;
-		// 	break;
-		// 	case gs::DOWN :
-		// 	std::cout << "DOWNKEY!" << std::endl;
-		// 	break;
-		// 	case gs::SPACE :
-		// 	std::cout << "SPACEKEY!" << std::endl;
-		// 	break;
-		// 	case gs::ENTER :
-		// 	std::cout << "ENTERKEY!" << std::endl;
-		// 	break;
-		// 	case gs::ESC :
-		// 	std::cout << "ESCAPEKEY!" << std::endl;
-		// 	break;
-		// 	case gs::NONE :
-		// 	std::cout << "NONE" << std::endl;
-		// 	break;
-		// }
+	while (!glfwWindowShouldClose(_win)) {
+		gs = this->_game->getState();
+		switch (gs) {
+			case gs::MENU :
+			// menu();
+			break;
+			case gs::PLAY :
+			// init_play();
+			break;
+			case gs::LOAD :
+			// load();
+			break;
+			case gs::SET :
+			// settings();
+			break;
+			case gs::SAVE :
+			// save();
+			break;
+			case gs::EXIT :
+			// exit();
+			break;
+		}
 		drawGame();
 	}
 }
