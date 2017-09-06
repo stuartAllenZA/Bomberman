@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Bomberman"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/goinfre/lchimes/Bomberman_Liam"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/goinfre/lchimes/Bomberman_Liam"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/goinfre/lchimes/Bomberman_Liam"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Bomberman">
+				<Option output="/goinfre/lchimes/Bomberman_Liam/Bomberman" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/goinfre/lchimes/Bomberman_Liam"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/goinfre/lchimes/Bomberman_Liam/include"/>
+					<Add directory="/goinfre/lchimes/Bomberman_Liam/.nanogui/ext/glfw/include"/>
+					<Add directory="/goinfre/lchimes/Bomberman_Liam/.nanogui/include"/>
+					<Add directory="/goinfre/lchimes/Bomberman_Liam/.nanogui/ext/eigen"/>
+					<Add directory="/goinfre/lchimes/Bomberman_Liam/.nanogui/ext/nanovg/src"/>
+					<Add directory="/goinfre/lchimes/.brew/Cellar/glew/2.1.0/include"/>
+					<Add directory="/System/Library/Frameworks/AGL.framework/Versions/A/Headers"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/7.3.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 Bomberman"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Bomberman/fast">
+				<Option output="/goinfre/lchimes/Bomberman_Liam/Bomberman" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/goinfre/lchimes/Bomberman_Liam"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/goinfre/lchimes/Bomberman_Liam/include"/>
+					<Add directory="/goinfre/lchimes/Bomberman_Liam/.nanogui/ext/glfw/include"/>
+					<Add directory="/goinfre/lchimes/Bomberman_Liam/.nanogui/include"/>
+					<Add directory="/goinfre/lchimes/Bomberman_Liam/.nanogui/ext/eigen"/>
+					<Add directory="/goinfre/lchimes/Bomberman_Liam/.nanogui/ext/nanovg/src"/>
+					<Add directory="/goinfre/lchimes/.brew/Cellar/glew/2.1.0/include"/>
+					<Add directory="/System/Library/Frameworks/AGL.framework/Versions/A/Headers"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/7.3.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 Bomberman/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/goinfre/lchimes/Bomberman_Liam/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/Bomb.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/Box.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/BreakableBox.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/Character.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/Core.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/Drop.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/EnemyDrop.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/Exceptions.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/ExtraBomb.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/Game.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/GraphicsHandler.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/LevelHatch.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/Player.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/RangeExtender.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/RemoteDetonator.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/Settings.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/UnbreakableBox.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/src/main.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman_Liam/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

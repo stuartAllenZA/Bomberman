@@ -213,18 +213,15 @@ void    Core::mainMenu() {
         glfwPollEvents();
         updateKeys();
         updateMouse();
-        if (_keyPressed != keys::NONE) {
-            std::cout << "KEY PRESSED" << std::endl;
-            if (_keyPressed == keys::ENTER) {
+        if (_keyPressArr[ENTER]) {
+            this->_game->setState(GameState::PLAY);
+        }
+        else if (_keyPressArr[ESC])
+        {
+            if (this->_game->getPlaying())
                 this->_game->setState(GameState::PLAY);
-            }
-			else if (_keyPressed == keys::ESC)
-			{
-				if (this->_game->getPlaying())
-					this->_game->setState(GameState::PLAY);
-				else
-					this->_game->setState(GameState::EXIT);
-			}
+            else
+                this->_game->setState(GameState::EXIT);
         }
         glfwGetFramebufferSize(_win, &_width, &_height);
         glViewport(0, 0, _width, _height);
@@ -241,42 +238,40 @@ void			Core::updateKeys() {
 	bool    pressed = false;
 
 	state = glfwGetKey(_win, GLFW_KEY_LEFT);
-	if (state == GLFW_PRESS) {
-		_keyPressed = keys::LEFT;
-		pressed = true;
-	}
+	if (state == GLFW_PRESS)
+		_keyPressArr[LEFT] = true;
+    else
+        _keyPressArr[LEFT] = false;
 	state = glfwGetKey(_win, GLFW_KEY_RIGHT);
-	if (state == GLFW_PRESS && !pressed) {
-		_keyPressed = keys::RIGHT;
-		pressed = true;
-	}
-	state = glfwGetKey(_win, GLFW_KEY_UP);
-	if (state == GLFW_PRESS && !pressed) {
-		_keyPressed = keys::UP;
-		pressed = true;
-	}
-	state = glfwGetKey(_win, GLFW_KEY_DOWN);
-	if (state == GLFW_PRESS && !pressed) {
-		_keyPressed = keys::DOWN;
-		pressed = true;
-	}
-	state = glfwGetKey(_win, GLFW_KEY_SPACE);
-	if (state == GLFW_PRESS && !pressed) {
-		_keyPressed = keys::SPACE;
-		pressed = true;
-	}
-	state = glfwGetKey(_win, GLFW_KEY_ENTER);
-	if (state == GLFW_PRESS && !pressed) {
-		_keyPressed = keys::ENTER;
-		pressed = true;
-	}
-	state = glfwGetKey(_win, GLFW_KEY_ESCAPE);
-	if (state == GLFW_PRESS && !pressed) {
-		_keyPressed = keys::ESC;
-		pressed = true;
-	}
-	if (!pressed)
-		_keyPressed = keys::NONE;
+    if (state == GLFW_PRESS)
+        _keyPressArr[RIGHT] = true;
+    else
+        _keyPressArr[RIGHT] = false;
+    state = glfwGetKey(_win, GLFW_KEY_UP);
+    if (state == GLFW_PRESS)
+        _keyPressArr[UP] = true;
+    else
+        _keyPressArr[UP] = false;
+    state = glfwGetKey(_win, GLFW_KEY_DOWN);
+    if (state == GLFW_PRESS)
+        _keyPressArr[DOWN] = true;
+    else
+        _keyPressArr[DOWN] = false;
+    state = glfwGetKey(_win, GLFW_KEY_SPACE);
+    if (state == GLFW_PRESS)
+        _keyPressArr[SPACE] = true;
+    else
+        _keyPressArr[SPACE] = false;
+    state = glfwGetKey(_win, GLFW_KEY_ENTER);
+    if (state == GLFW_PRESS)
+        _keyPressArr[ENTER] = true;
+    else
+        _keyPressArr[ENTER] = false;
+    state = glfwGetKey(_win, GLFW_KEY_ESCAPE);
+    if (state == GLFW_PRESS)
+        _keyPressArr[ESC] = true;
+    else
+        _keyPressArr[ESC] = false;
 }
 
 void			Core::fatalError(std::string errorString) {
@@ -293,7 +288,7 @@ void			Core::newPlayer() {
 
 void			Core::initPlay() {
 	std::cout << "playing" << std::endl;
-	if (_keyPressed == keys::ESC)
+	if (_keyPressArr[ESC])
 		this->_game->setState(GameState::MENU);
 }
 
@@ -349,18 +344,17 @@ void			Core::setHeight(const int newHeight) {
 	this->_height = newHeight;
 }
 
-keys			Core::getKeyPressed() const {
-	return (this->_keyPressed);
+bool *          Core::getKeyPressArr()
+{
+    return (this->_keyPressArr);
 }
 
-void			Core::setKeyPressed(const keys newkey) {
-	this->_keyPressed  = newkey;
-}
-
-keys			Core::getPreKeyPressed() const {
-	return (this->_keyPressed);
-}
-
-void			Core::setPreKeyPressed(const keys newkey) {
-	this->_keyPressed  = newkey;
+void            Core::setKeyPressArr(bool newUp, bool newDown, bool newLeft, bool newRight, bool newSpace, bool newEnter, bool newEsc){
+    this->_keyPressArr[UP] = newUp;
+    this->_keyPressArr[DOWN] = newDown;
+    this->_keyPressArr[LEFT] = newLeft;
+    this->_keyPressArr[RIGHT] = newRight;
+    this->_keyPressArr[SPACE] = newSpace;
+    this->_keyPressArr[ENTER] = newEnter;
+    this->_keyPressArr[ESC] = newEsc;
 }
