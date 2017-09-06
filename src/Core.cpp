@@ -29,9 +29,6 @@ Core::~Core() {
     std::cout << "De-Constructing Core\n";
     delete this->_game;
     this->_game = nullptr;
-    std::cout << "closing nanogui screen" << std::endl;
-    nanogui::shutdown();
-    std::cout << "nanogui screen closed successfully" << std::endl;
     std::cout << "Core De-Constructed\n";
 }
 
@@ -80,6 +77,29 @@ void    Core::updateKeys() {
         _keyPressed = keys::NONE;
 }
 
+void    Core::updateMouse() {
+    int             state;
+    static bool     wasClicked = false;
+    static double   clickX;
+    static double   clickY;
+
+    glfwGetCursorPos(_win, &_mouseX, &_mouseY);
+    state = glfwGetMouseButton(_win, GLFW_MOUSE_BUTTON_1);
+    if (state == GLFW_PRESS && wasClicked == false) {
+        std::cout << "clicked at:   " << _mouseX << ",  " << _mouseY << std::endl;
+        wasClicked = true;
+        clickX = _mouseX;
+        clickY = _mouseY;
+    }
+    else if (state == GLFW_RELEASE && wasClicked) {
+        std::cout << "released at:  " << _mouseX << ",  " << _mouseY << std::endl;
+        wasClicked = false;
+        if (clickX >= 360  && clickX <= 450 && clickY >= 300 && clickY <= 325)
+            if (_mouseX >= 360  && _mouseX <= 450 && _mouseY >= 300 && _mouseY <= 325)
+                std::cout << "'FUCK YEAH' Button pressed" << std::endl;
+    }
+}
+
 void	Core::run() {
     std::cout << "initializing" << std::endl;
     init();
@@ -116,7 +136,6 @@ void                Core::init() {
 }
 
 void    Core::mainMenu() {
-
     #if defined(NANOGUI_GLAD)
         std::cout << "initializing GLAD loader" << std::endl;
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -144,6 +163,7 @@ void    Core::mainMenu() {
     while (!glfwWindowShouldClose(_win)) {
         glfwPollEvents();
         updateKeys();
+        updateMouse();
         if (_keyPressed != keys::NONE)
             std::cout << "KEY PRESSED" << std::endl;
         glfwGetFramebufferSize(_win, &_width, &_height);
@@ -154,6 +174,9 @@ void    Core::mainMenu() {
         _screen->drawWidgets();
         glfwSwapBuffers(_win);
     }
+    std::cout << "closing nanogui screen" << std::endl;
+    nanogui::shutdown();
+    std::cout << "nanogui screen closed successfully" << std::endl;
     glfwTerminate();
 
 }
