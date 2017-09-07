@@ -1,5 +1,7 @@
 #include <Core.hpp>
 
+nanogui::Screen *screen = nullptr;
+
 Core::Core() {
 	std::cout << "Constructing Core\n";
 	this->_game = new Game;
@@ -15,7 +17,6 @@ Core::Core(Core const & src) {
 
 Core &			Core::operator=(Core const & src) {
 	this->_win = src.getWin();
-	this->_screen = src.getScreen();
 	this->_game = src.getGame();
 	this->_width = src.getWidth();
 	this->_height = src.getHeight();
@@ -107,6 +108,17 @@ void			Core::init() {
 		fatalError("GLFW context is shot");
 	glfwMakeContextCurrent(_win);
 	glfwSwapInterval(1);
+	glfwSetCursorPosCallback(_win,
+            [](GLFWwindow *, double x, double y) {
+            screen->cursorPosCallbackEvent(x, y);
+        }
+    );
+
+    glfwSetMouseButtonCallback(_win,
+        [](GLFWwindow *, int button, int action, int modifiers) {
+            screen->mouseButtonCallbackEvent(button, action, modifiers);
+        }
+    );
 	std::cout << "glfw window created" << std::endl;
 }
 
@@ -165,24 +177,27 @@ void	Core::mainMenu() {
 		glGetError(); // pull and ignore unhandled errors like GL_INVALID_ENUM
 #endif
 	std::cout << "creating nanogui screen" << std::endl;
-	_screen = new nanogui::Screen;
+	screen = new nanogui::Screen;
 	std::cout << "nanogui screen created" << std::endl;
 	std::cout << "initializing nanogui window" << std::endl;
-	_screen->initialize(_win, true);
+	screen->initialize(_win, true);
 	std::cout << "nanogui window initialized, screen integrated with window" << std::endl;
 
-	nanogui::FormHelper *gui = new nanogui::FormHelper(_screen);
-	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(10, 10), "Fuckyeah BITCH!");
+	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
+	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(10, 10), "Bomberman");
 
 	if (!this->_game->getSettings().getLastPlayer().empty())
 		this->_game->loadPlayer(this->_game->getSettings().getLastPlayer());
 	else
 		newPlayer(); //function that uses nanogui to get the name of player and create player
 
-	gui->addButton("A button", []() { std::cout << "Button pressed." << std::endl; });
+	gui->addButton("Start Game", []() { std::cout << "AButton pressed." << std::endl; });
+	gui->addButton("Load Game", []() { std::cout << "BButton pressed." << std::endl; });
+	gui->addButton("Settings", []() { std::cout << "CButton pressed." << std::endl; });
+	gui->addButton("Exit", [this] {this->_game->setGameState(GameState::EXIT);});
 	std::cout << "visualizing screen" << std::endl;
-	_screen->setVisible(true);
-	_screen->performLayout();
+	screen->setVisible(true);
+	screen->performLayout();
 	nanoguiWindow->center();
 
 	std::cout << "starting screen loop" << std::endl;
@@ -204,8 +219,8 @@ void	Core::mainMenu() {
 		glViewport(0, 0, _width, _height);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		_screen->drawContents();
-		_screen->drawWidgets();
+		screen->drawContents();
+		screen->drawWidgets();
 		glfwSwapBuffers(_win);
 	}
 }
@@ -318,14 +333,6 @@ GLFWwindow		*Core::getWin() const {
 
 void			Core::setWin(GLFWwindow *win) {
 	this->_win = win;
-}
-
-nanogui::Screen	*Core::getScreen() const {
-	return (this->_screen);
-}
-
-void			Core::setScreen(nanogui::Screen *screen){
-	this->_screen = screen;
 }
 
 int				Core::getWidth() const {

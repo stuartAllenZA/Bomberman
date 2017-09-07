@@ -1,4 +1,4 @@
-#include <header.hpp>
+#include <Bomberman.hpp>
 
 int main(int argc, char **argv) {
 	//Check for start arguments

@@ -23,6 +23,7 @@ endif()
 
 set(SOURCE_FILES
 		src/Bomb.cpp
+		src/Bomberman.cpp
 		src/Box.cpp
 		src/BreakableBox.cpp
 		src/Character.cpp
@@ -32,9 +33,7 @@ set(SOURCE_FILES
 		src/Exceptions.cpp
 		src/ExtraBomb.cpp
 		src/Game.cpp
-		src/GraphicsHandler.cpp
 		src/LevelHatch.cpp
-		src/main.cpp
 		src/Player.cpp
 		src/RangeExtender.cpp
 		src/RemoteDetonator.cpp
