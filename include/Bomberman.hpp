@@ -1,5 +1,5 @@
-#ifndef INCLUDE_HEADER_HPP_
-#define INCLUDE_HEADER_HPP_
+#ifndef BOMBERMAN_HPP
+#define BOMBERMAN_HPP
 
 #include "Exceptions.hpp"
 #include "Core.hpp"
