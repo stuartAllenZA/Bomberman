@@ -21,6 +21,15 @@
 #define ENTER	5
 #define ESC		6
 
+enum class MenuState {
+    PLAYER_SELECT,
+    LOAD_SAVE,
+    MAIN_MENU,
+    SETTINGS,
+    PAUSE,
+    NO_MENU
+};
+
 class Core {
 public:
 	Core();
@@ -36,7 +45,9 @@ public:
 	int				getHeight() const;
 	void			setHeight(const int newHeight);
 	bool			*getKeyPressArr();
-	void			setKeyPressArr(bool newUp, bool newDown, bool newlLeft, bool newRight, bool newSpace, bool newEnter, bool newEsc);
+	void			setKeyPressArr(const bool newUp, const bool newDown, const bool newlLeft, const bool newRight, const bool newSpace, const bool newEnter, const bool newEsc);
+    MenuState       getMenuState();
+    void            setMenuState(const MenuState newMenuState);
 
 	void			init();
 	void			input();
@@ -44,7 +55,11 @@ public:
 	void			updateMouse();
 	void			run();
 	void			gameLoop();
-	void			mainMenu();
+	void			menu();
+	void            playerSelectMenu();
+    void            mainMenu();
+	void			settingsMenu();
+	void            pauseMenu();
 	void			drawGame();
 	void			newPlayer();
 	void			initPlay();
@@ -54,6 +69,9 @@ public:
 	void			exit();
 	void			setExit();
 	void			fatalError(std::string errorString);
+    void            newGameButton();
+    void            loadGameButton();
+    void            settingsButton();
 
 private:
 
@@ -64,6 +82,7 @@ private:
 	double			_mouseX;
 	double			_mouseY;
 	bool			_keyPressArr[7];
+    MenuState       _menuState;
 };
 
 #endif
