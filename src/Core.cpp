@@ -7,6 +7,7 @@ Core::Core() {
 	this->_game = new Game;
 	this->_width = this->_game->getSettings().getResolutionX();
 	this->_height = this->_game->getSettings().getResolutionY();
+    this->_menuState = MenuState::PLAYER_SELECT;
 	std::cout << "Core Constructed\n";
 }
 
@@ -131,7 +132,7 @@ void			Core::gameLoop() {
 		gs = this->_game->getGameState();
 		switch (gs) {
 			case GameState::MENU :
-			mainMenu();
+			menu();
 			break;
 			case GameState::PLAY :
 			initPlay();
@@ -169,7 +170,7 @@ void			Core::drawGame() {
 	glfwPollEvents();
 }
 
-void	Core::mainMenu() {
+void	        Core::menu() {
 #if defined(NANOGUI_GLAD)
 	std::cout << "initializing GLAD loader" << std::endl;
 		if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -182,39 +183,145 @@ void	Core::mainMenu() {
 	std::cout << "initializing nanogui window" << std::endl;
 	screen->initialize(_win, true);
 	std::cout << "nanogui window initialized, screen integrated with window" << std::endl;
+    while (this->_game->getGameState() == GameState::MENU) {
+        switch (_menuState) {
+            case MenuState::PLAYER_SELECT :
+                playerSelectMenu();
+                break;
+            case MenuState::MAIN_MENU :
+                mainMenu();
+                break;
+            case MenuState::LOAD_SAVE :
+                load();
+                break;
+            case MenuState::SETTINGS :
+                settingsMenu();
+                break;
+			case MenuState::PAUSE :
+				pauseMenu();
+				break;
+            case MenuState::NO_MENU :
+                break;
+        }
+    }
+}
 
+void            Core::playerSelectMenu() {
+    nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
+    nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "Select a player");
+    std::string     playerNameInput = "PRESS ENTER TO START";
+    gui->addVariable("Create a new player", playerNameInput);
+    screen->setVisible(true);
+    screen->performLayout();
+    nanoguiWindow->center();
+    while (!glfwWindowShouldClose(_win) && _menuState == MenuState::PLAYER_SELECT){
+        glfwPollEvents();
+        updateKeys();
+        updateMouse();
+        if (_keyPressArr[ENTER])
+            _menuState = MenuState::MAIN_MENU;
+
+        glfwGetFramebufferSize(_win, &_width, &_height);
+        glViewport(0, 0, _width, _height);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        screen->drawContents();
+        screen->drawWidgets();
+        glfwSwapBuffers(_win);
+    }
+	if (glfwWindowShouldClose(_win))
+		this->_game->setGameState(GameState::EXIT);
+    nanoguiWindow->dispose();
+}
+
+void            Core::mainMenu() {
+    nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
+    nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(100, 100), "Bomberman");
+
+    gui->addButton("New Game", [this]() {
+        std::cout << "New Game pressed." << std::endl;
+        this->_game->setGameState(GameState::PLAY);
+        _menuState = MenuState::NO_MENU;
+    });
+
+
+    if (this->_game->getHasSave())
+        gui->addButton("Load Game", []() { std::cout << "HAS SAVES" << std::endl; });
+    else
+		gui->addButton("Load Game", []() { std::cout << "NO SAVES" << std::endl; });
+
+	gui->addButton("Settings", [this]() {
+        std::cout << "Settings pressed." << std::endl;
+		_menuState = MenuState::SETTINGS;
+    })->setBackgroundColor(Eigen::Vector4i(255, 255, 255, 255));
+
+    gui->addButton("Exit", [this] {
+        this->_game->setGameState(GameState::EXIT);
+        _menuState = MenuState::NO_MENU;
+    });
+
+    std::cout << "visualizing screen" << std::endl;
+    screen->setVisible(true);
+    screen->performLayout();
+    nanoguiWindow->center();
+
+    std::cout << "starting screen loop" << std::endl;
+    while (!glfwWindowShouldClose(_win) && _menuState == MenuState::MAIN_MENU){
+        glfwPollEvents();
+        updateKeys();
+        updateMouse();
+        //if (_keyPressArr[ENTER]) {
+        //    this->_game->setGameState(GameState::PLAY);
+        //}
+//        if (_keyPressArr[ESC])
+//        {
+//            if (this->_game->getPlayState() == PlayState::GAME_PLAY)
+//                this->_game->setGameState(GameState::PLAY);
+//            else
+//                this->_game->setGameState(GameState::EXIT);
+//        }
+        glfwGetFramebufferSize(_win, &_width, &_height);
+        glViewport(0, 0, _width, _height);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        screen->drawContents();
+        screen->drawWidgets();
+        glfwSwapBuffers(_win);
+    }
+	if (glfwWindowShouldClose(_win))
+		this->_game->setGameState(GameState::EXIT);
+	nanoguiWindow->dispose();
+}
+
+void			Core::settingsMenu(){
 	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
-	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(10, 10), "Bomberman");
+	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "SETTINGS");
 
-	if (!this->_game->getSettings().getLastPlayer().empty())
-		this->_game->loadPlayer(this->_game->getSettings().getLastPlayer());
-	else
-		newPlayer(); //function that uses nanogui to get the name of player and create player
+	nanogui::Widget *tools = new nanogui::Widget(screen);
 
-	gui->addButton("Start Game", []() { std::cout << "AButton pressed." << std::endl; });
-	gui->addButton("Load Game", []() { std::cout << "BButton pressed." << std::endl; });
-	gui->addButton("Settings", []() { std::cout << "CButton pressed." << std::endl; });
-	gui->addButton("Exit", [this] {this->_game->setGameState(GameState::EXIT);});
-	std::cout << "visualizing screen" << std::endl;
+//	std::cout << "settings menu" << std::endl;
+//	tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 6));
+//	std::cout << "settings menu" << std::endl;
+//	nanogui::Button *b = new nanogui::Button(nanoguiWindow, "Plain button");
+//	std::cout << "settings menu" << std::endl;
+//	b = new nanogui::Button(tools, "ACCEPT");
+//	b->setCallback([&]{
+//		_menuState = MenuState::MAIN_MENU;
+//	});
+//	b = new nanogui::Button(tools, "APPLY");
+//	b->setCallback([&]{
+//		_menuState = MenuState::PLAYER_SELECT;
+//	});
 	screen->setVisible(true);
 	screen->performLayout();
 	nanoguiWindow->center();
-
-	std::cout << "starting screen loop" << std::endl;
-	while (!glfwWindowShouldClose(_win) && this->_game->getGameState() == GameState::MENU){
+	while (!glfwWindowShouldClose(_win) && _menuState == MenuState::SETTINGS){
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
-		if (_keyPressArr[ENTER]) {
-			this->_game->setGameState(GameState::PLAY);
-		}
-		else if (_keyPressArr[ESC])
-		{
-			if (this->_game->getPlayState() == PlayState::GAME_PLAY)
-				this->_game->setGameState(GameState::PLAY);
-			else
-				this->_game->setGameState(GameState::EXIT);
-		}
+		if (_keyPressArr[ESC])
+			_menuState = MenuState::MAIN_MENU;
+
 		glfwGetFramebufferSize(_win, &_width, &_height);
 		glViewport(0, 0, _width, _height);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -223,6 +330,54 @@ void	Core::mainMenu() {
 		screen->drawWidgets();
 		glfwSwapBuffers(_win);
 	}
+	if (glfwWindowShouldClose(_win))
+		this->_game->setGameState(GameState::EXIT);
+	nanoguiWindow->dispose();
+}
+
+void            Core::pauseMenu() {
+    nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
+    nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "PAUSED");
+
+    gui->addButton("Resume", [this] {
+        this->_game->setGameState(GameState::PLAY);
+        _menuState = MenuState::NO_MENU;
+    });
+
+	gui->addButton("Settings", [this] {
+		_menuState = MenuState::SETTINGS;
+	});
+
+    gui->addButton("Quit to Menu", [this] {
+        _menuState = MenuState::MAIN_MENU;
+    });
+
+    gui->addButton("Exit Program", [this] {
+        this->_game->setGameState(GameState::EXIT);
+        _menuState = MenuState::NO_MENU;
+    });
+
+	screen->setVisible(true);
+    screen->performLayout();
+    nanoguiWindow->center();
+    while (!glfwWindowShouldClose(_win) && _menuState == MenuState::PAUSE){
+        glfwPollEvents();
+        updateKeys();
+        updateMouse();
+        if (_keyPressArr[ENTER])
+            _menuState = MenuState::MAIN_MENU;
+
+        glfwGetFramebufferSize(_win, &_width, &_height);
+        glViewport(0, 0, _width, _height);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        screen->drawContents();
+        screen->drawWidgets();
+        glfwSwapBuffers(_win);
+    }
+	if (glfwWindowShouldClose(_win))
+		this->_game->setGameState(GameState::EXIT);
+    nanoguiWindow->dispose();
 }
 
 void			Core::updateKeys() {
@@ -283,9 +438,6 @@ void			Core::updateMouse() {
 	else if (state == GLFW_RELEASE && wasClicked) {
 		std::cout << "released at:  " << _mouseX << ",  " << _mouseY << std::endl;
 		wasClicked = false;
-		if (clickX >= 360  && clickX <= 450 && clickY >= 300 && clickY <= 325)
-			if (_mouseX >= 360  && _mouseX <= 450 && _mouseY >= 300 && _mouseY <= 325)
-				std::cout << "'FUCK YEAH' Button pressed" << std::endl;
 	}
 }
 
@@ -297,14 +449,21 @@ void			Core::fatalError(std::string errorString) {
 	std::exit(1);
 }
 
-void			Core::newPlayer() {
-	this->_game->setPlayer(new Player("Bob"));
+void			Core::initPlay() {
+	std::cout << "playing, ESC to exit" << std::endl;
+//	if (this->_game->getSettings().getLastPlayer().empty())
+//        newPlayer(); //function that uses nanogui to get the name of player and create player
+//    else
+//        this->_game->loadPlayer(this->_game->getSettings().getLastPlayer());
+    if (_keyPressArr[ESC]){
+        this->_game->setGameState(GameState::MENU);
+        _menuState = MenuState::PAUSE;
+    }
 }
 
-void			Core::initPlay() {
-	std::cout << "playing" << std::endl;
-	if (_keyPressArr[ESC])
-		this->_game->setGameState(GameState::MENU);
+void			Core::newPlayer() {
+	//TODO: ADD NEW WINDOW TO MAKE PLAYERS
+	this->_game->setPlayer(new Player("Bob"));
 }
 
 void			Core::load() {
@@ -355,7 +514,7 @@ bool			*Core::getKeyPressArr() {
 	return (this->_keyPressArr);
 }
 
-void			Core::setKeyPressArr(bool newUp, bool newDown, bool newLeft, bool newRight, bool newSpace, bool newEnter, bool newEsc){
+void			Core::setKeyPressArr(const bool newUp, const bool newDown, const bool newLeft, const bool newRight, const bool newSpace, const bool newEnter, const bool newEsc){
 	this->_keyPressArr[UP] = newUp;
 	this->_keyPressArr[DOWN] = newDown;
 	this->_keyPressArr[LEFT] = newLeft;
@@ -363,4 +522,12 @@ void			Core::setKeyPressArr(bool newUp, bool newDown, bool newLeft, bool newRigh
 	this->_keyPressArr[SPACE] = newSpace;
 	this->_keyPressArr[ENTER] = newEnter;
 	this->_keyPressArr[ESC] = newEsc;
+}
+
+MenuState       Core::getMenuState(){
+    return (this->_menuState);
+}
+
+void            Core::setMenuState(const MenuState newMenuState){
+    this->_menuState = newMenuState;
 }
