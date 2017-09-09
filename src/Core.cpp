@@ -8,6 +8,7 @@ Core::Core() {
 	this->_width = this->_game->getSettings().getResolutionX();
 	this->_height = this->_game->getSettings().getResolutionY();
     this->_menuState = MenuState::PLAYER_SELECT;
+	setMinimumTime(50);
 	std::cout << "Core Constructed\n";
 }
 
@@ -120,6 +121,16 @@ void			Core::init() {
             screen->mouseButtonCallbackEvent(button, action, modifiers);
         }
     );
+	glfwSetKeyCallback(_win,
+					   [](GLFWwindow *, int key, int scancode, int action, int mods) {
+						   screen->keyCallbackEvent(key, scancode, action, mods);
+					   }
+	);
+	glfwSetCharCallback(_win,
+						[](GLFWwindow *, unsigned int codepoint) {
+							screen->charCallbackEvent(codepoint);
+						}
+	);
 	std::cout << "glfw window created" << std::endl;
 }
 
@@ -209,8 +220,15 @@ void	        Core::menu() {
 void            Core::playerSelectMenu() {
     nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
     nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "Select a player");
-    std::string     playerNameInput = "PRESS ENTER TO START";
+    std::string     playerNameInput = "choose a name";
     gui->addVariable("Create a new player", playerNameInput);
+	gui->addButton("Create", [this, &playerNameInput]() {
+		std::cout << "Create pressed." << std::endl;
+		if (playerNameInput != "choose a name")
+			_menuState = MenuState::MAIN_MENU;
+		else
+			std::cout << "name not available: " << playerNameInput << std::endl;
+	});
     screen->setVisible(true);
     screen->performLayout();
     nanoguiWindow->center();
@@ -219,15 +237,17 @@ void            Core::playerSelectMenu() {
         glfwPollEvents();
         updateKeys();
         updateMouse();
-        if (_keyPressArr[ENTER])
-            _menuState = MenuState::MAIN_MENU;
-		if (_keyPressArr[ESC] && getDelayTimer() >= 100) {
+        if (_keyPressArr[ENTER] && playerNameInput != "choose a name") {
+			newPlayer(playerNameInput);
+			_menuState = MenuState::MAIN_MENU;
+		}
+		if (_keyPressArr[ESC] && getDelayTimer() >= getMinimumTime()) {
 			this->_game->setGameState(GameState::EXIT);
 			_menuState = MenuState::NO_MENU;
 		}
-		std::cout << getDelayTimer() << std::endl;
         renderMenu();
     }
+	std::cout << "PLAYER NAME IS: " << playerNameInput << std::endl;
 	if (glfwWindowShouldClose(_win))
 		this->_game->setGameState(GameState::EXIT);
     nanoguiWindow->dispose();
@@ -250,10 +270,15 @@ void            Core::mainMenu() {
     else
 		gui->addButton("Load Game", []() { std::cout << "NO SAVES" << std::endl; });
 
+	gui->addButton("Change Player", [this]() {
+		std::cout << "Change Player pressed." << std::endl;
+		_menuState = MenuState::PLAYER_SELECT;
+	})->setBackgroundColor(Eigen::Vector4i(57, 62, 25, 255));
+
 	gui->addButton("Settings", [this]() {
         std::cout << "Settings pressed." << std::endl;
 		_menuState = MenuState::SETTINGS;
-    })->setBackgroundColor(Eigen::Vector4i(255, 255, 255, 255));
+    });
 
     gui->addButton("Exit", [this] {
         this->_game->setGameState(GameState::EXIT);
@@ -271,11 +296,11 @@ void            Core::mainMenu() {
         glfwPollEvents();
         updateKeys();
         updateMouse();
-		if (_keyPressArr[ESC] && getDelayTimer() >= 100) {
+		if (_keyPressArr[ESC] && getDelayTimer() >= getMinimumTime()) {
 			std::cout << "escape pressed, player select menu" << std::endl;
 			_menuState = MenuState::PLAYER_SELECT;
 		}
-		else if (_keyPressArr[ENTER] && getDelayTimer() >= 100) {
+		else if (_keyPressArr[ENTER] && getDelayTimer() >= getMinimumTime()) {
 			std::cout << "pressed enter, starting new game" << std::endl;
             this->_game->setGameState(GameState::PLAY);
 			_menuState = MenuState::NO_MENU;
@@ -314,7 +339,7 @@ void			Core::settingsMenu(){
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
-		if (_keyPressArr[ESC] && getDelayTimer() >= 100)
+		if (_keyPressArr[ESC] && getDelayTimer() >= getMinimumTime())
 		{
 			if (this->_game->getPlayState() == PlayState::GAME_PLAY)
 				_menuState = MenuState::PAUSE;
@@ -360,7 +385,7 @@ void            Core::pauseMenu() {
         glfwPollEvents();
         updateKeys();
         updateMouse();
-		if (_keyPressArr[ENTER] && getDelayTimer() >= 100)
+		if (_keyPressArr[ENTER] && getDelayTimer() >= getMinimumTime())
 		{
 			_menuState = MenuState::NO_MENU;
 			this->_game->setGameState(GameState::PLAY);
@@ -443,19 +468,15 @@ void			Core::fatalError(std::string errorString) {
 
 void			Core::initPlay() {
 	std::cout << "playing, ESC to exit" << std::endl;
-//	if (this->_game->getSettings().getLastPlayer().empty())
-//        newPlayer(); //function that uses nanogui to get the name of player and create player
-//    else
-//        this->_game->loadPlayer(this->_game->getSettings().getLastPlayer());
     if (_keyPressArr[ESC]){
         this->_game->setGameState(GameState::MENU);
         _menuState = MenuState::PAUSE;
     }
 }
 
-void			Core::newPlayer() {
+void			Core::newPlayer(const std::string playerName) {
 	//TODO: ADD NEW WINDOW TO MAKE PLAYERS
-	this->_game->setPlayer(new Player("Bob"));
+	this->_game->setPlayer(new Player(playerName));
 }
 
 void			Core::load() {
@@ -546,4 +567,11 @@ void 			Core::resetDelayTimer() {
 
 void			Core::incrementDelayTimer() {
 	this->_delayTimer++;
+}
+
+double			Core::getMinimumTime() const {
+	return (this->_minimumTime);
+}
+void			Core::setMinimumTime(const double newMinimumTime) {
+	this->_minimumTime = newMinimumTime;
 }
