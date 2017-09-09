@@ -46,8 +46,11 @@ public:
 	void			setHeight(const int newHeight);
 	bool			*getKeyPressArr();
 	void			setKeyPressArr(const bool newUp, const bool newDown, const bool newlLeft, const bool newRight, const bool newSpace, const bool newEnter, const bool newEsc);
-    MenuState       getMenuState();
+    MenuState       getMenuState() const;
     void            setMenuState(const MenuState newMenuState);
+	double			getDelayTimer() const;
+	void 			resetDelayTimer();
+	void 			incrementDelayTimer();
 
 	void			init();
 	void			input();
@@ -72,6 +75,7 @@ public:
     void            newGameButton();
     void            loadGameButton();
     void            settingsButton();
+	void			renderMenu();
 
 private:
 
@@ -83,6 +87,7 @@ private:
 	double			_mouseY;
 	bool			_keyPressArr[7];
     MenuState       _menuState;
+	double			_delayTimer;
 };
 
 #endif
