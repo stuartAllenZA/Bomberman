@@ -51,6 +51,8 @@ public:
 	double			getDelayTimer() const;
 	void 			resetDelayTimer();
 	void 			incrementDelayTimer();
+	double			getMinimumTime() const;
+	void			setMinimumTime(const double newMinimumTime);
 
 	void			init();
 	void			input();
@@ -64,7 +66,7 @@ public:
 	void			settingsMenu();
 	void            pauseMenu();
 	void			drawGame();
-	void			newPlayer();
+	void			newPlayer(const std::string playerName);
 	void			initPlay();
 	void			load();
 	void			settings();
@@ -72,9 +74,6 @@ public:
 	void			exit();
 	void			setExit();
 	void			fatalError(std::string errorString);
-    void            newGameButton();
-    void            loadGameButton();
-    void            settingsButton();
 	void			renderMenu();
 
 private:
@@ -88,6 +87,7 @@ private:
 	bool			_keyPressArr[7];
     MenuState       _menuState;
 	double			_delayTimer;
+	double 			_minimumTime;
 };
 
 #endif
