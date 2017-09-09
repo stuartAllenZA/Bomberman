@@ -214,20 +214,19 @@ void            Core::playerSelectMenu() {
     screen->setVisible(true);
     screen->performLayout();
     nanoguiWindow->center();
+	resetDelayTimer();
     while (!glfwWindowShouldClose(_win) && _menuState == MenuState::PLAYER_SELECT){
         glfwPollEvents();
         updateKeys();
         updateMouse();
         if (_keyPressArr[ENTER])
             _menuState = MenuState::MAIN_MENU;
-
-        glfwGetFramebufferSize(_win, &_width, &_height);
-        glViewport(0, 0, _width, _height);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        screen->drawContents();
-        screen->drawWidgets();
-        glfwSwapBuffers(_win);
+		if (_keyPressArr[ESC] && getDelayTimer() >= 100) {
+			this->_game->setGameState(GameState::EXIT);
+			_menuState = MenuState::NO_MENU;
+		}
+		std::cout << getDelayTimer() << std::endl;
+        renderMenu();
     }
 	if (glfwWindowShouldClose(_win))
 		this->_game->setGameState(GameState::EXIT);
@@ -241,6 +240,7 @@ void            Core::mainMenu() {
     gui->addButton("New Game", [this]() {
         std::cout << "New Game pressed." << std::endl;
         this->_game->setGameState(GameState::PLAY);
+		this->_game->setPlayState(PlayState::GAME_PLAY);
         _menuState = MenuState::NO_MENU;
     });
 
@@ -266,27 +266,21 @@ void            Core::mainMenu() {
     nanoguiWindow->center();
 
     std::cout << "starting screen loop" << std::endl;
+	resetDelayTimer();
     while (!glfwWindowShouldClose(_win) && _menuState == MenuState::MAIN_MENU){
         glfwPollEvents();
         updateKeys();
         updateMouse();
-        //if (_keyPressArr[ENTER]) {
-        //    this->_game->setGameState(GameState::PLAY);
-        //}
-//        if (_keyPressArr[ESC])
-//        {
-//            if (this->_game->getPlayState() == PlayState::GAME_PLAY)
-//                this->_game->setGameState(GameState::PLAY);
-//            else
-//                this->_game->setGameState(GameState::EXIT);
-//        }
-        glfwGetFramebufferSize(_win, &_width, &_height);
-        glViewport(0, 0, _width, _height);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        screen->drawContents();
-        screen->drawWidgets();
-        glfwSwapBuffers(_win);
+		if (_keyPressArr[ESC] && getDelayTimer() >= 100) {
+			std::cout << "escape pressed, player select menu" << std::endl;
+			_menuState = MenuState::PLAYER_SELECT;
+		}
+		else if (_keyPressArr[ENTER] && getDelayTimer() >= 100) {
+			std::cout << "pressed enter, starting new game" << std::endl;
+            this->_game->setGameState(GameState::PLAY);
+			_menuState = MenuState::NO_MENU;
+        }
+	renderMenu();
     }
 	if (glfwWindowShouldClose(_win))
 		this->_game->setGameState(GameState::EXIT);
@@ -315,20 +309,19 @@ void			Core::settingsMenu(){
 	screen->setVisible(true);
 	screen->performLayout();
 	nanoguiWindow->center();
+	resetDelayTimer();
 	while (!glfwWindowShouldClose(_win) && _menuState == MenuState::SETTINGS){
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
-		if (_keyPressArr[ESC])
-			_menuState = MenuState::MAIN_MENU;
-
-		glfwGetFramebufferSize(_win, &_width, &_height);
-		glViewport(0, 0, _width, _height);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		screen->drawContents();
-		screen->drawWidgets();
-		glfwSwapBuffers(_win);
+		if (_keyPressArr[ESC] && getDelayTimer() >= 100)
+		{
+			if (this->_game->getPlayState() == PlayState::GAME_PLAY)
+				_menuState = MenuState::PAUSE;
+			else
+				_menuState = MenuState::MAIN_MENU;
+		}
+		renderMenu();
 	}
 	if (glfwWindowShouldClose(_win))
 		this->_game->setGameState(GameState::EXIT);
@@ -350,30 +343,29 @@ void            Core::pauseMenu() {
 
     gui->addButton("Quit to Menu", [this] {
         _menuState = MenuState::MAIN_MENU;
+		this->_game->setPlayState(PlayState::PLAYER_SELECT);
     });
 
     gui->addButton("Exit Program", [this] {
         this->_game->setGameState(GameState::EXIT);
         _menuState = MenuState::NO_MENU;
+		this->_game->setPlayState(PlayState::PLAYER_SELECT);
     });
 
 	screen->setVisible(true);
     screen->performLayout();
     nanoguiWindow->center();
+	resetDelayTimer();
     while (!glfwWindowShouldClose(_win) && _menuState == MenuState::PAUSE){
         glfwPollEvents();
         updateKeys();
         updateMouse();
-        if (_keyPressArr[ENTER])
-            _menuState = MenuState::MAIN_MENU;
-
-        glfwGetFramebufferSize(_win, &_width, &_height);
-        glViewport(0, 0, _width, _height);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        screen->drawContents();
-        screen->drawWidgets();
-        glfwSwapBuffers(_win);
+		if (_keyPressArr[ENTER] && getDelayTimer() >= 100)
+		{
+			_menuState = MenuState::NO_MENU;
+			this->_game->setGameState(GameState::PLAY);
+		}
+		renderMenu();
     }
 	if (glfwWindowShouldClose(_win))
 		this->_game->setGameState(GameState::EXIT);
@@ -478,6 +470,18 @@ void			Core::save() {
 
 }
 
+void			Core::renderMenu() {
+	glfwGetFramebufferSize(_win, &_width, &_height);
+	glViewport(0, 0, _width, _height);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	screen->drawContents();
+	screen->drawWidgets();
+	glfwSwapBuffers(_win);
+	incrementDelayTimer();
+	incrementDelayTimer();
+}
+
 Game			*Core::getGame() const {
 	return (this->_game);
 }
@@ -510,7 +514,7 @@ void			Core::setHeight(const int newHeight) {
 	this->_height = newHeight;
 }
 
-bool			*Core::getKeyPressArr() {
+bool			*Core::getKeyPressArr(){
 	return (this->_keyPressArr);
 }
 
@@ -524,10 +528,22 @@ void			Core::setKeyPressArr(const bool newUp, const bool newDown, const bool new
 	this->_keyPressArr[ESC] = newEsc;
 }
 
-MenuState       Core::getMenuState(){
+MenuState       Core::getMenuState() const {
     return (this->_menuState);
 }
 
 void            Core::setMenuState(const MenuState newMenuState){
     this->_menuState = newMenuState;
+}
+
+double			Core::getDelayTimer() const {
+	return (this->_delayTimer);
+}
+
+void 			Core::resetDelayTimer() {
+	this->_delayTimer = 0;
+}
+
+void			Core::incrementDelayTimer() {
+	this->_delayTimer++;
 }
