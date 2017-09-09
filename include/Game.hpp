@@ -69,6 +69,7 @@ class Game {
 		PlayState				_playState;
 		int						_gameInput;
 		Settings				_settings;
+		Sound					_sound;
 		Player					*_player;
 		std::vector<Character*>	_enemies;
 };

@@ -38,6 +38,7 @@ set(SOURCE_FILES
 		src/RangeExtender.cpp
 		src/RemoteDetonator.cpp
 		src/Settings.cpp
+		src/Sound.cpp
 		src/UnbreakableBox.cpp)
 
 include_directories(

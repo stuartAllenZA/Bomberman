@@ -1,5 +1,14 @@
 #include <Exceptions.hpp>
 
+Exceptions::SoundGeneralError::SoundGeneralError(int const & error) throw() : _msg("Sound encountered an error: " + std::to_string(error)) {}
+
+Exceptions::SoundGeneralError::~SoundGeneralError() throw() {}
+
+const char* Exceptions::SoundGeneralError::what() const throw()
+{
+	return this->_msg.c_str();
+}
+
 Exceptions::LexOpenFileError::LexOpenFileError(std::string const & fileName) throw() : _msg("Cannot open file: " + fileName) {}
 
 Exceptions::LexOpenFileError::~LexOpenFileError() throw() {}

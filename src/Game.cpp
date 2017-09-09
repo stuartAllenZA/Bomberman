@@ -2,6 +2,8 @@
 
 Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _gameInput(0), _settings(Settings()) {
 	std::cout << "Constructing Game\n";
+	loadSettings();
+	this->_sound = Sound(this->_settings.getMusicVol(), this->_settings.getFXVol());
 	std::cout << "Game Constructed\n";
 }
 
@@ -12,6 +14,7 @@ Game::Game(Game const & src) {
 
 Game::~Game() {
 	std::cout << "De-Constructing Game\n";
+	saveSettings();
 	delete this->_player;
 	std::cout << "Game De-Constructed\n";
 }
