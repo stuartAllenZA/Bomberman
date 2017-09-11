@@ -22,7 +22,7 @@ class Exceptions {
 
 		class SoundGeneralError: public std::exception {
 			public:
-				SoundGeneralError(int const & error) throw();
+				SoundGeneralError(const int code, const std::string & error) throw();
 				~SoundGeneralError() throw();
 				virtual const char*	what() const throw();
 			private:

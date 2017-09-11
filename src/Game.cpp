@@ -4,6 +4,7 @@ Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT)
 	std::cout << "Constructing Game\n";
 	loadSettings();
 	this->_sound = Sound(this->_settings.getMusicVol(), this->_settings.getFXVol());
+	this->_sound.initSound();
 	std::cout << "Game Constructed\n";
 }
 
@@ -123,27 +124,32 @@ void					Game::loadGame() {
 
 void					Game::loadSettings() {
 	std::string fileName = "resources/bomberman.config";
-	struct stat buffer;   
-  	if (stat(fileName.c_str(), &buffer) == 0)
-  		std::cout << "Cannot find file '" << fileName << "'. Using default settings.";
-	int resX = std::stoi(lexFile(fileName, "resolutionX"));
-	int resY = std::stoi(lexFile(fileName, "resolutionY"));
-	std::pair<int, int> resolution = std::make_pair(resX, resY);
-	this->_settings.setResolution(resolution);
+	struct stat buffer;
 
-	std::string ret = lexFile(fileName, "windowed");
-	if (ret == "false")
-		this->_settings.setWindowed(false);
-	else
-		this->_settings.setWindowed(true);
+	std::cout << "Loading Settings\n";
+	if (stat(fileName.c_str(), &buffer) != 0)
+		std::cout << "Cannot find file '" << fileName << "'. Using default settings.\n";
+	else {
+		std::cout << "Config file found at: '" << fileName << "'. Using saved settings.\n";
+		int resX = std::stoi(lexFile(fileName, "resolutionX"));
+		int resY = std::stoi(lexFile(fileName, "resolutionY"));
+		std::pair<int, int> resolution = std::make_pair(resX, resY);
+		this->_settings.setResolution(resolution);
 
-	this->_settings.setUpKey(std::stoi(lexFile(fileName, "upKey")));
-	this->_settings.setDownKey(std::stoi(lexFile(fileName, "downKey")));
-	this->_settings.setLeftKey(std::stoi(lexFile(fileName, "leftKey")));
-	this->_settings.setRightKey(std::stoi(lexFile(fileName, "rightKey")));
-	this->_settings.setActionKey(std::stoi(lexFile(fileName, "actionKey")));
-	this->_settings.setMusicVol(std::stoi(lexFile(fileName, "musicVol")));
-	this->_settings.setFXVol(std::stoi(lexFile(fileName, "FXVol")));
+		std::string ret = lexFile(fileName, "windowed");
+		if (ret == "false")
+			this->_settings.setWindowed(false);
+		else
+			this->_settings.setWindowed(true);
+
+		this->_settings.setUpKey(std::stoi(lexFile(fileName, "upKey")));
+		this->_settings.setDownKey(std::stoi(lexFile(fileName, "downKey")));
+		this->_settings.setLeftKey(std::stoi(lexFile(fileName, "leftKey")));
+		this->_settings.setRightKey(std::stoi(lexFile(fileName, "rightKey")));
+		this->_settings.setActionKey(std::stoi(lexFile(fileName, "actionKey")));
+		this->_settings.setMusicVol(std::stoi(lexFile(fileName, "musicVol")));
+		this->_settings.setFXVol(std::stoi(lexFile(fileName, "FXVol")));
+	}
 }
 
 std::string				Game::lexFile(std::string fileName, std::string find) {
@@ -151,31 +157,26 @@ std::string				Game::lexFile(std::string fileName, std::string find) {
 	std::string line;
 	std::string key;
 	std::string value;
-	int			num;
 
-	num = 0;
 	if (!handle)
 		throw (Exceptions::LexOpenFileError(fileName));
 	else
 	{
-		while (std::getline(handle, line)) {
-			num++;
-			if (!line.empty()) {
-				std::istringstream	iss(line);
-				if (line.c_str()[0] != ';' && line.c_str()[0] != '[')
-				{
-					if (iss >> key >> value) {
-						if (key == find)
-							return value;
-					}
-					else
-						throw (Exceptions::LexFormatError(num, line));
-				}
+		while (std::getline(handle, key, ':')) {
+			std::getline(handle, value);
+			if (key == find) {
+				//std::cout << "Found: " << value << " for key " << find << std::endl;
+				return value;
 			}
+			//std::cout << "Looking for key: " << find << "\tFound key: " << key << std::endl;
 		}
 		throw (Exceptions::LexKeyNotFound(find));
-	}		
+	}	
 	return ("ERROR");
+}
+
+void					Game::startBackgroundMusic() {
+	this->_sound.startBackgroundMusic();
 }
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {

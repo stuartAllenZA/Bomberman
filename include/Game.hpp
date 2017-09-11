@@ -8,6 +8,7 @@
 #include "Settings.hpp"
 #include "Player.hpp"
 #include "Box.hpp"
+#include "Sound.hpp"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -63,6 +64,7 @@ class Game {
 		void					loadGame();
 		void					loadSettings();
 		std::string				lexFile(std::string fileName, std::string find);
+		void					startBackgroundMusic();
 
 	private:
 		GameState				_gameState;

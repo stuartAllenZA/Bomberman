@@ -39,7 +39,8 @@ set(SOURCE_FILES
 		src/RemoteDetonator.cpp
 		src/Settings.cpp
 		src/Sound.cpp
-		src/UnbreakableBox.cpp)
+		src/UnbreakableBox.cpp
+		src/WAVFile.cpp)
 
 include_directories(
 		${PROJECT_SOURCE_DIR}/include
@@ -67,5 +68,5 @@ target_link_libraries(${PROJECT_NAME}
 
 if (APPLE)
 	target_link_libraries(${PROJECT_NAME}
-			"-framework OpenGL")
+			"-framework OpenGL -framework OpenAL")
 endif()

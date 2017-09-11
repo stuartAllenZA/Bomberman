@@ -1,6 +1,6 @@
 #include <Exceptions.hpp>
 
-Exceptions::SoundGeneralError::SoundGeneralError(int const & error) throw() : _msg("Sound encountered an error: " + std::to_string(error)) {}
+Exceptions::SoundGeneralError::SoundGeneralError(const int code, const std::string & error) throw() : _msg("Sound encountered an error: " + std::to_string(code)  + "  " + error) {}
 
 Exceptions::SoundGeneralError::~SoundGeneralError() throw() {}
 

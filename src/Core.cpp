@@ -37,6 +37,7 @@ Core::~Core() {
 
 void			Core::run() {
 	std::cout << "initializing" << std::endl;
+	this->_game->startBackgroundMusic();
 	init();
 	gameLoop();
 	std::cout << "Done" << std::endl;
