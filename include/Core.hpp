@@ -12,23 +12,10 @@
 #include "Game.hpp"
 #include "Player.hpp"
 #include "Settings.hpp"
+#include "Menu.hpp"
 
-#define UP		0
-#define DOWN	1
-#define LEFT	2
-#define RIGHT	3
-#define SPACE	4
-#define ENTER	5
-#define ESC		6
 
-enum class MenuState {
-    PLAYER_SELECT,
-    LOAD_SAVE,
-    MAIN_MENU,
-    SETTINGS,
-    PAUSE,
-    NO_MENU
-};
+
 
 class Core {
 public:
@@ -44,27 +31,12 @@ public:
 	void			setWidth(const int newWidth);
 	int				getHeight() const;
 	void			setHeight(const int newHeight);
-	bool			*getKeyPressArr();
-	void			setKeyPressArr(const bool newUp, const bool newDown, const bool newlLeft, const bool newRight, const bool newSpace, const bool newEnter, const bool newEsc);
-    MenuState       getMenuState() const;
-    void            setMenuState(const MenuState newMenuState);
-	double			getDelayTimer() const;
-	void 			resetDelayTimer();
-	void 			incrementDelayTimer();
-	double			getMinimumTime() const;
-	void			setMinimumTime(const double newMinimumTime);
+
 
 	void			init();
 	void			input();
-	void			updateKeys();
-	void			updateMouse();
 	void			run();
 	void			gameLoop();
-	void			menu();
-	void            playerSelectMenu();
-    void            mainMenu();
-	void			settingsMenu();
-	void            pauseMenu();
 	void			drawGame();
 	void			newPlayer(const std::string playerName);
 	void			initPlay();
@@ -74,20 +46,14 @@ public:
 	void			exit();
 	void			setExit();
 	void			fatalError(std::string errorString);
-	void			renderMenu();
 
 private:
 
-	GLFWwindow		*_win;
 	int				_width;
 	int				_height;
 	Game			*_game;
-	double			_mouseX;
-	double			_mouseY;
-	bool			_keyPressArr[7];
-    MenuState       _menuState;
-	double			_delayTimer;
-	double 			_minimumTime;
+    Menu            *_menu;
+    GLFWwindow		*_win;
 };
 
 #endif
