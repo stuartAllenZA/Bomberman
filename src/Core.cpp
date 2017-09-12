@@ -5,9 +5,9 @@
 Core::Core() {
 	std::cout << "Constructing Core\n";
 	this->_game = new Game;
-    this->_menu = new Menu(_width, _height, _game, &_win);
 	this->_width = this->_game->getSettings().getResolutionX();
 	this->_height = this->_game->getSettings().getResolutionY();
+	this->_menu = new Menu(_width, _height, _game, &_win);
 	std::cout << "Core Constructed\n";
 }
 

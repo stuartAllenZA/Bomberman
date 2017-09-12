@@ -8,7 +8,7 @@ Menu::Menu(int passedWidth, int passedHeight, Game *passedGame, GLFWwindow **pas
                                                                                          _win(passedWin) {
     std::cout << "Constructing Menu\n";
     this->_menuState = MenuState::PLAYER_SELECT;
-    this->_minimumTime = 100;
+    this->_minimumTime = 50;
     std::cout << "Menu Constructed\n";
 }
 
