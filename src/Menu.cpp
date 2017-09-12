@@ -100,21 +100,13 @@ void            Menu::playerSelectMenu() {
     nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
     nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "Select a player");
     std::string     playerNameInput = "choose a name";
-    nanogui::Button *b = new nanogui::Button(nanoguiWindow, "Plain button");
 
-    b->setVisible(false);
-    nanoguiWindow->setLayout(new nanogui::GroupLayout);
-    nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
-    tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 6));
-    b = new nanogui::Button(tools, "Info");
-    b = new nanogui::Button(tools, "Spinfo");
     gui->addVariable("Create a new player", playerNameInput);
     gui->addButton("Create", [this, &playerNameInput]() {
-        std::cout << "Create pressed." << std::endl;
-        if (playerNameInput != "choose a name")
-            _menuState = MenuState::MAIN_MENU;
-        else
-            std::cout << "name not available: " << playerNameInput << std::endl;
+        createButton(playerNameInput);
+    });
+    gui->addButton("EXIT", [this, &playerNameInput]() {
+        exitButton();
     });
     screen->setVisible(true);
     screen->performLayout();
@@ -145,31 +137,27 @@ void            Menu::mainMenu() {
     nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(100, 100), "Bomberman");
 
     gui->addButton("New Game", [this]() {
-        std::cout << "New Game pressed." << std::endl;
-        this->_game->setGameState(GameState::PLAY);
-        this->_game->setPlayState(PlayState::GAME_PLAY);
-        _menuState = MenuState::NO_MENU;
+        newGameButton();
     });
 
 
     if (this->_game->getHasSave())
-        gui->addButton("Load Game", []() { std::cout << "HAS SAVES" << std::endl; });
+        gui->addButton("Load Game", [this]() {
+            loadGameButton();
+        });
     else
-        gui->addButton("Load Game", []() { std::cout << "NO SAVES" << std::endl; });
+        gui->addButton("Load Game", []() { std::cout << "NO SAVES" << std::endl; })->setEnabled(false);
 
     gui->addButton("Change Player", [this]() {
-        std::cout << "Change Player pressed." << std::endl;
-        _menuState = MenuState::PLAYER_SELECT;
+        playerSelectButton();
     })->setBackgroundColor(Eigen::Vector4i(57, 62, 25, 255));
 
     gui->addButton("Settings", [this]() {
-        std::cout << "Settings pressed." << std::endl;
-        _menuState = MenuState::SETTINGS;
+        settingsButton();
     });
 
     gui->addButton("Exit", [this] {
-        this->_game->setGameState(GameState::EXIT);
-        _menuState = MenuState::NO_MENU;
+        exitButton();
     });
 
     std::cout << "visualizing screen" << std::endl;
@@ -184,40 +172,51 @@ void            Menu::mainMenu() {
         updateKeys();
         updateMouse();
         if (_keyPressArr[ESC] && getDelayTimer() >= getMinimumTime()) {
-            std::cout << "escape pressed, player select menu" << std::endl;
-            _menuState = MenuState::PLAYER_SELECT;
+            playerSelectMenu();
         }
         else if (_keyPressArr[ENTER] && getDelayTimer() >= getMinimumTime()) {
-            std::cout << "pressed enter, starting new game" << std::endl;
-            this->_game->setGameState(GameState::PLAY);
-            _menuState = MenuState::NO_MENU;
+            newGameButton();
         }
         renderMenu();
     }
     if (glfwWindowShouldClose(*_win))
-        this->_game->setGameState(GameState::EXIT);
+        exitButton();
     nanoguiWindow->dispose();
 }
 
 void			Menu::settingsMenu(){
-    nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
-    nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "SETTINGS");
+    nanogui::FormHelper             *gui = new nanogui::FormHelper(screen);
+    nanogui::ref<nanogui::Window>   nanoguiWindow = gui->addWindow(Eigen::Vector2i(2000, 2000), "SETTINGS");
+    nanogui::Button                 *b = new nanogui::Button(nanoguiWindow, "Plain button");
+    bool                            windowed;
+    ResolutionState                 resolution;
 
-    nanogui::Widget *tools = new nanogui::Widget(screen);
+    b->setVisible(false);
+    nanoguiWindow->setLayout(new nanogui::GroupLayout);
+    gui->addVariable("Windowed :", windowed)->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Vertical, nanogui::Alignment::Minimum, 0, 2));
+    gui->addVariable("Resolution", resolution)->setItems({ "800x600", "1080x1920"});
 
-//	std::cout << "settings menu" << std::endl;
-//	tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 6));
-//	std::cout << "settings menu" << std::endl;
-//	nanogui::Button *b = new nanogui::Button(nanoguiWindow, "Plain button");
-//	std::cout << "settings menu" << std::endl;
-//	b = new nanogui::Button(tools, "ACCEPT");
-//	b->setCallback([&]{
-//		_menuState = MenuState::MAIN_MENU;
-//	});
-//	b = new nanogui::Button(tools, "APPLY");
-//	b->setCallback([&]{
-//		_menuState = MenuState::PLAYER_SELECT;
-//	});
+    gui->addButton("Reset to default", [this]() {
+        resetToDefaultButton();
+    });
+    nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
+    tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 2));
+    b = new nanogui::Button(tools, "Accept");
+    b->setCallback([&]{
+        if (this->_game->getPlayState() == PlayState::GAME_PLAY) {
+            std::cout << "accepted changes 1" << std::endl;
+            _menuState = MenuState::PAUSE;
+        }
+        else {
+            std::cout << "accepted changes 2" << std::endl;
+            quitToMenuButton();
+        }
+    });
+    b = new nanogui::Button(tools, "Apply");
+    b->setCallback([&]{
+        std::cout << "state is : " << windowed << std::endl;
+        std::cout << "Changes applied" << std::endl;
+    });
     screen->setVisible(true);
     screen->performLayout();
     nanoguiWindow->center();
@@ -236,7 +235,7 @@ void			Menu::settingsMenu(){
         renderMenu();
     }
     if (glfwWindowShouldClose(*_win))
-        this->_game->setGameState(GameState::EXIT);
+        exitButton();
     nanoguiWindow->dispose();
 }
 
@@ -245,23 +244,19 @@ void            Menu::pauseMenu() {
     nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "PAUSED");
 
     gui->addButton("Resume", [this] {
-        this->_game->setGameState(GameState::PLAY);
-        _menuState = MenuState::NO_MENU;
+        resumeButton();
     });
 
     gui->addButton("Settings", [this] {
-        _menuState = MenuState::SETTINGS;
+        settingsButton();
     });
 
     gui->addButton("Quit to Menu", [this] {
-        _menuState = MenuState::MAIN_MENU;
-        this->_game->setPlayState(PlayState::PLAYER_SELECT);
+        quitToMenuButton();
     });
 
     gui->addButton("Exit Program", [this] {
-        this->_game->setGameState(GameState::EXIT);
-        _menuState = MenuState::NO_MENU;
-        this->_game->setPlayState(PlayState::PLAYER_SELECT);
+        exitButton();
     });
 
     screen->setVisible(true);
@@ -280,7 +275,7 @@ void            Menu::pauseMenu() {
         renderMenu();
     }
     if (glfwWindowShouldClose(*_win))
-        this->_game->setGameState(GameState::EXIT);
+        exitButton();
     nanoguiWindow->dispose();
 }
 
@@ -343,6 +338,55 @@ void			Menu::updateMouse() {
         std::cout << "released at:  " << _mouseX << ",  " << _mouseY << std::endl;
         wasClicked = false;
     }
+}
+
+void            Menu::createButton(std::string playerNameInputVar) {
+    std::cout << "Create pressed." << std::endl;
+    if (playerNameInputVar != "choose a name")
+        _menuState = MenuState::MAIN_MENU;
+    else
+        std::cout << "name not available: " << playerNameInputVar << std::endl;
+}
+
+void            Menu::exitButton() {
+    this->_game->setGameState(GameState::EXIT);
+    _menuState = MenuState::NO_MENU;
+}
+
+void            Menu::newGameButton() {
+    std::cout << "New Game pressed." << std::endl;
+    this->_game->setGameState(GameState::PLAY);
+    this->_game->setPlayState(PlayState::GAME_PLAY);
+    _menuState = MenuState::NO_MENU;
+}
+
+void            Menu::loadGameButton() {
+    std::cout << "HAS SAVES" << std::endl;
+}
+
+void            Menu::playerSelectButton() {
+    std::cout << "Change Player pressed." << std::endl;
+    _menuState = MenuState::PLAYER_SELECT;
+}
+
+void            Menu::settingsButton() {
+    std::cout << "Settings pressed." << std::endl;
+    _menuState = MenuState::SETTINGS;
+}
+
+void            Menu::resumeButton() {
+    this->_game->setGameState(GameState::PLAY);
+    _menuState = MenuState::NO_MENU;
+}
+
+void            Menu::quitToMenuButton() {
+    _menuState = MenuState::MAIN_MENU;
+    this->_game->setGameState(GameState::MENU);
+    this->_game->setPlayState(PlayState::GAME_LOAD);
+}
+
+void            Menu::resetToDefaultButton() {
+    std::cout << "reset settings to default" << std::endl;
 }
 
 void			Menu::renderMenu() {
