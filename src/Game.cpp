@@ -1,6 +1,6 @@
 #include <Game.hpp>
 
-Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _gameInput(0), _settings(Settings()) {
+Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _gameInput(0), _settings(Settings()), _hasSave(false) {
 	std::cout << "Constructing Game\n";
 	loadSettings();
 	std::cout << "Game Constructed\n";
@@ -73,6 +73,14 @@ std::vector<Character*>	Game::getEnemies() const {
 
 void					Game::setEnemies(const std::vector<Character*> newEnemies) {
 	this->_enemies = newEnemies;
+}
+
+bool 					Game::getHasSave() const{
+	return (this->_hasSave);
+}
+
+void 					Game::setHasSave(const bool newHasSave){
+	this->_hasSave = newHasSave;
 }
 
 void					Game::saveSettings() {

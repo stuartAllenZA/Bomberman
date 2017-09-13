@@ -34,6 +34,7 @@ set(SOURCE_FILES
 		src/ExtraBomb.cpp
 		src/Game.cpp
 		src/LevelHatch.cpp
+		src/Menu.cpp
 		src/Player.cpp
 		src/RangeExtender.cpp
 		src/RemoteDetonator.cpp

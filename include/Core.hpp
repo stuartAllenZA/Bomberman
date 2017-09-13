@@ -12,14 +12,7 @@
 #include "Game.hpp"
 #include "Player.hpp"
 #include "Settings.hpp"
-
-#define UP		0
-#define DOWN	1
-#define LEFT	2
-#define RIGHT	3
-#define SPACE	4
-#define ENTER	5
-#define ESC		6
+#include "Menu.hpp"
 
 class Core {
 public:
@@ -35,18 +28,14 @@ public:
 	void			setWidth(const int newWidth);
 	int				getHeight() const;
 	void			setHeight(const int newHeight);
-	bool			*getKeyPressArr();
-	void			setKeyPressArr(bool newUp, bool newDown, bool newlLeft, bool newRight, bool newSpace, bool newEnter, bool newEsc);
+
 
 	void			init();
 	void			input();
-	void			updateKeys();
-	void			updateMouse();
 	void			run();
 	void			gameLoop();
-	void			mainMenu();
 	void			drawGame();
-	void			newPlayer();
+	void			newPlayer(const std::string playerName);
 	void			initPlay();
 	void			load();
 	void			settings();
@@ -57,13 +46,11 @@ public:
 
 private:
 
-	GLFWwindow		*_win;
 	int				_width;
 	int				_height;
 	Game			_game;
-	double			_mouseX;
-	double			_mouseY;
-	bool			_keyPressArr[7];
+    Menu            *_menu;
+    GLFWwindow		*_win;
 };
 
 #endif

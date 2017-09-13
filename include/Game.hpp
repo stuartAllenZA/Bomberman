@@ -57,6 +57,8 @@ class Game {
 		void					setPlayer(const Player newPlayer);
 		std::vector<Character*>	getEnemies() const;
 		void					setEnemies(const std::vector<Character*> newEnemies);
+		bool 					getHasSave() const;
+		void 					setHasSave(const bool newHasSave);
 
 		void					saveSettings();
 		void					savePlayer();
@@ -76,6 +78,7 @@ class Game {
 		Sound					_sound;
 		Player					_player;
 		std::vector<Character*>	_enemies;
+		bool					_hasSave;
 };
 
 std::ostream &					operator<<(std::ostream & o, Game const & rhs);
