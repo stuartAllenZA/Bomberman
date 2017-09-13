@@ -27,8 +27,8 @@ public:
 	Core(Core const &src);
 	Core &operator=(Core const &src);
 	~Core();
-	Game			*getGame() const;
-	void			setGame(Game *newGame);
+	Game			getGame() const;
+	void			setGame(const Game newGame);
 	GLFWwindow		*getWin() const;
 	void			setWin(GLFWwindow *win);
 	int				getWidth() const;
@@ -60,7 +60,7 @@ private:
 	GLFWwindow		*_win;
 	int				_width;
 	int				_height;
-	Game			*_game;
+	Game			_game;
 	double			_mouseX;
 	double			_mouseY;
 	bool			_keyPressArr[7];

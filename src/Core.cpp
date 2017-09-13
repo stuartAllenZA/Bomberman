@@ -4,9 +4,8 @@ nanogui::Screen *screen = nullptr;
 
 Core::Core() {
 	std::cout << "Constructing Core\n";
-	this->_game = new Game;
-	this->_width = this->_game->getSettings().getResolutionX();
-	this->_height = this->_game->getSettings().getResolutionY();
+	this->_width = this->_game.getSettings().getResolutionX();
+	this->_height = this->_game.getSettings().getResolutionY();
 	std::cout << "Core Constructed\n";
 }
 
@@ -26,8 +25,7 @@ Core &			Core::operator=(Core const & src) {
 Core::~Core() {
 
 	std::cout << "De-Constructing Core\n";
-	delete this->_game;
-	this->_game = nullptr;
+	this->_game.stopBackgroundMusic();
 	std::cout << "closing nanogui screen" << std::endl;
 	nanogui::shutdown();
 	std::cout << "nanogui screen closed successfully" << std::endl;
@@ -37,7 +35,7 @@ Core::~Core() {
 
 void			Core::run() {
 	std::cout << "initializing" << std::endl;
-	this->_game->startBackgroundMusic();
+	this->_game.startBackgroundMusic();
 	init();
 	gameLoop();
 	std::cout << "Done" << std::endl;
@@ -129,7 +127,7 @@ void			Core::gameLoop() {
 
 	while (loop == true && !glfwWindowShouldClose(_win)) {
 		input();
-		gs = this->_game->getGameState();
+		gs = this->_game.getGameState();
 		switch (gs) {
 			case GameState::MENU :
 			mainMenu();
@@ -151,7 +149,7 @@ void			Core::gameLoop() {
 			break;
 		}
 		drawGame();
-		std::cout << "looping" << std::endl;
+		std::cout << "Main gameLoop looping." << std::endl;
 	}
 }
 
@@ -187,34 +185,34 @@ void	Core::mainMenu() {
 	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
 	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(10, 10), "Bomberman");
 
-	if (!this->_game->getSettings().getLastPlayer().empty())
-		this->_game->loadPlayer(this->_game->getSettings().getLastPlayer());
+	if (!this->_game.getSettings().getLastPlayer().empty())
+		this->_game.loadPlayer(this->_game.getSettings().getLastPlayer());
 	else
 		newPlayer(); //function that uses nanogui to get the name of player and create player
 
 	gui->addButton("Start Game", []() { std::cout << "AButton pressed." << std::endl; });
 	gui->addButton("Load Game", []() { std::cout << "BButton pressed." << std::endl; });
 	gui->addButton("Settings", []() { std::cout << "CButton pressed." << std::endl; });
-	gui->addButton("Exit", [this] {this->_game->setGameState(GameState::EXIT);});
+	gui->addButton("Exit", [this] {this->_game.setGameState(GameState::EXIT);});
 	std::cout << "visualizing screen" << std::endl;
 	screen->setVisible(true);
 	screen->performLayout();
 	nanoguiWindow->center();
 
 	std::cout << "starting screen loop" << std::endl;
-	while (!glfwWindowShouldClose(_win) && this->_game->getGameState() == GameState::MENU){
+	while (!glfwWindowShouldClose(_win) && this->_game.getGameState() == GameState::MENU){
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
 		if (_keyPressArr[ENTER]) {
-			this->_game->setGameState(GameState::PLAY);
+			this->_game.setGameState(GameState::PLAY);
 		}
 		else if (_keyPressArr[ESC])
 		{
-			if (this->_game->getPlayState() == PlayState::GAME_PLAY)
-				this->_game->setGameState(GameState::PLAY);
+			if (this->_game.getPlayState() == PlayState::GAME_PLAY)
+				this->_game.setGameState(GameState::PLAY);
 			else
-				this->_game->setGameState(GameState::EXIT);
+				this->_game.setGameState(GameState::EXIT);
 		}
 		glfwGetFramebufferSize(_win, &_width, &_height);
 		glViewport(0, 0, _width, _height);
@@ -299,13 +297,13 @@ void			Core::fatalError(std::string errorString) {
 }
 
 void			Core::newPlayer() {
-	this->_game->setPlayer(new Player("Bob"));
+	this->_game.setPlayer(Player("Bob"));
 }
 
 void			Core::initPlay() {
 	std::cout << "playing" << std::endl;
 	if (_keyPressArr[ESC])
-		this->_game->setGameState(GameState::MENU);
+		this->_game.setGameState(GameState::MENU);
 }
 
 void			Core::load() {
@@ -320,11 +318,11 @@ void			Core::save() {
 
 }
 
-Game			*Core::getGame() const {
+Game			Core::getGame() const {
 	return (this->_game);
 }
 
-void			Core::setGame(Game *newGame) {
+void			Core::setGame(const Game newGame) {
 	this->_game = newGame;
 }
 

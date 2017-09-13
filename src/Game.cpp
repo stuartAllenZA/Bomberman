@@ -3,8 +3,6 @@
 Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _gameInput(0), _settings(Settings()) {
 	std::cout << "Constructing Game\n";
 	loadSettings();
-	this->_sound = Sound(this->_settings.getMusicVol(), this->_settings.getFXVol());
-	this->_sound.initSound();
 	std::cout << "Game Constructed\n";
 }
 
@@ -16,7 +14,6 @@ Game::Game(Game const & src) {
 Game::~Game() {
 	std::cout << "De-Constructing Game\n";
 	saveSettings();
-	delete this->_player;
 	std::cout << "Game De-Constructed\n";
 }
 
@@ -62,11 +59,11 @@ void					Game::setSettings(const Settings newSettings) {
 	this->_settings = newSettings;
 }
 
-Player*					Game::getPlayer() const {
+Player					Game::getPlayer() const {
 	return (this->_player);
 }
 
-void					Game::setPlayer(Player *newPlayer) {
+void					Game::setPlayer(const Player newPlayer) {
 	this->_player = newPlayer;
 }
 
@@ -98,25 +95,25 @@ void					Game::saveSettings() {
 }
 
 void					Game::savePlayer() {
-	std::ofstream profileFileOut("resources/profiles/" + this->_player->getName() + ".player", std::ofstream::out);
-	profileFileOut << "level:" + (std::to_string(this->_player->getLevel()))+"\n";
-	profileFileOut << "experience:" + (std::to_string(this->_player->getExperience()))+"\n";
+	std::ofstream profileFileOut("resources/profiles/" + this->_player.getName() + ".player", std::ofstream::out);
+	profileFileOut << "level:" + (std::to_string(this->_player.getLevel()))+"\n";
+	profileFileOut << "experience:" + (std::to_string(this->_player.getExperience()))+"\n";
 	profileFileOut.close();
-	std::cout << "Player saved to ./resources/profiles/" << this->_player->getName() << ".player\n";
+	std::cout << "Player saved to ./resources/profiles/" << this->_player.getName() << ".player\n";
 }
 
 void					Game::saveGame() {
-	std::ofstream saveFileOut("resources/save/" + this->_player->getName() + ".save", std::ofstream::out);
+	std::ofstream saveFileOut("resources/save/" + this->_player.getName() + ".save", std::ofstream::out);
 	// insert save data here
-	// e.g.	saveFileOut << "playerHP:"+(std::to_string(_player->getHP()))+"\n";
+	// e.g.	saveFileOut << "playerHP:"+(std::to_string(_player.getHP()))+"\n";
 	saveFileOut.close();
-	std::cout << "Game saved to ./resources/profiles/" << this->_player->getName() << ".save\n";
+	std::cout << "Game saved to ./resources/profiles/" << this->_player.getName() << ".save\n";
 }
 
 void					Game::loadPlayer(std::string playerName) {
 	std::string fileName = "resources/profiles/" + playerName + ".profile";
-	this->_player->setLevel(std::stoi(lexFile(fileName, "level")));
-	this->_player->setExperience(std::stoi(lexFile(fileName, "experience")));
+	this->_player.setLevel(std::stoi(lexFile(fileName, "level")));
+	this->_player.setExperience(std::stoi(lexFile(fileName, "experience")));
 }
 
 void					Game::loadGame() {
@@ -176,7 +173,11 @@ std::string				Game::lexFile(std::string fileName, std::string find) {
 }
 
 void					Game::startBackgroundMusic() {
-	this->_sound.startBackgroundMusic();
+	this->_sound.startMenuMusic();
+}
+
+void					Game::stopBackgroundMusic() {
+	this->_sound.stopMenuMusic();
 }
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
@@ -185,7 +186,7 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	"\nGame State: " << static_cast<std::underlying_type<GameState>::type>(rhs.getGameState()) <<
 	"\nPlay State: " << static_cast<std::underlying_type<PlayState>::type>(rhs.getPlayState()) <<
 	"\nGame Input: " << rhs.getGameInput() << std::endl <<
-	"\nPlayer: " << *rhs.getPlayer();
+	"\nPlayer: " << rhs.getPlayer();
 	if (rhs.getEnemies().size() > 0) {
 		for (std::vector<Character*>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it)
 		{
