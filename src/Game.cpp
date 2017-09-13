@@ -2,6 +2,7 @@
 
 Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _gameInput(0), _settings(Settings()), _hasSave(false) {
 	std::cout << "Constructing Game\n";
+	loadSettings();
 	std::cout << "Game Constructed\n";
 }
 
@@ -12,7 +13,7 @@ Game::Game(Game const & src) {
 
 Game::~Game() {
 	std::cout << "De-Constructing Game\n";
-	delete this->_player;
+	saveSettings();
 	std::cout << "Game De-Constructed\n";
 }
 
@@ -58,11 +59,11 @@ void					Game::setSettings(const Settings newSettings) {
 	this->_settings = newSettings;
 }
 
-Player*					Game::getPlayer() const {
+Player					Game::getPlayer() const {
 	return (this->_player);
 }
 
-void					Game::setPlayer(Player *newPlayer) {
+void					Game::setPlayer(const Player newPlayer) {
 	this->_player = newPlayer;
 }
 
@@ -102,25 +103,25 @@ void					Game::saveSettings() {
 }
 
 void					Game::savePlayer() {
-	std::ofstream profileFileOut("resources/profiles/" + this->_player->getName() + ".player", std::ofstream::out);
-	profileFileOut << "level:" + (std::to_string(this->_player->getLevel()))+"\n";
-	profileFileOut << "experience:" + (std::to_string(this->_player->getExperience()))+"\n";
+	std::ofstream profileFileOut("resources/profiles/" + this->_player.getName() + ".player", std::ofstream::out);
+	profileFileOut << "level:" + (std::to_string(this->_player.getLevel()))+"\n";
+	profileFileOut << "experience:" + (std::to_string(this->_player.getExperience()))+"\n";
 	profileFileOut.close();
-	std::cout << "Player saved to ./resources/profiles/" << this->_player->getName() << ".player\n";
+	std::cout << "Player saved to ./resources/profiles/" << this->_player.getName() << ".player\n";
 }
 
 void					Game::saveGame() {
-	std::ofstream saveFileOut("resources/save/" + this->_player->getName() + ".save", std::ofstream::out);
+	std::ofstream saveFileOut("resources/save/" + this->_player.getName() + ".save", std::ofstream::out);
 	// insert save data here
-	// e.g.	saveFileOut << "playerHP:"+(std::to_string(_player->getHP()))+"\n";
+	// e.g.	saveFileOut << "playerHP:"+(std::to_string(_player.getHP()))+"\n";
 	saveFileOut.close();
-	std::cout << "Game saved to ./resources/profiles/" << this->_player->getName() << ".save\n";
+	std::cout << "Game saved to ./resources/profiles/" << this->_player.getName() << ".save\n";
 }
 
 void					Game::loadPlayer(std::string playerName) {
 	std::string fileName = "resources/profiles/" + playerName + ".profile";
-	this->_player->setLevel(std::stoi(lexFile(fileName, "level")));
-	this->_player->setExperience(std::stoi(lexFile(fileName, "experience")));
+	this->_player.setLevel(std::stoi(lexFile(fileName, "level")));
+	this->_player.setExperience(std::stoi(lexFile(fileName, "experience")));
 }
 
 void					Game::loadGame() {
@@ -128,27 +129,32 @@ void					Game::loadGame() {
 
 void					Game::loadSettings() {
 	std::string fileName = "resources/bomberman.config";
-	struct stat buffer;   
-  	if (stat(fileName.c_str(), &buffer) == 0)
-  		std::cout << "Cannot find file '" << fileName << "'. Using default settings.";
-	int resX = std::stoi(lexFile(fileName, "resolutionX"));
-	int resY = std::stoi(lexFile(fileName, "resolutionY"));
-	std::pair<int, int> resolution = std::make_pair(resX, resY);
-	this->_settings.setResolution(resolution);
+	struct stat buffer;
 
-	std::string ret = lexFile(fileName, "windowed");
-	if (ret == "false")
-		this->_settings.setWindowed(false);
-	else
-		this->_settings.setWindowed(true);
+	std::cout << "Loading Settings\n";
+	if (stat(fileName.c_str(), &buffer) != 0)
+		std::cout << "Cannot find file '" << fileName << "'. Using default settings.\n";
+	else {
+		std::cout << "Config file found at: '" << fileName << "'. Using saved settings.\n";
+		int resX = std::stoi(lexFile(fileName, "resolutionX"));
+		int resY = std::stoi(lexFile(fileName, "resolutionY"));
+		std::pair<int, int> resolution = std::make_pair(resX, resY);
+		this->_settings.setResolution(resolution);
 
-	this->_settings.setUpKey(std::stoi(lexFile(fileName, "upKey")));
-	this->_settings.setDownKey(std::stoi(lexFile(fileName, "downKey")));
-	this->_settings.setLeftKey(std::stoi(lexFile(fileName, "leftKey")));
-	this->_settings.setRightKey(std::stoi(lexFile(fileName, "rightKey")));
-	this->_settings.setActionKey(std::stoi(lexFile(fileName, "actionKey")));
-	this->_settings.setMusicVol(std::stoi(lexFile(fileName, "musicVol")));
-	this->_settings.setFXVol(std::stoi(lexFile(fileName, "FXVol")));
+		std::string ret = lexFile(fileName, "windowed");
+		if (ret == "false")
+			this->_settings.setWindowed(false);
+		else
+			this->_settings.setWindowed(true);
+
+		this->_settings.setUpKey(std::stoi(lexFile(fileName, "upKey")));
+		this->_settings.setDownKey(std::stoi(lexFile(fileName, "downKey")));
+		this->_settings.setLeftKey(std::stoi(lexFile(fileName, "leftKey")));
+		this->_settings.setRightKey(std::stoi(lexFile(fileName, "rightKey")));
+		this->_settings.setActionKey(std::stoi(lexFile(fileName, "actionKey")));
+		this->_settings.setMusicVol(std::stoi(lexFile(fileName, "musicVol")));
+		this->_settings.setFXVol(std::stoi(lexFile(fileName, "FXVol")));
+	}
 }
 
 std::string				Game::lexFile(std::string fileName, std::string find) {
@@ -156,31 +162,30 @@ std::string				Game::lexFile(std::string fileName, std::string find) {
 	std::string line;
 	std::string key;
 	std::string value;
-	int			num;
 
-	num = 0;
 	if (!handle)
 		throw (Exceptions::LexOpenFileError(fileName));
 	else
 	{
-		while (std::getline(handle, line)) {
-			num++;
-			if (!line.empty()) {
-				std::istringstream	iss(line);
-				if (line.c_str()[0] != ';' && line.c_str()[0] != '[')
-				{
-					if (iss >> key >> value) {
-						if (key == find)
-							return value;
-					}
-					else
-						throw (Exceptions::LexFormatError(num, line));
-				}
+		while (std::getline(handle, key, ':')) {
+			std::getline(handle, value);
+			if (key == find) {
+				//std::cout << "Found: " << value << " for key " << find << std::endl;
+				return value;
 			}
+			//std::cout << "Looking for key: " << find << "\tFound key: " << key << std::endl;
 		}
 		throw (Exceptions::LexKeyNotFound(find));
-	}		
+	}	
 	return ("ERROR");
+}
+
+void					Game::startBackgroundMusic() {
+	this->_sound.startMenuMusic();
+}
+
+void					Game::stopBackgroundMusic() {
+	this->_sound.stopMenuMusic();
 }
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
@@ -189,7 +194,7 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	"\nGame State: " << static_cast<std::underlying_type<GameState>::type>(rhs.getGameState()) <<
 	"\nPlay State: " << static_cast<std::underlying_type<PlayState>::type>(rhs.getPlayState()) <<
 	"\nGame Input: " << rhs.getGameInput() << std::endl <<
-	"\nPlayer: " << *rhs.getPlayer();
+	"\nPlayer: " << rhs.getPlayer();
 	if (rhs.getEnemies().size() > 0) {
 		for (std::vector<Character*>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it)
 		{

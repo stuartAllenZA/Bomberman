@@ -1,0 +1,4 @@
+sh .clean
+cmake .
+make -j4
+./Bomberman

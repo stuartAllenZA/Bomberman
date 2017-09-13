@@ -52,7 +52,7 @@ private:
 	int					_rightKey;
 	int					_actionKey;
 	int					_musicVol;
-	int					_FXVol;	
+	int					_FXVol;
 };
 
 std::ostream &					operator<<(std::ostream & o, Settings const & rhs);

@@ -10,3 +10,5 @@ CMakeFiles
 Makefile
 .nanogui
 cmake_install.cmake
+resources/bomberman.config
+resources/maps.config

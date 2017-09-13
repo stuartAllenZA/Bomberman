@@ -1,5 +1,5 @@
-#ifndef INCLUDE_BOMB_CLASS_HPP_
-#define INCLUDE_BOMB_CLASS_HPP_
+#ifndef BOMB_HPP
+#define BOMB_HPP
 
 #include <iostream>
 

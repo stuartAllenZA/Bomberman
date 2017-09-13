@@ -39,10 +39,12 @@ set(SOURCE_FILES
 		src/RangeExtender.cpp
 		src/RemoteDetonator.cpp
 		src/Settings.cpp
+		src/Sound.cpp
 		src/UnbreakableBox.cpp)
 
 include_directories(
 		${PROJECT_SOURCE_DIR}/include
+		${PROJECT_SOURCE_DIR}/.irrKlang/include
 		${NANOGUI_DIR}/ext/glfw/include
 		${NANOGUI_DIR}/include
 		${NANOGUI_DIR}/ext/eigen
@@ -52,20 +54,28 @@ include_directories(
 )
 
 link_directories(
+		.irrKlang
 		${NANOGUI_DIR}
 		${NANOGUI_DIR}/ext/eigen
 		${NANOGUI_DIR}/ext/nanovg/src
-		$ENV{HOME}/.brew/Cellar/glew/2.1.0/lib/
+		$ENV{HOME}/.brew/Cellar/glew/2.1.0/lib
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
+add_custom_command(TARGET ${PROJECT_NAME}
+		PRE_BUILD
+		COMMAND install_name_tool -id "${PROJECT_SOURCE_DIR}/.irrKlang/libirrklang.dylib"
+			${PROJECT_SOURCE_DIR}/.irrKlang/libirrklang.dylib
+)
+
 target_link_libraries(${PROJECT_NAME}
+		irrklang
 		nanogui
 		GLEW
 )
 
 if (APPLE)
 	target_link_libraries(${PROJECT_NAME}
-			"-framework OpenGL")
+			"-framework OpenGL -framework OpenAL")
 endif()

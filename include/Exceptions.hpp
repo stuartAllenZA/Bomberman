@@ -6,18 +6,27 @@
 
 class Exceptions {
 	public:
-		class UndefinedObject: public std::exception {
+		class SoundDeviceInitError: public std::exception {
 			public:
 				virtual const char*	what() const throw() {
-					return "Shared object does not exist.";
+					return "Sound was unable to create a device.";
 				}
 		};
 
-		class UndefinedSymbol: public std::exception {
+		class SoundContextInitError: public std::exception {
 			public:
 				virtual const char*	what() const throw() {
-					return "Method does not exist in external library.";
+					return "Sound was unable to make the context current.";
 				}
+		};
+
+		class SoundGeneralError: public std::exception {
+			public:
+				SoundGeneralError(const int code, const std::string & error) throw();
+				~SoundGeneralError() throw();
+				virtual const char*	what() const throw();
+			private:
+				std::string _msg;
 		};
 
 		class LexOpenFileError: public std::exception {
@@ -45,13 +54,6 @@ class Exceptions {
 				virtual const char*	what() const throw();
 			private:
 				std::string _msg;
-		};
-
-		class EmptyUnameData: public std::exception {
-			public:
-				virtual const char*	what() const throw() {
-					return "Unable to generate libray name. Function call to 'uname()' returned -1.";
-				}
 		};
 };
 
