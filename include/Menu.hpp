@@ -30,8 +30,9 @@ enum class MenuState {
 };
 
 enum class ResolutionState {
-    TEN_EIGHTY_BY_NINETEEN_TWENTY,
-    EIGHT_HUNDRED_BY_SIX_HUNDRED
+    SVGA,       //800x600   4:3
+    XGA,        //1024x768  4:3
+    WXGA        //1280x800  16:10
 };
 
 class Menu {
@@ -71,6 +72,7 @@ public:
     void            mainMenu();
     void			settingsMenu();
     void            pauseMenu();
+    bool            checkPlayerNameAvailability(std::string playerNameInputVar);
     void            createButton(std::string playerNameInputVar);
     void            exitButton();
     void            newGameButton();

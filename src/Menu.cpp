@@ -111,8 +111,7 @@ void			Menu::playerSelectMenu() {
 	}
 	gui->addVariable("New Player", playerNameInput);
 	gui->addButton("Create", [this, &playerNameInput]() {
-		std::cout << "Create pressed." << std::endl;
-		createButton(playerNameInput);
+        createButton(playerNameInput);
 	});
 	gui->addButton("Exit", [this]() {
 		exitButton();
@@ -125,13 +124,10 @@ void			Menu::playerSelectMenu() {
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
-		if (_keyPressArr[ENTER] && playerNameInput != "choose a name") {
-			this->_game->setPlayer(Player(playerNameInput));
-			_menuState = MenuState::MAIN_MENU;
-		}
+		if (_keyPressArr[ENTER])
+			createButton(playerNameInput);
 		else if (_keyPressArr[ESC] && getDelayTimer() >= getMinimumTime()) {
-			this->_game->setGameState(GameState::EXIT);
-			_menuState = MenuState::NO_MENU;
+			exitButton();
 		}
 		renderMenu();
 	}
@@ -199,18 +195,57 @@ void			Menu::settingsMenu(){
     nanogui::Button                 *b = new nanogui::Button(nanoguiWindow, "Plain button");
     bool                            windowed;
     ResolutionState                 resolution;
+    Settings                        tempSettings = this->_game->getSettings();
 
     b->setVisible(false);
     nanoguiWindow->setLayout(new nanogui::GroupLayout);
-    gui->addVariable("Windowed :", windowed)->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Vertical, nanogui::Alignment::Minimum, 0, 2));
-    gui->addVariable("Resolution", resolution)->setItems({ "800x600", "1080x1920"});
 
-    gui->addButton("Reset to default", [this]() {
+    gui->addVariable("Windowed :", windowed)->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Vertical, nanogui::Alignment::Minimum, 0, 2));
+
+    gui->addVariable("Resolution :", resolution)->setItems({ "800x600", "1024x768", "1280x800"});
+
+    new nanogui::Label(nanoguiWindow, "SFX Volume");
+    nanogui::Widget                 *panel = new nanogui::Widget(nanoguiWindow);
+    panel->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 20));
+    nanogui::Slider *sliderSfx = new nanogui::Slider(panel);
+    sliderSfx->setFixedWidth(100);
+    sliderSfx->setValue(100);
+    nanogui::TextBox *textBoxSfx = new nanogui::TextBox(panel);
+    textBoxSfx->setFixedSize(nanogui::Vector2i(60, 25));
+    textBoxSfx->setValue(std::to_string((int) (this->_game->getSettings().getFXVol())));
+    textBoxSfx->setUnits("%");
+    sliderSfx->setCallback([textBoxSfx, &tempSettings](float sfxVolume) {
+        textBoxSfx->setValue(std::to_string((int) (sfxVolume * 100)));
+        tempSettings.setFXVol(sfxVolume);
+    });
+    textBoxSfx->setAlignment(nanogui::TextBox::Alignment::Right);
+
+    new nanogui::Label(nanoguiWindow, "Music Volume");
+    panel = new nanogui::Widget(nanoguiWindow);
+    panel->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 20));
+    nanogui::Slider *sliderMusic = new nanogui::Slider(panel);
+    nanogui::TextBox *textBoxMusic = new nanogui::TextBox(panel);
+    sliderMusic->setFixedWidth(100);
+    sliderMusic->setValue(100);
+    textBoxMusic->setFixedSize(nanogui::Vector2i(60, 25));
+    textBoxMusic->setValue("100");
+    textBoxMusic->setUnits("%");
+    sliderMusic->setCallback([textBoxMusic, &tempSettings](float musicVolume) {
+        textBoxMusic->setValue(std::to_string((int) (musicVolume * 100)));
+        tempSettings.setMusicVol(musicVolume);
+    });
+    textBoxMusic->setAlignment(nanogui::TextBox::Alignment::Right);
+
+    gui->addButton("Reset to default", [this, &sliderSfx, &textBoxSfx, &sliderMusic, &textBoxMusic]() {
+        textBoxSfx->setValue("100");
+        sliderMusic->setValue(100);
+        textBoxMusic->setValue("100");
         resetToDefaultButton();
     });
+
     nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
     tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 2));
-    b = new nanogui::Button(tools, "Accept");
+    b = new nanogui::Button(tools, "Return to menu");
     b->setCallback([&]{
         if (this->_game->getPlayState() == PlayState::GAME_PLAY) {
             std::cout << "accepted changes 1" << std::endl;
@@ -223,7 +258,7 @@ void			Menu::settingsMenu(){
     });
     b = new nanogui::Button(tools, "Apply");
     b->setCallback([&]{
-        std::cout << "state is : " << windowed << std::endl;
+        this->_game->setSettings(tempSettings);
         std::cout << "Changes applied" << std::endl;
     });
     screen->setVisible(true);
@@ -349,14 +384,31 @@ void			Menu::updateMouse() {
 		wasClicked = false;
 	}
 }
-	void			Menu::createButton(std::string playerNameInputVar) {
-		if (playerNameInputVar != "choose a name") {
-			this->_game->setPlayer(Player(playerNameInputVar));
-			_menuState = MenuState::MAIN_MENU;
-		}
-		else
-			std::cout << "name not available: " << playerNameInputVar << std::endl;
-	}
+
+bool            Menu::checkPlayerNameAvailability(std::string playerNameInputVar) {
+    std::vector<char *> 			playerNames = this->_game->checkPlayers();
+
+    if (playerNames.size() > 0) {
+        for (std::vector<char *>::iterator it = playerNames.begin(); it != playerNames.end(); ++it) {
+            if (*it == playerNameInputVar)
+                return (false);
+        }
+    }
+    if (playerNameInputVar == "Enter your name")
+        return (false);
+    return (true);
+}
+
+void			Menu::createButton(std::string playerNameInputVar) {
+    std::cout << "Create new player pressed" << std::endl;
+    if (checkPlayerNameAvailability(playerNameInputVar)) {
+        this->_game->setPlayer(Player(playerNameInputVar));
+        _menuState = MenuState::MAIN_MENU;
+        std::cout << "Player : " << playerNameInputVar << " created" << std::endl;
+    }
+    else
+        std::cout << "name not available: " << playerNameInputVar << std::endl;
+}
 
 	void			Menu::exitButton() {
 		this->_game->setGameState(GameState::EXIT);
