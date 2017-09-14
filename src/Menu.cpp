@@ -139,7 +139,9 @@ void			Menu::playerSelectMenu() {
 
 void            Menu::mainMenu() {
     nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
-    nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(100, 100), "Bomberman");
+    nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(100, 100), this->_game->getPlayer().getName() + "'s Account");
+
+    std::cout << *_game << std::endl;
 
     gui->addButton("New Game", [this]() {
         newGameButton();
@@ -195,52 +197,61 @@ void			Menu::settingsMenu(){
     nanogui::Button                 *b = new nanogui::Button(nanoguiWindow, "Plain button");
     bool                            windowed;
     ResolutionState                 resolution;
-    Settings                        tempSettings = this->_game->getSettings();
+    Settings                        tempSettings(this->_game->getSettings());
+
+    std::cout << *_game << std::endl;
+    std::cout << "_________________________________________________________________________________" << std::endl;
+    std::cout << tempSettings << std::endl;
 
     b->setVisible(false);
     nanoguiWindow->setLayout(new nanogui::GroupLayout);
 
-    gui->addVariable("Windowed :", windowed)->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Vertical, nanogui::Alignment::Minimum, 0, 2));
+    new nanogui::Label(nanoguiWindow, "Windowed :");
+    nanogui::CheckBox *cb = new nanogui::CheckBox(nanoguiWindow, "", [&tempSettings](bool state) {
+        tempSettings.setWindowed(state);
+    }
+    );
+    cb->setChecked(_game->getSettings().getWindowed());
 
     gui->addVariable("Resolution :", resolution)->setItems({ "800x600", "1024x768", "1280x800"});
 
-    new nanogui::Label(nanoguiWindow, "SFX Volume");
+    new nanogui::Label(nanoguiWindow, "SFX Volume :");
     nanogui::Widget                 *panel = new nanogui::Widget(nanoguiWindow);
     panel->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 20));
     nanogui::Slider *sliderSfx = new nanogui::Slider(panel);
     sliderSfx->setFixedWidth(100);
-    sliderSfx->setValue(100);
+    sliderSfx->setValue(tempSettings.getFXVol());
     nanogui::TextBox *textBoxSfx = new nanogui::TextBox(panel);
     textBoxSfx->setFixedSize(nanogui::Vector2i(60, 25));
-    textBoxSfx->setValue(std::to_string((int) (this->_game->getSettings().getFXVol())));
+    textBoxSfx->setValue(std::to_string((int) (tempSettings.getFXVol())));
     textBoxSfx->setUnits("%");
     sliderSfx->setCallback([textBoxSfx, &tempSettings](float sfxVolume) {
         textBoxSfx->setValue(std::to_string((int) (sfxVolume * 100)));
-        tempSettings.setFXVol(sfxVolume);
+        tempSettings.setFXVol((int) (sfxVolume * 100));
     });
     textBoxSfx->setAlignment(nanogui::TextBox::Alignment::Right);
 
-    new nanogui::Label(nanoguiWindow, "Music Volume");
+    new nanogui::Label(nanoguiWindow, "Music Volume :");
     panel = new nanogui::Widget(nanoguiWindow);
     panel->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 20));
     nanogui::Slider *sliderMusic = new nanogui::Slider(panel);
     nanogui::TextBox *textBoxMusic = new nanogui::TextBox(panel);
     sliderMusic->setFixedWidth(100);
-    sliderMusic->setValue(100);
+    sliderMusic->setValue(tempSettings.getMusicVol());
     textBoxMusic->setFixedSize(nanogui::Vector2i(60, 25));
-    textBoxMusic->setValue("100");
+    textBoxMusic->setValue(std::to_string((int) (tempSettings.getMusicVol())));
     textBoxMusic->setUnits("%");
     sliderMusic->setCallback([textBoxMusic, &tempSettings](float musicVolume) {
         textBoxMusic->setValue(std::to_string((int) (musicVolume * 100)));
-        tempSettings.setMusicVol(musicVolume);
+        tempSettings.setMusicVol((int) (musicVolume * 100));
     });
     textBoxMusic->setAlignment(nanogui::TextBox::Alignment::Right);
 
-    gui->addButton("Reset to default", [this, &sliderSfx, &textBoxSfx, &sliderMusic, &textBoxMusic]() {
+    gui->addButton("Reset to default", [this, &cb, &sliderSfx, &textBoxSfx, &sliderMusic, &textBoxMusic]() {
+        cb->setChecked(false);
         textBoxSfx->setValue("100");
         sliderMusic->setValue(100);
         textBoxMusic->setValue("100");
-        resetToDefaultButton();
     });
 
     nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
@@ -259,7 +270,7 @@ void			Menu::settingsMenu(){
     b = new nanogui::Button(tools, "Apply");
     b->setCallback([&]{
         this->_game->setSettings(tempSettings);
-        std::cout << "Changes applied" << std::endl;
+        std::cout << tempSettings << std::endl << "Changes applied" << std::endl;
     });
     screen->setVisible(true);
     screen->performLayout();
@@ -445,10 +456,6 @@ void            Menu::quitToMenuButton() {
     _menuState = MenuState::MAIN_MENU;
     this->_game->setGameState(GameState::MENU);
     this->_game->setPlayState(PlayState::GAME_LOAD);
-}
-
-void            Menu::resetToDefaultButton() {
-    std::cout << "reset settings to default" << std::endl;
 }
 
 void			Menu::renderMenu() {

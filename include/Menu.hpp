@@ -81,7 +81,6 @@ public:
     void            settingsButton();
     void            resumeButton();
     void            quitToMenuButton();
-    void            resetToDefaultButton();
     void			renderMenu();
 
 private:
