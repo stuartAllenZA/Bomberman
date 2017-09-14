@@ -50,7 +50,7 @@ void					Sound::init() {
 		throw (Exceptions::SoundDeviceInitError());
 	else {
 		this->_menuMusic = _engine->addSoundSourceFromFile("resources/sounds/menuMusic.wav");
-		this->_gameMusic = _engine->addSoundSourceFromFile("resources/sounds/gameMusic");
+		this->_gameMusic = _engine->addSoundSourceFromFile("resources/sounds/gameMusic.mp3");
 		this->_menuPass = _engine->addSoundSourceFromFile("resources/sounds/menuPass.mp3");
 		this->_menuFail = _engine->addSoundSourceFromFile("resources/sounds/menuFail.wav");
 		this->_menuHover = _engine->addSoundSourceFromFile("resources/sounds/menuHover.wav");
@@ -63,7 +63,7 @@ void					Sound::init() {
 		this->_enemyWalk = _engine->addSoundSourceFromFile("resources/sounds/enemyWalk");
 		this->_plantBomb = _engine->addSoundSourceFromFile("resources/sounds/plantBomb");
 		this->_detonateBomb = _engine->addSoundSourceFromFile("resources/sounds/detonateBomb");
-		this->_dropDrop = _engine->addSoundSourceFromFile("resources/sounds/dropDrop");
+		this->_dropDrop = _engine->addSoundSourceFromFile("resources/sounds/dropDrop.wav");
 		this->_pickupDrop = _engine->addSoundSourceFromFile("resources/sounds/pickupDrop.wav");
 		this->updateMusicVol();
 		this->updateFXVol();

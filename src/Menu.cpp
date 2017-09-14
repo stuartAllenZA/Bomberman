@@ -103,18 +103,19 @@ void			Menu::playerSelectMenu() {
 	nanoguiWindow->setLayout(new nanogui::GroupLayout);
 	nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
 	tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 6));
+	
 	if (playerNames.size() > 0) {
 		for (std::vector<char *>::iterator it = playerNames.begin(); it != playerNames.end(); ++it) {
 			b = new nanogui::Button(tools, *it);
 		}
 	}
-	gui->addVariable("Create a new player", playerNameInput);
+	gui->addVariable("New Player", playerNameInput);
 	gui->addButton("Create", [this, &playerNameInput]() {
 		std::cout << "Create pressed." << std::endl;
-		if (playerNameInput != "choose a name")
-			_menuState = MenuState::MAIN_MENU;
-		else
-			std::cout << "name not available: " << playerNameInput << std::endl;
+		createButton(playerNameInput);
+	});
+	gui->addButton("Exit", [this]() {
+		exitButton();
 	});
 	screen->setVisible(true);
 	screen->performLayout();
@@ -125,10 +126,10 @@ void			Menu::playerSelectMenu() {
 		updateKeys();
 		updateMouse();
 		if (_keyPressArr[ENTER] && playerNameInput != "choose a name") {
-//            newPlayer(playerNameInput);
+			this->_game->setPlayer(Player(playerNameInput));
 			_menuState = MenuState::MAIN_MENU;
 		}
-		if (_keyPressArr[ESC] && getDelayTimer() >= getMinimumTime()) {
+		else if (_keyPressArr[ESC] && getDelayTimer() >= getMinimumTime()) {
 			this->_game->setGameState(GameState::EXIT);
 			_menuState = MenuState::NO_MENU;
 		}
@@ -140,9 +141,25 @@ void			Menu::playerSelectMenu() {
 	nanoguiWindow->dispose();
 }
 
+void			Menu::createButton(std::string playerNameInput) {
+	if (playerNameInput != "choose a name") {
+		this->_game->setPlayer(Player(playerNameInput));
+		_menuState = MenuState::MAIN_MENU;
+	}
+	else
+		std::cout << "name not available: " << playerNameInput << std::endl;
+}
+
+void			Menu::exitButton() {
+	this->_game->setGameState(GameState::EXIT);
+	_menuState = MenuState::NO_MENU;
+}
+
 void			Menu::mainMenu() {
 	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
 	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(100, 100), "Bomberman");
+
+	std::cout << *this->_game;
 
 	gui->addButton("New Game", [this]() {
 		std::cout << "New Game pressed." << std::endl;

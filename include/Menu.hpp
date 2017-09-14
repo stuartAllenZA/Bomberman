@@ -67,6 +67,9 @@ public:
     void			settingsMenu();
     void            pauseMenu();
     void			renderMenu();
+    void            createButton(std::string playerNameInput);
+    void            exitButton();
+
 private:
 
     double			_mouseX;

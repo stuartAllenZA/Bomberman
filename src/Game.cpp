@@ -65,6 +65,7 @@ Player					Game::getPlayer() const {
 
 void					Game::setPlayer(const Player newPlayer) {
 	this->_player = newPlayer;
+	
 }
 
 Sound				&	Game::getSound() {
