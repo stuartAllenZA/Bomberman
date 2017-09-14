@@ -36,7 +36,6 @@ Core::~Core() {
 
 void			Core::run() {
 	std::cout << "initializing" << std::endl;
-	this->_game.startBackgroundMusic();
 	init();
 	gameLoop();
 	std::cout << "Done" << std::endl;
@@ -87,6 +86,8 @@ void			Core::run() {
 }
 
 void			Core::init() {
+	this->_game.initSound();
+	this->_game.startBackgroundMusic();
 	_win = nullptr;
 	std::cout << "creating glfw window" << std::endl;
 	glfwInit();

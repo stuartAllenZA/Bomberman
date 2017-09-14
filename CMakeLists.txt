@@ -16,6 +16,10 @@ if (NOT IS_DIRECTORY "$ENV{HOME}/.brew/Cellar/glew")
 	execute_process(COMMAND brew install glew)
 endif()
 
+if (NOT IS_DIRECTORY "${PROJECT_SOURCE_DIR}/.irrKlang/")
+	execute_process(COMMAND git clone https://github.com/Trismaske/irrKlang_cmake.git .irrKlang)
+endif()
+
 if (NOT IS_DIRECTORY "${NANOGUI_DIR}")
 	execute_process(COMMAND git clone https://github.com/wjakob/nanogui.git --recursive .nanogui)
 	execute_process(COMMAND sh .compile.sh)

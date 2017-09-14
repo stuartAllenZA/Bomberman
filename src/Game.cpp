@@ -67,6 +67,14 @@ void					Game::setPlayer(const Player newPlayer) {
 	this->_player = newPlayer;
 }
 
+Sound				&	Game::getSound() {
+	return (this->_sound);
+}
+
+void					Game::setSound(Sound newSound) {
+	this->_sound = newSound;
+}
+
 std::vector<Character*>	Game::getEnemies() const {
 	return (this->_enemies);
 }
@@ -118,7 +126,24 @@ void					Game::saveGame() {
 	std::cout << "Game saved to ./resources/profiles/" << this->_player.getName() << ".save\n";
 }
 
+std::vector<char *>		Game::checkPlayers() {
+	DIR					*dir;
+	struct dirent		*ent;
+	std::vector<char *> arr;
+
+	std::cout << "Checking for old players.\n";
+	if ((dir = opendir ("resources/profiles/")) != NULL) {
+		while ((ent = readdir (dir)) != NULL) {
+			if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0)
+				arr.push_back(ent->d_name);
+		}
+		closedir (dir);
+	}
+	return (arr);
+}
+
 void					Game::loadPlayer(std::string playerName) {
+	std::cout << "Loading player: " + playerName + "\n";
 	std::string fileName = "resources/profiles/" + playerName + ".profile";
 	this->_player.setLevel(std::stoi(lexFile(fileName, "level")));
 	this->_player.setExperience(std::stoi(lexFile(fileName, "experience")));
@@ -180,6 +205,10 @@ std::string				Game::lexFile(std::string fileName, std::string find) {
 	return ("ERROR");
 }
 
+void					Game::initSound() {
+	this->_sound.init();
+}
+
 void					Game::startBackgroundMusic() {
 	this->_sound.startMenuMusic();
 }
@@ -196,8 +225,7 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	"\nGame Input: " << rhs.getGameInput() << std::endl <<
 	"\nPlayer: " << rhs.getPlayer();
 	if (rhs.getEnemies().size() > 0) {
-		for (std::vector<Character*>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it)
-		{
+		for (std::vector<Character*>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it) {
 			num++;
 			o << "Enemy " << num << ": " << *it << std::endl;
 		}

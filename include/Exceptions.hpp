@@ -13,22 +13,6 @@ class Exceptions {
 				}
 		};
 
-		class SoundContextInitError: public std::exception {
-			public:
-				virtual const char*	what() const throw() {
-					return "Sound was unable to make the context current.";
-				}
-		};
-
-		class SoundGeneralError: public std::exception {
-			public:
-				SoundGeneralError(const int code, const std::string & error) throw();
-				~SoundGeneralError() throw();
-				virtual const char*	what() const throw();
-			private:
-				std::string _msg;
-		};
-
 		class LexOpenFileError: public std::exception {
 			public:
 				LexOpenFileError(std::string const & fileName) throw();
