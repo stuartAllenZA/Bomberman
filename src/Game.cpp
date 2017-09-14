@@ -119,24 +119,22 @@ void					Game::savePlayer() {
 	std::cout << "Player saved to ./resources/profiles/" << this->_player.getName() << ".player\n";
 }
 
-void					Game::saveGame() {
-	std::ofstream saveFileOut("resources/save/" + this->_player.getName() + ".save", std::ofstream::out);
-	// insert save data here
-	// e.g.	saveFileOut << "playerHP:"+(std::to_string(_player.getHP()))+"\n";
-	saveFileOut.close();
-	std::cout << "Game saved to ./resources/profiles/" << this->_player.getName() << ".save\n";
-}
-
-std::vector<char *>		Game::checkPlayers() {
-	DIR					*dir;
-	struct dirent		*ent;
-	std::vector<char *> arr;
+std::vector<std::string>		Game::checkPlayers() {
+	DIR							*dir;
+	struct dirent				*ent;
+	std::vector<std::string>	arr;
+	char						*temp;
+	int							len;
 
 	std::cout << "Checking for old players.\n";
 	if ((dir = opendir ("resources/profiles/")) != NULL) {
 		while ((ent = readdir (dir)) != NULL) {
-			if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0)
-				arr.push_back(ent->d_name);
+			if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
+				temp = strstr(ent->d_name, ".player");
+				len = temp - ent->d_name;
+				std::string push(ent->d_name, len);
+				arr.push_back(push);
+			}
 		}
 		closedir (dir);
 	}
@@ -148,9 +146,6 @@ void					Game::loadPlayer(std::string playerName) {
 	std::string fileName = "resources/profiles/" + playerName + ".profile";
 	this->_player.setLevel(std::stoi(lexFile(fileName, "level")));
 	this->_player.setExperience(std::stoi(lexFile(fileName, "experience")));
-}
-
-void					Game::loadGame() {
 }
 
 void					Game::loadSettings() {

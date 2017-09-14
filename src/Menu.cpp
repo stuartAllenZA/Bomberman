@@ -96,7 +96,7 @@ void			Menu::playerSelectMenu() {
 	nanogui::FormHelper				*gui = new nanogui::FormHelper(screen);
 	nanogui::ref<nanogui::Window>	nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "Player Select");
 	nanogui::Button					*b = new nanogui::Button(nanoguiWindow, "Plain button");
-	std::vector<char *> 			playerNames = this->_game->checkPlayers();
+	std::vector<std::string>		playerNames = this->_game->checkPlayers();
 	std::string						playerNameInput = "Enter your name";
 
 	b->setVisible(false);
@@ -105,8 +105,8 @@ void			Menu::playerSelectMenu() {
 	tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 6));
 
 	if (playerNames.size() > 0) {
-		for (std::vector<char *>::iterator it = playerNames.begin(); it != playerNames.end(); ++it) {
-			b = new nanogui::Button(tools, *it);
+		for (std::vector<std::string>::iterator it = playerNames.begin(); it != playerNames.end(); ++it) {
+			b = new nanogui::Button(tools, *it->c_str());
 		}
 	}
 	gui->addVariable("New Player", playerNameInput);
