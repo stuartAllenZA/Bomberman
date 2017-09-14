@@ -29,6 +29,11 @@ enum class MenuState {
     NO_MENU
 };
 
+enum class ResolutionState {
+    TEN_EIGHTY_BY_NINETEEN_TWENTY,
+    EIGHT_HUNDRED_BY_SIX_HUNDRED
+};
+
 class Menu {
 public:
     Menu(int passedWidth, int passedHeight, Game *passedGame, GLFWwindow **passedWin);
@@ -66,9 +71,16 @@ public:
     void            mainMenu();
     void			settingsMenu();
     void            pauseMenu();
-    void			renderMenu();
-    void            createButton(std::string playerNameInput);
+    void            createButton(std::string playerNameInputVar);
     void            exitButton();
+    void            newGameButton();
+    void            loadGameButton();
+    void            playerSelectButton();
+    void            settingsButton();
+    void            resumeButton();
+    void            quitToMenuButton();
+    void            resetToDefaultButton();
+    void			renderMenu();
 
 private:
 
