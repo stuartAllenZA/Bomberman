@@ -9,4 +9,7 @@ CMakeCache.txt
 CMakeFiles
 Makefile
 .nanogui
+.irrKlang
 cmake_install.cmake
+resources/bomberman.config
+resources/maps.config

@@ -7,6 +7,7 @@
 #include "Character.hpp"
 #include "Settings.hpp"
 #include "Player.hpp"
+#include "Sound.hpp"
 #include "Box.hpp"
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -14,6 +15,8 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <irrKlang.h>
+#include <dirent.h>
 
 // Add variable checklist
 
@@ -51,27 +54,34 @@ class Game {
 		void					setGameInput(const int newInput);
 		Settings				getSettings() const;
 		void					setSettings(const Settings newSettings);
-		Player					*getPlayer() const;
-		void					setPlayer(Player *newPlayer);
+		Player					getPlayer() const;
+		void					setPlayer(const Player newPlayer);
+		Sound				&	getSound();
+		void					setSound(const Sound newSound);
 		std::vector<Character*>	getEnemies() const;
 		void					setEnemies(const std::vector<Character*> newEnemies);
 		bool 					getHasSave() const;
 		void 					setHasSave(const bool newHasSave);
 
+		void					initSound();
 		void					saveSettings();
 		void					savePlayer();
 		void					saveGame();
+		std::vector<char *>		checkPlayers();
 		void					loadPlayer(std::string playerName);
 		void					loadGame();
 		void					loadSettings();
 		std::string				lexFile(std::string fileName, std::string find);
+		void					startBackgroundMusic();
+		void					stopBackgroundMusic();
 
 	private:
 		GameState				_gameState;
 		PlayState				_playState;
 		int						_gameInput;
 		Settings				_settings;
-		Player					*_player;
+		Sound					_sound;
+		Player					_player;
 		std::vector<Character*>	_enemies;
 		bool					_hasSave;
 };

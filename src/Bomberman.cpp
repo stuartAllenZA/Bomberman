@@ -17,12 +17,8 @@ int main(int argc, char **argv) {
 	}
 
 	//Catch Fatal Exceptions
-	catch (Exceptions::UndefinedObject const & exception) {
-		std::cerr << "undefined object exception: " << exception.what() << std::endl;
-	}
-
-	catch (Exceptions::UndefinedSymbol const & exception) {
-		std::cerr << "undefined symbol exception: " << exception.what() << std::endl;
+	catch (Exceptions::SoundDeviceInitError const & exception) {
+		std::cerr << "Exceptions::SoundDeviceInitError" << exception.what() << std::endl;
 	}
 
 	catch (Exceptions::LexOpenFileError const & exception) {
@@ -35,10 +31,6 @@ int main(int argc, char **argv) {
 
 	catch (Exceptions::LexKeyNotFound const & exception) {
 		std::cerr << "Exceptions::LexKeyNotFound: " << exception.what() << std::endl;
-	}
-
-	catch (Exceptions::EmptyUnameData const & exception) {
-		std::cerr << "Exceptions::EmptyUnameData: " << exception.what() << std::endl;
 	}
 
 	catch (std::exception const & exception) {

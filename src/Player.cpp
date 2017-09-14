@@ -17,7 +17,11 @@ Player::Player(int lives, std::string name) : Character(lives), _name(name), _le
 
 Player::Player(std::string name) : Character(), _name(name), _level(1), _experience(0) {
 	this->_fileLocation = "resources/profiles/" + name + ".player";
-	std::cout << "Player with name " << this->_name << " Default Constructed\n";
+	std::cout << "Player with name " << this->_name << " Constructed\n";
+}
+
+Player::Player() : Character(), _level(1), _experience(0) {
+	std::cout << "Player with no name Default Constructed\n";
 }
 
 Player::Player(Player const & src) {
@@ -54,6 +58,7 @@ std::string	Player::getName() const {
 
 void		Player::setName(const std::string newName) {
 	this->_name = newName;
+	this->_fileLocation = "resources/profiles/" + this->_name + ".player";
 }
 
 int 		Player::getLevel() const {

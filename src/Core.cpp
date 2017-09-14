@@ -1,13 +1,10 @@
 #include <Core.hpp>
 
-
-
 Core::Core() {
 	std::cout << "Constructing Core\n";
-	this->_game = new Game;
-	this->_width = this->_game->getSettings().getResolutionX();
-	this->_height = this->_game->getSettings().getResolutionY();
-	this->_menu = new Menu(_width, _height, _game, &_win);
+	this->_width = this->_game.getSettings().getResolutionX();
+	this->_height = this->_game.getSettings().getResolutionY();
+	this->_menu = new Menu(_width, _height, &_game, &_win);
 	std::cout << "Core Constructed\n";
 }
 
@@ -25,10 +22,14 @@ Core &			Core::operator=(Core const & src) {
 }
 
 Core::~Core() {
-
 	std::cout << "De-Constructing Core\n";
-	delete this->_game;
-	this->_game = nullptr;
+	if (this->_game.getPlayer().getName().size() > 0)
+		this->_game.savePlayer();
+	this->_game.saveSettings();
+	this->_game.stopBackgroundMusic();
+	std::cout << "closing nanogui screen" << std::endl;
+	nanogui::shutdown();
+	std::cout << "nanogui screen closed successfully" << std::endl;
     delete this->_menu;
     this->_menu = nullptr;
 	glfwTerminate();
@@ -87,6 +88,8 @@ void			Core::run() {
 }
 
 void			Core::init() {
+	this->_game.initSound();
+	this->_game.startBackgroundMusic();
 	_win = nullptr;
 	std::cout << "creating glfw window" << std::endl;
 	glfwInit();
@@ -118,7 +121,7 @@ void			Core::gameLoop() {
 
 	while (loop == true && !glfwWindowShouldClose(_win)) {
 		input();
-		gs = this->_game->getGameState();
+		gs = this->_game.getGameState();
 		switch (gs) {
 			case GameState::MENU :
 			_menu->menu();
@@ -140,7 +143,7 @@ void			Core::gameLoop() {
 			break;
 		}
 		drawGame();
-		std::cout << "looping" << std::endl;
+		std::cout << "Main gameLoop looping." << std::endl;
 	}
 }
 
@@ -170,14 +173,9 @@ void			Core::fatalError(std::string errorString) {
 void			Core::initPlay() {
 	std::cout << "playing, ESC to exit" << std::endl;
     if (_menu->getKeyPressArr(ESC)){
-        this->_game->setGameState(GameState::MENU);
+        this->_game.setGameState(GameState::MENU);
         _menu->setMenuState(MenuState::PAUSE);
     }
-}
-
-void			Core::newPlayer(const std::string playerName) {
-	//TODO: ADD NEW WINDOW TO MAKE PLAYERS
-	this->_game->setPlayer(new Player(playerName));
 }
 
 void			Core::load() {
@@ -192,11 +190,11 @@ void			Core::save() {
 
 }
 
-Game			*Core::getGame() const {
+Game			Core::getGame() const {
 	return (this->_game);
 }
 
-void			Core::setGame(Game *newGame) {
+void			Core::setGame(const Game newGame) {
 	this->_game = newGame;
 }
 

@@ -1,5 +1,5 @@
 cd .nanogui
 cmake .
-make
+make -j4
 cd ..
-make
+make -j4

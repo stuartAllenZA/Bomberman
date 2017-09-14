@@ -2,59 +2,55 @@
 
 nanogui::Screen *screen = nullptr;
 
-Menu::Menu(int passedWidth, int passedHeight, Game *passedGame, GLFWwindow **passedWin) : _width(passedWidth),
-                                                                                         _height(passedHeight),
-                                                                                         _game(passedGame),
-                                                                                         _win(passedWin) {
-    std::cout << "Constructing Menu\n";
-    this->_menuState = MenuState::PLAYER_SELECT;
-    this->_minimumTime = 50;
-    std::cout << "Menu Constructed\n";
+Menu::Menu(int passedWidth, int passedHeight, Game *passedGame, GLFWwindow **passedWin) : _width(passedWidth), _height(passedHeight), _game(passedGame), _win(passedWin) {
+	std::cout << "Constructing Menu\n";
+	this->_menuState = MenuState::PLAYER_SELECT;
+	this->_minimumTime = 50;
+	std::cout << "Menu Constructed\n";
 }
 
 Menu::Menu(Menu const & src) {
-    std::cout << "Menu Copy-Constructed\n";
-    *this = src;
+	std::cout << "Menu Copy-Constructed\n";
+	*this = src;
 }
 
 Menu &			Menu::operator=(Menu const & src) {
-    for (int i = 0; i < 7; i++) {
-        this->_keyPressArr[i] = src.getKeyPressArr(i);
-    }
-    this->_mouseX = src.getMouseX();
-    this->_mouseY = src.getMouseY();
-    this->_menuState = src.getMenuState();
-    this->_delayTimer = src.getDelayTimer();
-    this->_minimumTime = src.getMinimumTime();
-    this->_width = src.getWidth();
-    this->_height = src.getHeight();
-    this->_game = src.getGame();
-    this->_win = src.getWin();
-    this->_settings = src.getSettings();
+	for (int i = 0; i < 7; i++) {
+		this->_keyPressArr[i] = src.getKeyPressArr(i);
+	}
+	this->_mouseX = src.getMouseX();
+	this->_mouseY = src.getMouseY();
+	this->_menuState = src.getMenuState();
+	this->_delayTimer = src.getDelayTimer();
+	this->_minimumTime = src.getMinimumTime();
+	this->_width = src.getWidth();
+	this->_height = src.getHeight();
+	this->_game = src.getGame();
+	this->_win = src.getWin();
+	this->_settings = src.getSettings();
 
 
-    return (*this);
+	return (*this);
 }
 
 Menu::~Menu() {
-
-    std::cout << "De-Constructing Menu\n";
-    std::cout << "closing nanogui screen" << std::endl;
-    nanogui::shutdown();
-    std::cout << "nanogui screen closed successfully" << std::endl;
-    glfwTerminate();
-    std::cout << "Menu De-Constructed\n";
+	std::cout << "De-Constructing Menu\n";
+	std::cout << "closing nanogui screen" << std::endl;
+	nanogui::shutdown();
+	std::cout << "nanogui screen closed successfully" << std::endl;
+	glfwTerminate();
+	std::cout << "Menu De-Constructed\n";
 }
 
 
-void	        Menu::menu() {
+void			Menu::menu() {
 #if defined(NANOGUI_GLAD)
-    std::cout << "initializing GLAD loader" << std::endl;
+	std::cout << "initializing GLAD loader" << std::endl;
 		if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
 			throw std::runtime_error("Could not initialize GLAD!");
 		glGetError(); // pull and ignore unhandled errors like GL_INVALID_ENUM
 #endif
-    std::cout << "creating nanogui screen" << std::endl;
+	std::cout << "creating nanogui screen" << std::endl;
     screen = new nanogui::Screen;
     std::cout << "nanogui screen created" << std::endl;
     std::cout << "initializing nanogui window" << std::endl;
@@ -96,40 +92,53 @@ void	        Menu::menu() {
     }
 }
 
-void            Menu::playerSelectMenu() {
-    nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
-    nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "Select a player");
-    std::string     playerNameInput = "choose a name";
+void			Menu::playerSelectMenu() {
+	nanogui::FormHelper				*gui = new nanogui::FormHelper(screen);
+	nanogui::ref<nanogui::Window>	nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "Player Select");
+	nanogui::Button					*b = new nanogui::Button(nanoguiWindow, "Plain button");
+	std::vector<char *> 			playerNames = this->_game->checkPlayers();
+	std::string						playerNameInput = "Enter your name";
 
-    gui->addVariable("Create a new player", playerNameInput);
-    gui->addButton("Create", [this, &playerNameInput]() {
-        createButton(playerNameInput);
-    });
-    gui->addButton("EXIT", [this, &playerNameInput]() {
-        exitButton();
-    });
-    screen->setVisible(true);
-    screen->performLayout();
-    nanoguiWindow->center();
-    resetDelayTimer();
-    while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::PLAYER_SELECT){
-        glfwPollEvents();
-        updateKeys();
-        updateMouse();
-        if (_keyPressArr[ENTER] && playerNameInput != "choose a name") {
-//            newPlayer(playerNameInput);
-            _menuState = MenuState::MAIN_MENU;
-        }
-        if (_keyPressArr[ESC] && getDelayTimer() >= getMinimumTime()) {
-            this->_game->setGameState(GameState::EXIT);
-            _menuState = MenuState::NO_MENU;
-        }
-        renderMenu();
-    }
-    std::cout << "PLAYER NAME IS: " << playerNameInput << std::endl;
-    if (glfwWindowShouldClose(*_win))
-        this->_game->setGameState(GameState::EXIT);
-    nanoguiWindow->dispose();
+	b->setVisible(false);
+	nanoguiWindow->setLayout(new nanogui::GroupLayout);
+	nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
+	tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 6));
+
+	if (playerNames.size() > 0) {
+		for (std::vector<char *>::iterator it = playerNames.begin(); it != playerNames.end(); ++it) {
+			b = new nanogui::Button(tools, *it);
+		}
+	}
+	gui->addVariable("New Player", playerNameInput);
+	gui->addButton("Create", [this, &playerNameInput]() {
+		std::cout << "Create pressed." << std::endl;
+		createButton(playerNameInput);
+	});
+	gui->addButton("Exit", [this]() {
+		exitButton();
+	});
+	screen->setVisible(true);
+	screen->performLayout();
+	nanoguiWindow->center();
+	resetDelayTimer();
+	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::PLAYER_SELECT){
+		glfwPollEvents();
+		updateKeys();
+		updateMouse();
+		if (_keyPressArr[ENTER] && playerNameInput != "choose a name") {
+			this->_game->setPlayer(Player(playerNameInput));
+			_menuState = MenuState::MAIN_MENU;
+		}
+		else if (_keyPressArr[ESC] && getDelayTimer() >= getMinimumTime()) {
+			this->_game->setGameState(GameState::EXIT);
+			_menuState = MenuState::NO_MENU;
+		}
+		renderMenu();
+	}
+	std::cout << "PLAYER NAME IS: " << playerNameInput << std::endl;
+	if (glfwWindowShouldClose(*_win))
+		this->_game->setGameState(GameState::EXIT);
+	nanoguiWindow->dispose();
 }
 
 void            Menu::mainMenu() {
@@ -280,78 +289,79 @@ void            Menu::pauseMenu() {
 }
 
 void			Menu::updateKeys() {
-    int     state;
-    bool    pressed = false;
+	int		state;
+	bool	pressed = false;
 
-    state = glfwGetKey(*_win, GLFW_KEY_LEFT);
-    if (state == GLFW_PRESS)
-        _keyPressArr[LEFT] = true;
-    else
-        _keyPressArr[LEFT] = false;
-    state = glfwGetKey(*_win, GLFW_KEY_RIGHT);
-    if (state == GLFW_PRESS)
-        _keyPressArr[RIGHT] = true;
-    else
-        _keyPressArr[RIGHT] = false;
-    state = glfwGetKey(*_win, GLFW_KEY_UP);
-    if (state == GLFW_PRESS)
-        _keyPressArr[UP] = true;
-    else
-        _keyPressArr[UP] = false;
-    state = glfwGetKey(*_win, GLFW_KEY_DOWN);
-    if (state == GLFW_PRESS)
-        _keyPressArr[DOWN] = true;
-    else
-        _keyPressArr[DOWN] = false;
-    state = glfwGetKey(*_win, GLFW_KEY_SPACE);
-    if (state == GLFW_PRESS)
-        _keyPressArr[SPACE] = true;
-    else
-        _keyPressArr[SPACE] = false;
-    state = glfwGetKey(*_win, GLFW_KEY_ENTER);
-    if (state == GLFW_PRESS)
-        _keyPressArr[ENTER] = true;
-    else
-        _keyPressArr[ENTER] = false;
-    state = glfwGetKey(*_win, GLFW_KEY_ESCAPE);
-    if (state == GLFW_PRESS)
-        _keyPressArr[ESC] = true;
-    else
-        _keyPressArr[ESC] = false;
+	state = glfwGetKey(*_win, GLFW_KEY_LEFT);
+	if (state == GLFW_PRESS)
+		_keyPressArr[LEFT] = true;
+	else
+		_keyPressArr[LEFT] = false;
+	state = glfwGetKey(*_win, GLFW_KEY_RIGHT);
+	if (state == GLFW_PRESS)
+		_keyPressArr[RIGHT] = true;
+	else
+		_keyPressArr[RIGHT] = false;
+	state = glfwGetKey(*_win, GLFW_KEY_UP);
+	if (state == GLFW_PRESS)
+		_keyPressArr[UP] = true;
+	else
+		_keyPressArr[UP] = false;
+	state = glfwGetKey(*_win, GLFW_KEY_DOWN);
+	if (state == GLFW_PRESS)
+		_keyPressArr[DOWN] = true;
+	else
+		_keyPressArr[DOWN] = false;
+	state = glfwGetKey(*_win, GLFW_KEY_SPACE);
+	if (state == GLFW_PRESS)
+		_keyPressArr[SPACE] = true;
+	else
+		_keyPressArr[SPACE] = false;
+	state = glfwGetKey(*_win, GLFW_KEY_ENTER);
+	if (state == GLFW_PRESS)
+		_keyPressArr[ENTER] = true;
+	else
+		_keyPressArr[ENTER] = false;
+	state = glfwGetKey(*_win, GLFW_KEY_ESCAPE);
+	if (state == GLFW_PRESS)
+		_keyPressArr[ESC] = true;
+	else
+		_keyPressArr[ESC] = false;
 }
 
 void			Menu::updateMouse() {
-    int				state;
-    static bool		wasClicked = false;
-    static double	clickX;
-    static double	clickY;
+	int				state;
+	static bool		wasClicked = false;
+	static double	clickX;
+	static double	clickY;
 
-    glfwGetCursorPos(*_win, &_mouseX, &_mouseY);
-    state = glfwGetMouseButton(*_win, GLFW_MOUSE_BUTTON_1);
-    if (state == GLFW_PRESS && wasClicked == false) {
-        std::cout << "clicked at:   " << _mouseX << ",  " << _mouseY << std::endl;
-        wasClicked = true;
-        clickX = _mouseX;
-        clickY = _mouseY;
-    }
-    else if (state == GLFW_RELEASE && wasClicked) {
-        std::cout << "released at:  " << _mouseX << ",  " << _mouseY << std::endl;
-        wasClicked = false;
-    }
+	glfwGetCursorPos(*_win, &_mouseX, &_mouseY);
+	state = glfwGetMouseButton(*_win, GLFW_MOUSE_BUTTON_1);
+	if (state == GLFW_PRESS && wasClicked == false) {
+		this->_game->getSound().playMenuClick();
+		std::cout << "clicked at:   " << _mouseX << ",  " << _mouseY << std::endl;
+		wasClicked = true;
+		clickX = _mouseX;
+		clickY = _mouseY;
+	}
+	else if (state == GLFW_RELEASE && wasClicked) {
+		std::cout << "released at:  " << _mouseX << ",  " << _mouseY << std::endl;
+		wasClicked = false;
+	}
 }
+	void			Menu::createButton(std::string playerNameInputVar) {
+		if (playerNameInputVar != "choose a name") {
+			this->_game->setPlayer(Player(playerNameInputVar));
+			_menuState = MenuState::MAIN_MENU;
+		}
+		else
+			std::cout << "name not available: " << playerNameInputVar << std::endl;
+	}
 
-void            Menu::createButton(std::string playerNameInputVar) {
-    std::cout << "Create pressed." << std::endl;
-    if (playerNameInputVar != "choose a name")
-        _menuState = MenuState::MAIN_MENU;
-    else
-        std::cout << "name not available: " << playerNameInputVar << std::endl;
-}
-
-void            Menu::exitButton() {
-    this->_game->setGameState(GameState::EXIT);
-    _menuState = MenuState::NO_MENU;
-}
+	void			Menu::exitButton() {
+		this->_game->setGameState(GameState::EXIT);
+		_menuState = MenuState::NO_MENU;
+	}
 
 void            Menu::newGameButton() {
     std::cout << "New Game pressed." << std::endl;
@@ -390,103 +400,103 @@ void            Menu::resetToDefaultButton() {
 }
 
 void			Menu::renderMenu() {
-    glfwGetFramebufferSize(*_win, &_width, &_height);
-    glViewport(0, 0, _width, _height);
-    glClear(GL_COLOR_BUFFER_BIT);
+	glfwGetFramebufferSize(*_win, &_width, &_height);
+	glViewport(0, 0, _width, _height);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-    screen->drawContents();
-    screen->drawWidgets();
-    glfwSwapBuffers(*_win);
-    incrementDelayTimer();
+	screen->drawContents();
+	screen->drawWidgets();
+	glfwSwapBuffers(*_win);
+	incrementDelayTimer();
 }
 
-double          Menu::getMouseX() const {
-    return (this->_mouseX);
+double			Menu::getMouseX() const {
+	return (this->_mouseX);
 }
 
-void            Menu::setMouseX(const double newMouseX) {
-    this->_mouseX = newMouseX;
+void			Menu::setMouseX(const double newMouseX) {
+	this->_mouseX = newMouseX;
 }
 
-double          Menu::getMouseY() const {
-    return (this->_mouseY);
+double			Menu::getMouseY() const {
+	return (this->_mouseY);
 }
 
-void            Menu::setMouseY(const double newMouseY) {
-    this->_mouseY = newMouseY;
+void			Menu::setMouseY(const double newMouseY) {
+	this->_mouseY = newMouseY;
 }
 
 bool			Menu::getKeyPressArr(const int index) const {
-    return (this->_keyPressArr[index]);
+	return (this->_keyPressArr[index]);
 }
 
 void			Menu::setKeyPressArr(const int index, const bool newChoice){
-    this->_keyPressArr[index] = newChoice;
+	this->_keyPressArr[index] = newChoice;
 }
 
-MenuState       Menu::getMenuState() const {
-    return (this->_menuState);
+MenuState		Menu::getMenuState() const {
+	return (this->_menuState);
 }
 
-void            Menu::setMenuState(const MenuState newMenuState){
-    this->_menuState = newMenuState;
+void			Menu::setMenuState(const MenuState newMenuState){
+	this->_menuState = newMenuState;
 }
 
 double			Menu::getDelayTimer() const {
-    return (this->_delayTimer);
+	return (this->_delayTimer);
 }
 
 void 			Menu::resetDelayTimer() {
-    this->_delayTimer = 0;
+	this->_delayTimer = 0;
 }
 
 void			Menu::incrementDelayTimer() {
-    this->_delayTimer++;
+	this->_delayTimer++;
 }
 
 double			Menu::getMinimumTime() const {
-    return (this->_minimumTime);
+	return (this->_minimumTime);
 }
 void			Menu::setMinimumTime(const double newMinimumTime) {
-    this->_minimumTime = newMinimumTime;
+	this->_minimumTime = newMinimumTime;
 }
 
 Game			*Menu::getGame() const {
-    return (this->_game);
+	return (this->_game);
 }
 
 void			Menu::setGame(Game *newGame) {
-    this->_game = newGame;
+	this->_game = newGame;
 }
 
 GLFWwindow		**Menu::getWin() const {
-    return (this->_win);
+	return (this->_win);
 }
 
 void			Menu::setWin(GLFWwindow **win) {
-    this->_win = win;
+	this->_win = win;
 }
 
 int				Menu::getWidth() const {
-    return (this->_width);
+	return (this->_width);
 }
 
 void			Menu::setWidth(const int newWidth) {
-    this->_width = newWidth;
+	this->_width = newWidth;
 }
 
 int				Menu::getHeight() const {
-    return (this->_height);
+	return (this->_height);
 }
 
 void			Menu::setHeight(const int newHeight) {
-    this->_height = newHeight;
+	this->_height = newHeight;
 }
 
-Settings        *Menu::getSettings() const {
-    return (this->_settings);
+Settings		*Menu::getSettings() const {
+	return (this->_settings);
 }
 
-void            Menu::setSettings(Settings *newSettings){
-    this->_settings = newSettings;
+void			Menu::setSettings(Settings *newSettings){
+	this->_settings = newSettings;
 }
