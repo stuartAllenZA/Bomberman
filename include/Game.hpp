@@ -16,6 +16,7 @@
 #include <sstream>
 #include <string>
 #include <irrKlang.h>
+#include <dirent.h>
 
 // Add variable checklist
 
@@ -55,14 +56,18 @@ class Game {
 		void					setSettings(const Settings newSettings);
 		Player					getPlayer() const;
 		void					setPlayer(const Player newPlayer);
+		Sound				&	getSound();
+		void					setSound(const Sound newSound);
 		std::vector<Character*>	getEnemies() const;
 		void					setEnemies(const std::vector<Character*> newEnemies);
 		bool 					getHasSave() const;
 		void 					setHasSave(const bool newHasSave);
 
+		void					initSound();
 		void					saveSettings();
 		void					savePlayer();
 		void					saveGame();
+		std::vector<char *>		checkPlayers();
 		void					loadPlayer(std::string playerName);
 		void					loadGame();
 		void					loadSettings();

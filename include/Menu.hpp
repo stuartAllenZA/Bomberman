@@ -10,6 +10,7 @@
 #include <GLFW/glfw3.h>
 #include "Settings.hpp"
 #include "Game.hpp"
+#include "Sound.hpp"
 
 #define UP		0
 #define DOWN	1
