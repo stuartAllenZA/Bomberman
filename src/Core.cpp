@@ -22,8 +22,10 @@ Core &			Core::operator=(Core const & src) {
 }
 
 Core::~Core() {
-
 	std::cout << "De-Constructing Core\n";
+	if (this->_game.getPlayer().getName().size() > 0)
+		this->_game.savePlayer();
+	this->_game.saveSettings();
 	this->_game.stopBackgroundMusic();
 	std::cout << "closing nanogui screen" << std::endl;
 	nanogui::shutdown();
@@ -174,11 +176,6 @@ void			Core::initPlay() {
         this->_game.setGameState(GameState::MENU);
         _menu->setMenuState(MenuState::PAUSE);
     }
-}
-
-void			Core::newPlayer(const std::string playerName) {
-	//TODO: ADD NEW WINDOW TO MAKE PLAYERS
-	this->_game.setPlayer(Player(playerName));
 }
 
 void			Core::load() {
