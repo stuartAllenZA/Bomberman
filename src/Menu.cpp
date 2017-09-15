@@ -140,8 +140,11 @@ void			Menu::playerSelectMenu() {
 }
 
 void            Menu::mainMenu() {
+
 	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
-	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(100, 100), "Bomberman");
+	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(100, 100), this->_game->getPlayer().getName() + "'s Account");
+
+	std::cout << *_game << std::endl;
 
 	gui->addButton("New Game", [this]() {
 		newGameButton();
@@ -196,53 +199,72 @@ void			Menu::settingsMenu(){
 	nanogui::ref<nanogui::Window>   nanoguiWindow = gui->addWindow(Eigen::Vector2i(2000, 2000), "SETTINGS");
 	nanogui::Button                 *b = new nanogui::Button(nanoguiWindow, "Plain button");
 	bool                            windowed;
-	ResolutionState                 resolution;
-	Settings                        tempSettings = this->_game->getSettings();
+	Settings                        tempSettings(this->_game->getSettings());
+
+	std::cout << *_game << std::endl;
+	std::cout << "_________________________________________________________________________________" << std::endl;
+	std::cout << tempSettings << std::endl;
 
 	b->setVisible(false);
 	nanoguiWindow->setLayout(new nanogui::GroupLayout);
 
-	gui->addVariable("Windowed :", windowed)->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Vertical, nanogui::Alignment::Minimum, 0, 2));
+	new nanogui::Label(nanoguiWindow, "Windowed :");
+	nanogui::CheckBox *cb = new nanogui::CheckBox(nanoguiWindow, "", [&tempSettings](bool state) {
+		tempSettings.setWindowed(state);
+	});
+	cb->setChecked(_game->getSettings().getWindowed());
 
-	gui->addVariable("Resolution :", resolution)->setItems({ "800x600", "1024x768", "1280x800"});
+	new nanogui::Label(nanoguiWindow, "Resolution :");
+	nanogui::ComboBox *cobo = new nanogui::ComboBox(nanoguiWindow, { "800x600", "1280x800", "1920x1080" });
+	switch (tempSettings.getResolution().first) {
+		case 800 :
+		cobo->setSelectedIndex(0);
+		break;
+		case 1280 :
+		cobo->setSelectedIndex(1);
+		break;
+		case 1920 :
+		cobo->setSelectedIndex(2);
+		break;
+	}
 
-	new nanogui::Label(nanoguiWindow, "SFX Volume");
+	new nanogui::Label(nanoguiWindow, "SFX Volume :");
 	nanogui::Widget                 *panel = new nanogui::Widget(nanoguiWindow);
 	panel->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 20));
 	nanogui::Slider *sliderSfx = new nanogui::Slider(panel);
 	sliderSfx->setFixedWidth(100);
-	sliderSfx->setValue(100);
+	sliderSfx->setValue(tempSettings.getFXVol());
 	nanogui::TextBox *textBoxSfx = new nanogui::TextBox(panel);
 	textBoxSfx->setFixedSize(nanogui::Vector2i(60, 25));
-	textBoxSfx->setValue(std::to_string((int) (this->_game->getSettings().getFXVol())));
+	textBoxSfx->setValue(std::to_string((int) (tempSettings.getFXVol())));
 	textBoxSfx->setUnits("%");
 	sliderSfx->setCallback([textBoxSfx, &tempSettings](float sfxVolume) {
 		textBoxSfx->setValue(std::to_string((int) (sfxVolume * 100)));
-		tempSettings.setFXVol(sfxVolume);
+		tempSettings.setFXVol((int) (sfxVolume * 100));
 	});
 	textBoxSfx->setAlignment(nanogui::TextBox::Alignment::Right);
 
-	new nanogui::Label(nanoguiWindow, "Music Volume");
+	new nanogui::Label(nanoguiWindow, "Music Volume :");
 	panel = new nanogui::Widget(nanoguiWindow);
 	panel->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 20));
 	nanogui::Slider *sliderMusic = new nanogui::Slider(panel);
 	nanogui::TextBox *textBoxMusic = new nanogui::TextBox(panel);
 	sliderMusic->setFixedWidth(100);
-	sliderMusic->setValue(100);
+	sliderMusic->setValue(tempSettings.getMusicVol());
 	textBoxMusic->setFixedSize(nanogui::Vector2i(60, 25));
-	textBoxMusic->setValue("100");
+	textBoxMusic->setValue(std::to_string((int) (tempSettings.getMusicVol())));
 	textBoxMusic->setUnits("%");
 	sliderMusic->setCallback([textBoxMusic, &tempSettings](float musicVolume) {
 		textBoxMusic->setValue(std::to_string((int) (musicVolume * 100)));
-		tempSettings.setMusicVol(musicVolume);
+		tempSettings.setMusicVol((int) (musicVolume * 100));
 	});
 	textBoxMusic->setAlignment(nanogui::TextBox::Alignment::Right);
 
-	gui->addButton("Reset to default", [this, &sliderSfx, &textBoxSfx, &sliderMusic, &textBoxMusic]() {
+	gui->addButton("Reset to default", [this, &cb, &sliderSfx, &textBoxSfx, &sliderMusic, &textBoxMusic]() {
+		cb->setChecked(false);
 		textBoxSfx->setValue("100");
 		sliderMusic->setValue(100);
 		textBoxMusic->setValue("100");
-		resetToDefaultButton();
 	});
 
 	nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
@@ -260,8 +282,19 @@ void			Menu::settingsMenu(){
 	});
 	b = new nanogui::Button(tools, "Apply");
 	b->setCallback([&]{
+		switch (cobo->selectedIndex()) {
+			case 0 :
+			tempSettings.setResolution(std::make_pair(800, 600));
+			break;
+			case 1 :
+			tempSettings.setResolution(std::make_pair(1280, 800));
+			break;
+			case 2 :
+			tempSettings.setResolution(std::make_pair(1920, 1080));
+			break;
+		}
 		this->_game->setSettings(tempSettings);
-		std::cout << "Changes applied" << std::endl;
+		std::cout << tempSettings << std::endl << "Changes applied" << std::endl;
 	});
 	screen->setVisible(true);
 	screen->performLayout();
@@ -406,162 +439,159 @@ bool 			Menu::iequals(const std::string& a, const std::string& b)
 	unsigned int sz = a.size();
 	if (b.size() != sz)
 		return false;
-	for (unsigned int i = 0; i < sz; ++i)
+	for (unsigned int i = 0; i < sz; ++i) {
 		if (tolower(a[i]) != tolower(b[i]))
 			return false;
-		return true;
 	}
+	return true;
+}
 
-	void			Menu::createButton(std::string playerNameInputVar) {
-		std::cout << "Create new player pressed" << std::endl;
-		if (checkPlayerNameAvailability(playerNameInputVar)) {
-			this->_game->setPlayer(Player(playerNameInputVar));
-			_menuState = MenuState::MAIN_MENU;
-			std::cout << "Player : " << playerNameInputVar << " created" << std::endl;
-		}
-		else
-			std::cout << "name not available: " << playerNameInputVar << std::endl;
-	}
-
-	void			Menu::exitButton() {
-		this->_game->setGameState(GameState::EXIT);
-		_menuState = MenuState::NO_MENU;
-	}
-
-	void            Menu::newGameButton() {
-		std::cout << "New Game pressed." << std::endl;
-		this->_game->setGameState(GameState::PLAY);
-		this->_game->setPlayState(PlayState::GAME_PLAY);
-		_menuState = MenuState::NO_MENU;
-	}
-
-	void            Menu::loadGameButton() {
-		std::cout << "HAS SAVES" << std::endl;
-	}
-
-	void            Menu::playerSelectButton() {
-		std::cout << "Change Player pressed." << std::endl;
-		_menuState = MenuState::PLAYER_SELECT;
-	}
-
-	void            Menu::settingsButton() {
-		std::cout << "Settings pressed." << std::endl;
-		_menuState = MenuState::SETTINGS;
-	}
-
-	void            Menu::resumeButton() {
-		this->_game->setGameState(GameState::PLAY);
-		_menuState = MenuState::NO_MENU;
-	}
-
-	void            Menu::quitToMenuButton() {
+void			Menu::createButton(std::string playerNameInputVar) {
+	std::cout << "Create new player pressed" << std::endl;
+	if (checkPlayerNameAvailability(playerNameInputVar)) {
+		this->_game->setPlayer(Player(playerNameInputVar));
 		_menuState = MenuState::MAIN_MENU;
-		this->_game->setGameState(GameState::MENU);
-		this->_game->setPlayState(PlayState::GAME_LOAD);
+		std::cout << "Player : " << playerNameInputVar << " created" << std::endl;
 	}
+	else
+		std::cout << "name not available: " << playerNameInputVar << std::endl;
+}
 
-	void            Menu::resetToDefaultButton() {
-		std::cout << "reset settings to default" << std::endl;
-	}
+void			Menu::exitButton() {
+	this->_game->setGameState(GameState::EXIT);
+	_menuState = MenuState::NO_MENU;
+}
 
-	void			Menu::renderMenu() {
-		glfwGetFramebufferSize(*_win, &_width, &_height);
-		glViewport(0, 0, _width, _height);
-		glClear(GL_COLOR_BUFFER_BIT);
+void            Menu::newGameButton() {
+	std::cout << "New Game pressed." << std::endl;
+	this->_game->setGameState(GameState::PLAY);
+	this->_game->setPlayState(PlayState::GAME_PLAY);
+	_menuState = MenuState::NO_MENU;
+}
 
-		screen->drawContents();
-		screen->drawWidgets();
-		glfwSwapBuffers(*_win);
-		incrementDelayTimer();
-	}
+void            Menu::loadGameButton() {
+	std::cout << "HAS SAVES" << std::endl;
+}
 
-	double			Menu::getMouseX() const {
-		return (this->_mouseX);
-	}
+void            Menu::playerSelectButton() {
+	std::cout << "Change Player pressed." << std::endl;
+	_menuState = MenuState::PLAYER_SELECT;
+}
 
-	void			Menu::setMouseX(const double newMouseX) {
-		this->_mouseX = newMouseX;
-	}
+void            Menu::settingsButton() {
+	std::cout << "Settings pressed." << std::endl;
+	_menuState = MenuState::SETTINGS;
+}
 
-	double			Menu::getMouseY() const {
-		return (this->_mouseY);
-	}
+void            Menu::resumeButton() {
+	this->_game->setGameState(GameState::PLAY);
+	_menuState = MenuState::NO_MENU;
+}
 
-	void			Menu::setMouseY(const double newMouseY) {
-		this->_mouseY = newMouseY;
-	}
+void            Menu::quitToMenuButton() {
+	_menuState = MenuState::MAIN_MENU;
+	this->_game->setGameState(GameState::MENU);
+	this->_game->setPlayState(PlayState::GAME_LOAD);
+}
 
-	bool			Menu::getKeyPressArr(const int index) const {
-		return (this->_keyPressArr[index]);
-	}
+void			Menu::renderMenu() {
+	glfwGetFramebufferSize(*_win, &_width, &_height);
+	glViewport(0, 0, _width, _height);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-	void			Menu::setKeyPressArr(const int index, const bool newChoice){
-		this->_keyPressArr[index] = newChoice;
-	}
+	screen->drawContents();
+	screen->drawWidgets();
+	glfwSwapBuffers(*_win);
+	incrementDelayTimer();
+}
 
-	MenuState		Menu::getMenuState() const {
-		return (this->_menuState);
-	}
+double			Menu::getMouseX() const {
+	return (this->_mouseX);
+}
 
-	void			Menu::setMenuState(const MenuState newMenuState){
-		this->_menuState = newMenuState;
-	}
+void			Menu::setMouseX(const double newMouseX) {
+	this->_mouseX = newMouseX;
+}
 
-	double			Menu::getDelayTimer() const {
-		return (this->_delayTimer);
-	}
+double			Menu::getMouseY() const {
+	return (this->_mouseY);
+}
 
-	void 			Menu::resetDelayTimer() {
-		this->_delayTimer = 0;
-	}
+void			Menu::setMouseY(const double newMouseY) {
+	this->_mouseY = newMouseY;
+}
 
-	void			Menu::incrementDelayTimer() {
-		this->_delayTimer++;
-	}
+bool			Menu::getKeyPressArr(const int index) const {
+	return (this->_keyPressArr[index]);
+}
 
-	double			Menu::getMinimumTime() const {
-		return (this->_minimumTime);
-	}
-	void			Menu::setMinimumTime(const double newMinimumTime) {
-		this->_minimumTime = newMinimumTime;
-	}
+void			Menu::setKeyPressArr(const int index, const bool newChoice){
+	this->_keyPressArr[index] = newChoice;
+}
 
-	Game			*Menu::getGame() const {
-		return (this->_game);
-	}
+MenuState		Menu::getMenuState() const {
+	return (this->_menuState);
+}
 
-	void			Menu::setGame(Game *newGame) {
-		this->_game = newGame;
-	}
+void			Menu::setMenuState(const MenuState newMenuState){
+	this->_menuState = newMenuState;
+}
 
-	GLFWwindow		**Menu::getWin() const {
-		return (this->_win);
-	}
+double			Menu::getDelayTimer() const {
+	return (this->_delayTimer);
+}
 
-	void			Menu::setWin(GLFWwindow **win) {
-		this->_win = win;
-	}
+void 			Menu::resetDelayTimer() {
+	this->_delayTimer = 0;
+}
 
-	int				Menu::getWidth() const {
-		return (this->_width);
-	}
+void			Menu::incrementDelayTimer() {
+	this->_delayTimer++;
+}
 
-	void			Menu::setWidth(const int newWidth) {
-		this->_width = newWidth;
-	}
+double			Menu::getMinimumTime() const {
+	return (this->_minimumTime);
+}
+void			Menu::setMinimumTime(const double newMinimumTime) {
+	this->_minimumTime = newMinimumTime;
+}
 
-	int				Menu::getHeight() const {
-		return (this->_height);
-	}
+Game			*Menu::getGame() const {
+	return (this->_game);
+}
 
-	void			Menu::setHeight(const int newHeight) {
-		this->_height = newHeight;
-	}
+void			Menu::setGame(Game *newGame) {
+	this->_game = newGame;
+}
 
-	Settings		*Menu::getSettings() const {
-		return (this->_settings);
-	}
+GLFWwindow		**Menu::getWin() const {
+	return (this->_win);
+}
 
-	void			Menu::setSettings(Settings *newSettings){
-		this->_settings = newSettings;
-	}
+void			Menu::setWin(GLFWwindow **win) {
+	this->_win = win;
+}
+
+int				Menu::getWidth() const {
+	return (this->_width);
+}
+
+void			Menu::setWidth(const int newWidth) {
+	this->_width = newWidth;
+}
+
+int				Menu::getHeight() const {
+	return (this->_height);
+}
+
+void			Menu::setHeight(const int newHeight) {
+	this->_height = newHeight;
+}
+
+Settings		*Menu::getSettings() const {
+	return (this->_settings);
+}
+
+void			Menu::setSettings(Settings *newSettings){
+	this->_settings = newSettings;
+}

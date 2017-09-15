@@ -8,6 +8,7 @@
 #include <nanogui/screen.h>
 #include <nanogui/widget.h>
 #include <GLFW/glfw3.h>
+#include <utility>
 #include "Settings.hpp"
 #include "Game.hpp"
 #include "Sound.hpp"
@@ -81,7 +82,6 @@ public:
 	void            settingsButton();
 	void            resumeButton();
 	void            quitToMenuButton();
-	void            resetToDefaultButton();
 	void			renderMenu();
 	bool			iequals(const std::string& a, const std::string& b);
 

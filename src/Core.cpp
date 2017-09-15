@@ -118,6 +118,8 @@ void			Core::gameLoop() {
 	GameState gs;
 	bool loop = true;
 
+	std::cout << "THE ORIGINAL SETTINGS!!!" << std::endl << this->_game.getSettings() << std::endl;
+
 	while (loop == true && !glfwWindowShouldClose(_win)) {
 		input();
 		gs = this->_game.getGameState();
