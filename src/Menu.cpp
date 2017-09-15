@@ -101,28 +101,33 @@ void			Menu::playerSelectMenu() {
 	nanogui::Button					*b = new nanogui::Button(nanoguiWindow, "Plain button");
 	std::vector<std::string>		playerNames = this->_game->checkPlayers();
 	std::string						playerNameInput = "Enter your name";
+	int								temp = 0;
 
 	b->setVisible(false);
 	nanoguiWindow->setLayout(new nanogui::GroupLayout);
-	nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
-	tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 6));
 
-	if (playerNames.size() > 0) {
-		for (std::vector<std::string>::iterator it = playerNames.begin(); it != playerNames.end(); ++it) {
-			b = new nanogui::Button(tools, (*it).c_str());
-			b->setCallback([&] {
-				this->_game->setPlayer(Player(b->caption()));
-				_menuState = MenuState::MAIN_MENU;
-			});
-		}
-	}
 	gui->addVariable("New Player", playerNameInput);
-	gui->addButton("Create", [this, &playerNameInput]() {
+	gui->addButton("Create New Player", [this, &playerNameInput]() {
 		createButton(playerNameInput);
 	});
+
+	new nanogui::Label(nanoguiWindow, "Choose an Existing Player :");
+	nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
+	tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 6));
+	if (playerNames.size() > 0) {
+		nanogui::ComboBox *playerCobo = new nanogui::ComboBox(tools, playerNames);
+		b = new nanogui::Button(tools, "Select");
+		b->setCallback([&]{
+			this->_game->setPlayer(playerNames[playerCobo->selectedIndex()]);
+			this->_game->savePlayer();
+		});
+	}
+
+
 	gui->addButton("Exit", [this]() {
 		exitButton();
 	});
+
 	screen->setVisible(true);
 	screen->performLayout();
 	nanoguiWindow->center();
@@ -305,7 +310,8 @@ void			Menu::settingsMenu() {
                 break;
         }
         this->_game->setSettings(tempSettings);
-        std::cout << tempSettings << std::endl << "Changes applied" << std::endl;
+		this->_game->savePlayer();
+        std::cout << this->_game->getSettings() << std::endl << "Changes applied" << std::endl;
     });
     screen->setVisible(true);
     screen->performLayout();
@@ -463,12 +469,16 @@ void			Menu::updateMouse() {
 bool            Menu::checkPlayerNameAvailability(std::string playerNameInputVar) {
 	std::vector<std::string> 			playerNames = this->_game->checkPlayers();
 
-	if (playerNameInputVar == "Enter your name")
+	if (playerNameInputVar == "Enter your name") {
+		std::cout << "No new name was entered: " << playerNameInputVar << std::endl;
 		return (false);
+	}
 	if (playerNames.size() > 0) {
 		for (std::vector<std::string>::iterator it = playerNames.begin(); it != playerNames.end(); ++it) {
-			if (!iequals(*it, playerNameInputVar))
+			if (iequals(*it, playerNameInputVar)) {
+				std::cout << "New name was found: " << playerNameInputVar << " Found: " << *it << std::endl;
 				return (false);
+			}
 		}
 	}
 	return (true);
@@ -490,6 +500,7 @@ void			Menu::createButton(std::string playerNameInputVar) {
 	std::cout << "Create new player pressed" << std::endl;
 	if (checkPlayerNameAvailability(playerNameInputVar)) {
 		this->_game->setPlayer(Player(playerNameInputVar));
+		this->_game->savePlayer();
 		_menuState = MenuState::MAIN_MENU;
 		std::cout << "Player : " << playerNameInputVar << " created" << std::endl;
 	}
