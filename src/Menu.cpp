@@ -27,7 +27,6 @@ Menu &			Menu::operator=(Menu const & src) {
 	this->_height = src.getHeight();
 	this->_game = src.getGame();
 	this->_win = src.getWin();
-	this->_settings = src.getSettings();
 
 
 	return (*this);
@@ -51,43 +50,48 @@ void			Menu::menu() {
 	glGetError(); // pull and ignore unhandled errors like GL_INVALID_ENUM
 #endif
 	std::cout << "creating nanogui screen" << std::endl;
-	screen = new nanogui::Screen;
-	std::cout << "nanogui screen created" << std::endl;
-	std::cout << "initializing nanogui window" << std::endl;
-	screen->initialize(*_win, true);
-	std::cout << "nanogui window initialized, screen integrated with window" << std::endl;
-	glfwSetCursorPosCallback(*_win, [](GLFWwindow *, double x, double y) {
-		screen->cursorPosCallbackEvent(x, y); }
-		);
-	glfwSetMouseButtonCallback(*_win, [](GLFWwindow *, int button, int action, int modifiers) {
-		screen->mouseButtonCallbackEvent(button, action, modifiers); }
-		);
-	glfwSetKeyCallback(*_win, [](GLFWwindow *, int key, int scancode, int action, int mods) {
-		screen->keyCallbackEvent(key, scancode, action, mods); }
-		);
-	glfwSetCharCallback(*_win, [](GLFWwindow *, unsigned int codepoint) {
-		screen->charCallbackEvent(codepoint); }
-		);
-	while (this->_game->getGameState() == GameState::MENU) {
-		switch (_menuState) {
-			case MenuState::PLAYER_SELECT :
-			playerSelectMenu();
-			break;
-			case MenuState::MAIN_MENU :
-			mainMenu();
-			break;
-			case MenuState::LOAD_SAVE :
-			break;
-			case MenuState::SETTINGS :
-			settingsMenu();
-			break;
-			case MenuState::PAUSE :
-			pauseMenu();
-			break;
-			case MenuState::NO_MENU :
-			break;
-		}
-	}
+    screen = new nanogui::Screen;
+    std::cout << "nanogui screen created" << std::endl;
+    std::cout << "initializing nanogui window" << std::endl;
+    screen->initialize(*_win, true);
+    std::cout << "nanogui window initialized, screen integrated with window" << std::endl;
+
+    glfwSetCursorPosCallback(*_win, [](GLFWwindow *, double x, double y) {
+        screen->cursorPosCallbackEvent(x, y); }
+    );
+    glfwSetMouseButtonCallback(*_win, [](GLFWwindow *, int button, int action, int modifiers) {
+        screen->mouseButtonCallbackEvent(button, action, modifiers); }
+    );
+    glfwSetKeyCallback(*_win, [](GLFWwindow *, int key, int scancode, int action, int mods) {
+        screen->keyCallbackEvent(key, scancode, action, mods); }
+    );
+    glfwSetCharCallback(*_win, [](GLFWwindow *, unsigned int codepoint) {
+        screen->charCallbackEvent(codepoint); }
+    );
+
+    while (this->_game->getGameState() == GameState::MENU) {
+        switch (_menuState) {
+            case MenuState::PLAYER_SELECT :
+                playerSelectMenu();
+                break;
+            case MenuState::MAIN_MENU :
+                mainMenu();
+                break;
+            case MenuState::LOAD_SAVE :
+                break;
+            case MenuState::SETTINGS :
+                settingsMenu();
+                break;
+            case MenuState::KEYBINDING :
+                keyBindingButton();
+                break;
+            case MenuState::PAUSE :
+                pauseMenu();
+                break;
+            case MenuState::NO_MENU :
+                break;
+        }
+    }
 }
 
 void			Menu::playerSelectMenu() {
@@ -96,28 +100,46 @@ void			Menu::playerSelectMenu() {
 	nanogui::Button					*b = new nanogui::Button(nanoguiWindow, "Plain button");
 	std::vector<std::string>		playerNames = this->_game->checkPlayers();
 	std::string						playerNameInput = "Enter your name";
+	int								temp = 0;
 
 	b->setVisible(false);
 	nanoguiWindow->setLayout(new nanogui::GroupLayout);
-	nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
-	tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 6));
 
-	if (playerNames.size() > 0) {
-		for (std::vector<std::string>::iterator it = playerNames.begin(); it != playerNames.end(); ++it) {
-			b = new nanogui::Button(tools, (*it).c_str());
-			b->setCallback([&] {
-				this->_game->setPlayer(Player(b->caption()));
-				_menuState = MenuState::MAIN_MENU;
-			});
-		}
-	}
-	gui->addVariable("New Player", playerNameInput);
-	gui->addButton("Create", [this, &playerNameInput]() {
+	gui->addVariable("New Player :", playerNameInput);
+	gui->addButton("Create New Player", [this, &playerNameInput]() {
 		createButton(playerNameInput);
 	});
+
+	if (playerNames.size() > 0) {
+		new nanogui::Label(nanoguiWindow, "");
+		new nanogui::Label(nanoguiWindow, "Choose an Existing Player :");
+		nanogui::ComboBox *playerCobo = new nanogui::ComboBox(nanoguiWindow, playerNames);
+		playerCobo->setFixedWidth(200);
+		nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
+		tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 6));
+		b = new nanogui::Button(tools, "Select");
+		b->setCallback([&]{
+			if (playerNames[playerCobo->selectedIndex()] != "")
+				this->_game->loadPlayer(playerNames[playerCobo->selectedIndex()]);
+			if (this->_game->getSettings().getWindowed())
+				glfwSetWindowMonitor(*(_win), NULL, 0, 0, this->_game->getSettings().getResolution().first, this->_game->getSettings().getResolution().first, GLFW_DONT_CARE);
+			else
+				glfwSetWindowMonitor(*(_win), glfwGetPrimaryMonitor(), 0, 0, this->_game->getSettings().getResolution().first, this->_game->getSettings().getResolution().first, GLFW_DONT_CARE);
+
+			_menuState = MenuState::MAIN_MENU;
+		});
+		b = new nanogui::Button(tools, "Delete");
+		b->setCallback([&]{
+			std::cout << "deleted : " << this->_game->getPlayer().getName();
+		});
+	}
+
+	new nanogui::Label(nanoguiWindow, "");
+	new nanogui::Label(nanoguiWindow, "");
 	gui->addButton("Exit", [this]() {
 		exitButton();
 	});
+
 	screen->setVisible(true);
 	screen->performLayout();
 	nanoguiWindow->center();
@@ -194,128 +216,165 @@ void            Menu::mainMenu() {
 	nanoguiWindow->dispose();
 }
 
-void			Menu::settingsMenu(){
-	nanogui::FormHelper             *gui = new nanogui::FormHelper(screen);
-	nanogui::ref<nanogui::Window>   nanoguiWindow = gui->addWindow(Eigen::Vector2i(2000, 2000), "SETTINGS");
-	nanogui::Button                 *b = new nanogui::Button(nanoguiWindow, "Plain button");
-	bool                            windowed;
-	Settings                        tempSettings(this->_game->getSettings());
+void			Menu::settingsMenu() {
+    nanogui::FormHelper             *gui = new nanogui::FormHelper(screen);
+    nanogui::ref<nanogui::Window>   nanoguiWindow = gui->addWindow(Eigen::Vector2i(2000, 2000), "SETTINGS");
+    nanogui::Button                 *b = new nanogui::Button(nanoguiWindow, "Plain button");
+    bool                            windowed;
+    Settings                        tempSettings(this->_game->getSettings());
 
-	std::cout << *_game << std::endl;
-	std::cout << "_________________________________________________________________________________" << std::endl;
-	std::cout << tempSettings << std::endl;
+    std::cout << *_game << std::endl;
+    std::cout << "_________________________________________________________________________________" << std::endl;
+    std::cout << tempSettings << std::endl;
 
-	b->setVisible(false);
-	nanoguiWindow->setLayout(new nanogui::GroupLayout);
+    b->setVisible(false);
+    nanoguiWindow->setLayout(new nanogui::GroupLayout);
 
-	new nanogui::Label(nanoguiWindow, "Windowed :");
+    new nanogui::Label(nanoguiWindow, "Windowed :");
+
 	nanogui::CheckBox *cb = new nanogui::CheckBox(nanoguiWindow, "", [&tempSettings](bool state) {
-		tempSettings.setWindowed(state);
-	});
-	cb->setChecked(_game->getSettings().getWindowed());
+        tempSettings.setWindowed(state);
+    });
+    cb->setChecked(!tempSettings.getWindowed());
 
-	new nanogui::Label(nanoguiWindow, "Resolution :");
-	nanogui::ComboBox *cobo = new nanogui::ComboBox(nanoguiWindow, { "800x600", "1280x800", "1920x1080" });
-	switch (tempSettings.getResolution().first) {
-		case 800 :
-		cobo->setSelectedIndex(0);
-		break;
-		case 1280 :
-		cobo->setSelectedIndex(1);
-		break;
-		case 1920 :
-		cobo->setSelectedIndex(2);
-		break;
-	}
+    new nanogui::Label(nanoguiWindow, "Resolution :    (requires restart)");
+    nanogui::ComboBox *cobo = new nanogui::ComboBox(nanoguiWindow, { "800x600", "1280x800", "1920x1080" });
+    switch (tempSettings.getResolution().first) {
+        case 800 :
+            cobo->setSelectedIndex(0);
+            break;
+        case 1280 :
+            cobo->setSelectedIndex(1);
+            break;
+        case 1920 :
+            cobo->setSelectedIndex(2);
+            break;
+    }
 
-	new nanogui::Label(nanoguiWindow, "SFX Volume :");
-	nanogui::Widget                 *panel = new nanogui::Widget(nanoguiWindow);
-	panel->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 20));
-	nanogui::Slider *sliderSfx = new nanogui::Slider(panel);
-	sliderSfx->setFixedWidth(100);
-	sliderSfx->setValue(tempSettings.getFXVol());
-	nanogui::TextBox *textBoxSfx = new nanogui::TextBox(panel);
-	textBoxSfx->setFixedSize(nanogui::Vector2i(60, 25));
-	textBoxSfx->setValue(std::to_string((int) (tempSettings.getFXVol())));
-	textBoxSfx->setUnits("%");
-	sliderSfx->setCallback([textBoxSfx, &tempSettings](float sfxVolume) {
-		textBoxSfx->setValue(std::to_string((int) (sfxVolume * 100)));
-		tempSettings.setFXVol((int) (sfxVolume * 100));
-	});
-	textBoxSfx->setAlignment(nanogui::TextBox::Alignment::Right);
+    new nanogui::Label(nanoguiWindow, "SFX Volume :");
+    nanogui::Widget                 *panel = new nanogui::Widget(nanoguiWindow);
+    panel->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 20));
+    nanogui::Slider *sliderSfx = new nanogui::Slider(panel);
+    sliderSfx->setFixedWidth(100);
+    sliderSfx->setValue(tempSettings.getFXVol());
+    nanogui::TextBox *textBoxSfx = new nanogui::TextBox(panel);
+    textBoxSfx->setFixedSize(nanogui::Vector2i(60, 25));
+    textBoxSfx->setValue(std::to_string((int) (tempSettings.getFXVol())));
+    textBoxSfx->setUnits("%");
+    sliderSfx->setCallback([textBoxSfx, &tempSettings](float sfxVolume) {
+        textBoxSfx->setValue(std::to_string((int) (sfxVolume * 100)));
+        tempSettings.setFXVol((int) (sfxVolume * 100));
+    });
+    textBoxSfx->setAlignment(nanogui::TextBox::Alignment::Right);
 
-	new nanogui::Label(nanoguiWindow, "Music Volume :");
-	panel = new nanogui::Widget(nanoguiWindow);
-	panel->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 20));
-	nanogui::Slider *sliderMusic = new nanogui::Slider(panel);
-	nanogui::TextBox *textBoxMusic = new nanogui::TextBox(panel);
-	sliderMusic->setFixedWidth(100);
-	sliderMusic->setValue(tempSettings.getMusicVol());
-	textBoxMusic->setFixedSize(nanogui::Vector2i(60, 25));
-	textBoxMusic->setValue(std::to_string((int) (tempSettings.getMusicVol())));
-	textBoxMusic->setUnits("%");
-	sliderMusic->setCallback([textBoxMusic, &tempSettings](float musicVolume) {
-		textBoxMusic->setValue(std::to_string((int) (musicVolume * 100)));
-		tempSettings.setMusicVol((int) (musicVolume * 100));
-	});
-	textBoxMusic->setAlignment(nanogui::TextBox::Alignment::Right);
+    new nanogui::Label(nanoguiWindow, "Music Volume :");
+    panel = new nanogui::Widget(nanoguiWindow);
+    panel->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 20));
+    nanogui::Slider *sliderMusic = new nanogui::Slider(panel);
+    nanogui::TextBox *textBoxMusic = new nanogui::TextBox(panel);
+    sliderMusic->setFixedWidth(100);
+    sliderMusic->setValue(tempSettings.getMusicVol());
+    textBoxMusic->setFixedSize(nanogui::Vector2i(60, 25));
+    textBoxMusic->setValue(std::to_string((int) (tempSettings.getMusicVol())));
+    textBoxMusic->setUnits("%");
+    sliderMusic->setCallback([textBoxMusic, &tempSettings](float musicVolume) {
+        textBoxMusic->setValue(std::to_string((int) (musicVolume * 100)));
+        tempSettings.setMusicVol((int) (musicVolume * 100));
+    });
+    textBoxMusic->setAlignment(nanogui::TextBox::Alignment::Right);
 
-	gui->addButton("Reset to default", [this, &cb, &sliderSfx, &textBoxSfx, &sliderMusic, &textBoxMusic]() {
-		cb->setChecked(false);
-		textBoxSfx->setValue("100");
-		sliderMusic->setValue(100);
-		textBoxMusic->setValue("100");
-	});
-
-	nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
-	tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 2));
-	b = new nanogui::Button(tools, "Return to menu");
+	nanogui::Widget *keyBindTools = new nanogui::Widget(nanoguiWindow);
+	keyBindTools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 2));
+	b = new nanogui::Button(keyBindTools, "Set Keybindings");
 	b->setCallback([&]{
-		if (this->_game->getPlayState() == PlayState::GAME_PLAY) {
-			std::cout << "accepted changes 1" << std::endl;
-			_menuState = MenuState::PAUSE;
-		}
-		else {
-			std::cout << "accepted changes 2" << std::endl;
-			quitToMenuButton();
-		}
+		keyBindingButton();
 	});
-	b = new nanogui::Button(tools, "Apply");
-	b->setCallback([&]{
-		switch (cobo->selectedIndex()) {
-			case 0 :
-			tempSettings.setResolution(std::make_pair(800, 600));
-			break;
-			case 1 :
-			tempSettings.setResolution(std::make_pair(1280, 800));
-			break;
-			case 2 :
-			tempSettings.setResolution(std::make_pair(1920, 1080));
-			break;
-		}
-		this->_game->setSettings(tempSettings);
-		std::cout << tempSettings << std::endl << "Changes applied" << std::endl;
-	});
-	screen->setVisible(true);
-	screen->performLayout();
-	nanoguiWindow->center();
-	resetDelayTimer();
-	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::SETTINGS){
-		glfwPollEvents();
-		updateKeys();
-		updateMouse();
-		if (_keyPressArr[ESC] && getDelayTimer() >= getMinimumTime())
-		{
-			if (this->_game->getPlayState() == PlayState::GAME_PLAY)
-				_menuState = MenuState::PAUSE;
-			else
-				_menuState = MenuState::MAIN_MENU;
-		}
-		renderMenu();
-	}
-	if (glfwWindowShouldClose(*_win))
-		exitButton();
-	nanoguiWindow->dispose();
+	b->setFixedWidth(190);
+    gui->addButton("Reset to default", [this, &cb, &sliderSfx, &textBoxSfx, &sliderMusic, &textBoxMusic]() {
+        cb->setChecked(false);
+        textBoxSfx->setValue("100");
+        sliderMusic->setValue(100);
+        textBoxMusic->setValue("100");
+    });
+    nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
+    tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 2));
+    b = new nanogui::Button(tools, "Return to menu");
+    b->setCallback([&]{
+        if (this->_game->getPlayState() == PlayState::GAME_PLAY) {
+            std::cout << "accepted changes 1" << std::endl;
+            _menuState = MenuState::PAUSE;
+        }
+        else {
+            std::cout << "accepted changes 2" << std::endl;
+            quitToMenuButton();
+        }
+    });
+    b = new nanogui::Button(tools, "Apply");
+    b->setCallback([&]{
+        switch (cobo->selectedIndex()) {
+            case 0 :
+                tempSettings.setResolution(std::make_pair(800, 600));
+                break;
+            case 1 :
+                tempSettings.setResolution(std::make_pair(1280, 800));
+                break;
+            case 2 :
+                tempSettings.setResolution(std::make_pair(1920, 1080));
+                break;
+        }
+        this->_game->setSettings(tempSettings);
+		this->_game->savePlayer();
+        std::cout << this->_game->getSettings() << std::endl << "Changes applied" << std::endl;
+    });
+    screen->setVisible(true);
+    screen->performLayout();
+    nanoguiWindow->center();
+    resetDelayTimer();
+    while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::SETTINGS){
+        glfwPollEvents();
+        updateKeys();
+        updateMouse();
+        if (_keyPressArr[ESC] && getDelayTimer() >= getMinimumTime())
+        {
+            if (this->_game->getPlayState() == PlayState::GAME_PLAY)
+                _menuState = MenuState::PAUSE;
+            else
+                _menuState = MenuState::MAIN_MENU;
+        }
+        renderMenu();
+    }
+    if (glfwWindowShouldClose(*_win))
+        exitButton();
+    nanoguiWindow->dispose();
+}
+
+void            Menu::keyBindingMenu() {
+    nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
+    nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "SET KEYBINDINGS");
+
+	nanogui::Widget *upTools = new nanogui::Widget(nanoguiWindow);
+    upTools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 2));
+	new nanogui::Label(upTools, "Forward");
+	nanogui::Button *upButton = new nanogui::Button(upTools, "W");
+    upButton->setCallback([&]{
+
+    });
+
+    screen->setVisible(true);
+    screen->performLayout();
+    nanoguiWindow->center();
+    resetDelayTimer();
+    while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::PAUSE){
+        glfwPollEvents();
+        updateKeys();
+        updateMouse();
+        if (_keyPressArr[ENTER] && getDelayTimer() >= getMinimumTime())
+            _menuState = MenuState::SETTINGS;
+        renderMenu();
+    }
+    if (glfwWindowShouldClose(*_win))
+        exitButton();
+    nanoguiWindow->dispose();
 }
 
 void            Menu::pauseMenu() {
@@ -423,12 +482,16 @@ void			Menu::updateMouse() {
 bool            Menu::checkPlayerNameAvailability(std::string playerNameInputVar) {
 	std::vector<std::string> 			playerNames = this->_game->checkPlayers();
 
-	if (playerNameInputVar == "Enter your name")
+	if (playerNameInputVar == "Enter your name") {
+		std::cout << "No new name was entered: " << playerNameInputVar << std::endl;
 		return (false);
+	}
 	if (playerNames.size() > 0) {
 		for (std::vector<std::string>::iterator it = playerNames.begin(); it != playerNames.end(); ++it) {
-			if (!iequals(*it, playerNameInputVar))
+			if (iequals(*it, playerNameInputVar)) {
+				std::cout << "New name was found: " << playerNameInputVar << " Found: " << *it << std::endl;
 				return (false);
+			}
 		}
 	}
 	return (true);
@@ -450,6 +513,7 @@ void			Menu::createButton(std::string playerNameInputVar) {
 	std::cout << "Create new player pressed" << std::endl;
 	if (checkPlayerNameAvailability(playerNameInputVar)) {
 		this->_game->setPlayer(Player(playerNameInputVar));
+		this->_game->savePlayer();
 		_menuState = MenuState::MAIN_MENU;
 		std::cout << "Player : " << playerNameInputVar << " created" << std::endl;
 	}
@@ -481,6 +545,11 @@ void            Menu::playerSelectButton() {
 void            Menu::settingsButton() {
 	std::cout << "Settings pressed." << std::endl;
 	_menuState = MenuState::SETTINGS;
+}
+
+void            Menu::keyBindingButton() {
+    std::cout << "keybinding menu" << std::endl;
+    _menuState = MenuState ::KEYBINDING;
 }
 
 void            Menu::resumeButton() {
@@ -586,12 +655,4 @@ int				Menu::getHeight() const {
 
 void			Menu::setHeight(const int newHeight) {
 	this->_height = newHeight;
-}
-
-Settings		*Menu::getSettings() const {
-	return (this->_settings);
-}
-
-void			Menu::setSettings(Settings *newSettings){
-	this->_settings = newSettings;
 }

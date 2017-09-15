@@ -22,18 +22,13 @@
 #define ESC		6
 
 enum class MenuState {
-	PLAYER_SELECT,
-	LOAD_SAVE,
-	MAIN_MENU,
-	SETTINGS,
-	PAUSE,
-	NO_MENU
-};
-
-enum class ResolutionState {
-	SVGA,       //800x600   4:3
-	XGA,        //1024x768  4:3
-	WXGA        //1280x800  16:10
+    PLAYER_SELECT,
+    LOAD_SAVE,
+    MAIN_MENU,
+    SETTINGS,
+    KEYBINDING,
+    PAUSE,
+    NO_MENU
 };
 
 class Menu {
@@ -63,26 +58,26 @@ public:
 	void			setWidth(const int newWidth);
 	int				getHeight() const;
 	void			setHeight(const int newHeight);
-	Settings        *getSettings() const;
-	void            setSettings(Settings *newSettings);
 
-	void			updateKeys();
-	void			updateMouse();
-	void			menu();
-	void            playerSelectMenu();
-	void            mainMenu();
-	void			settingsMenu();
-	void            pauseMenu();
-	bool            checkPlayerNameAvailability(std::string playerNameInputVar);
-	void            createButton(std::string playerNameInputVar);
-	void            exitButton();
-	void            newGameButton();
-	void            loadGameButton();
-	void            playerSelectButton();
-	void            settingsButton();
-	void            resumeButton();
-	void            quitToMenuButton();
-	void			renderMenu();
+    void			updateKeys();
+    void			updateMouse();
+    void			menu();
+    void            playerSelectMenu();
+    void            mainMenu();
+    void			settingsMenu();
+    void            keyBindingMenu();
+    void            pauseMenu();
+    bool            checkPlayerNameAvailability(std::string playerNameInputVar);
+    void            createButton(std::string playerNameInputVar);
+    void            exitButton();
+    void            newGameButton();
+    void            loadGameButton();
+    void            playerSelectButton();
+    void            settingsButton();
+    void            keyBindingButton();
+    void            resumeButton();
+    void            quitToMenuButton();
+    void			renderMenu();
 	bool			iequals(const std::string& a, const std::string& b);
 
 private:
@@ -97,7 +92,6 @@ private:
 	int				_height;
 	Game            *_game;
 	GLFWwindow		**_win;
-	Settings        *_settings;
 };
 
 #endif

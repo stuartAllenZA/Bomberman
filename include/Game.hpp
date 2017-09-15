@@ -9,8 +9,8 @@
 #include "Player.hpp"
 #include "Sound.hpp"
 #include "Box.hpp"
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <dirent.h>
 #include <fstream>
 #include <sstream>

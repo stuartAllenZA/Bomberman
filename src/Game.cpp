@@ -63,7 +63,7 @@ Player					Game::getPlayer() const {
 
 void					Game::setPlayer(const Player newPlayer) {
 	this->_player = newPlayer;
-	
+	this->_settings.setLastPlayer(newPlayer.getName());
 }
 
 Sound				&	Game::getSound() {
@@ -91,7 +91,12 @@ void 					Game::setHasSave(const bool newHasSave){
 }
 
 void					Game::savePlayer() {
-	std::ofstream profileFileOut("resources/profiles/" + this->_player.getName() + ".player", std::ofstream::out);
+	DIR							*dir;
+
+	if ((dir = opendir ("resources/profiles/")) == NULL) {
+		mkdir("resources/profiles/", 0775);
+	}
+	std::ofstream profileFileOut("resources/profiles/" + this->_player.getName() + ".profile", std::ofstream::out);
 	profileFileOut << "level:" + (std::to_string(this->_player.getLevel()))+"\n";
 	profileFileOut << "experience:" + (std::to_string(this->_player.getExperience()))+"\n";
 	profileFileOut << "resolutionX:" + (std::to_string(this->_settings.getResolutionX()))+"\n";
@@ -120,15 +125,16 @@ std::vector<std::string>		Game::checkPlayers() {
 
 	std::cout << "Checking for old players.\n";
 	if ((dir = opendir ("resources/profiles/")) != NULL) {
-		while ((ent = readdir (dir)) != NULL) {
+		while ((ent = readdir(dir)) != NULL) {
 			if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
-				temp = strstr(ent->d_name, ".player");
+				temp = strstr(ent->d_name, ".profile");
 				len = temp - ent->d_name;
 				std::string push(ent->d_name, len);
+				std::cout << "Adding: " << push << std::endl;
 				arr.push_back(push);
 			}
 		}
-		closedir (dir);
+		closedir(dir);
 	}
 	return (arr);
 }
@@ -156,6 +162,7 @@ void					Game::loadPlayer(std::string playerName) {
 	this->_settings.setActionKey(std::stoi(lexFile(fileName, "actionKey")));
 	this->_settings.setMusicVol(std::stoi(lexFile(fileName, "musicVol")));
 	this->_settings.setFXVol(std::stoi(lexFile(fileName, "FXVol")));
+	std::cout << "Post loading player profile!\n" << this->_settings << std::endl;
 }
 
 std::string				Game::lexFile(std::string fileName, std::string find) {
