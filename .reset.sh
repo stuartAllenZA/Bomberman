@@ -1,1 +1,1 @@
-rm -rf resources/bomberman.config resources/profiles/* resources/saves/*
+rm -rf resources/profiles/*

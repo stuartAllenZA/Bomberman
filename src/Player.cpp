@@ -25,7 +25,10 @@ Player::Player() : Character(), _level(1), _experience(0) {
 }
 
 Player::Player(Player const & src) {
-	std::cout << "Player with name " << this->_name << " Copy-Constructed\n";
+	if (this->_name.size() > 0)
+		std::cout << "Player with name " << this->_name << " Copy-Constructed\n";
+	else
+		std::cout << "Default Player Copy-Constructed\n";
 	*this = src;
 }
 
