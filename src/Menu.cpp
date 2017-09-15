@@ -196,7 +196,6 @@ void			Menu::settingsMenu(){
     nanogui::ref<nanogui::Window>   nanoguiWindow = gui->addWindow(Eigen::Vector2i(2000, 2000), "SETTINGS");
     nanogui::Button                 *b = new nanogui::Button(nanoguiWindow, "Plain button");
     bool                            windowed;
-    ResolutionState                 resolution;
     Settings                        tempSettings(this->_game->getSettings());
 
     std::cout << *_game << std::endl;
@@ -209,11 +208,22 @@ void			Menu::settingsMenu(){
     new nanogui::Label(nanoguiWindow, "Windowed :");
     nanogui::CheckBox *cb = new nanogui::CheckBox(nanoguiWindow, "", [&tempSettings](bool state) {
         tempSettings.setWindowed(state);
-    }
-    );
+    });
     cb->setChecked(_game->getSettings().getWindowed());
 
-    gui->addVariable("Resolution :", resolution)->setItems({ "800x600", "1024x768", "1280x800"});
+    new nanogui::Label(nanoguiWindow, "Resolution :");
+    nanogui::ComboBox *cobo = new nanogui::ComboBox(nanoguiWindow, { "800x600", "1280x800", "1920x1080" });
+    switch (tempSettings.getResolution().first) {
+        case 800 :
+            cobo->setSelectedIndex(0);
+            break;
+        case 1280 :
+            cobo->setSelectedIndex(1);
+            break;
+        case 1920 :
+            cobo->setSelectedIndex(2);
+            break;
+    }
 
     new nanogui::Label(nanoguiWindow, "SFX Volume :");
     nanogui::Widget                 *panel = new nanogui::Widget(nanoguiWindow);
@@ -269,6 +279,17 @@ void			Menu::settingsMenu(){
     });
     b = new nanogui::Button(tools, "Apply");
     b->setCallback([&]{
+        switch (cobo->selectedIndex()) {
+            case 0 :
+                tempSettings.setResolution(std::make_pair(800, 600));
+                break;
+            case 1 :
+                tempSettings.setResolution(std::make_pair(1280, 800));
+                break;
+            case 2 :
+                tempSettings.setResolution(std::make_pair(1920, 1080));
+                break;
+        }
         this->_game->setSettings(tempSettings);
         std::cout << tempSettings << std::endl << "Changes applied" << std::endl;
     });
