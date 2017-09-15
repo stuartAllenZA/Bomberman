@@ -58,8 +58,6 @@ public:
 	void			setWidth(const int newWidth);
 	int				getHeight() const;
 	void			setHeight(const int newHeight);
-	Settings        *getSettings() const;
-	void            setSettings(Settings *newSettings);
 
     void			updateKeys();
     void			updateMouse();
@@ -94,7 +92,6 @@ private:
 	int				_height;
 	Game            *_game;
 	GLFWwindow		**_win;
-	Settings        *_settings;
 };
 
 #endif

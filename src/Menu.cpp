@@ -27,7 +27,6 @@ Menu &			Menu::operator=(Menu const & src) {
 	this->_height = src.getHeight();
 	this->_game = src.getGame();
 	this->_win = src.getWin();
-	this->_settings = src.getSettings();
 
 
 	return (*this);
@@ -120,15 +119,13 @@ void			Menu::playerSelectMenu() {
 		tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 6));
 		b = new nanogui::Button(tools, "Select");
 		b->setCallback([&]{
-			this->_game->setPlayer(playerNames[playerCobo->selectedIndex()]);
-			this->_game->savePlayer();
-			//this->_game->loadPlayer(playerNames[playerCobo->selectedIndex()]);
-			if (!this->_game->getSettings().getWindowed()) {
-				std::cout << "entering full-screen mode" << std::endl;
-				glfwSetWindowMonitor(*(_win), glfwGetPrimaryMonitor(), 0, 0, this->_game->getSettings().getResolution().first, this->_game->getSettings().getResolution().first, GLFW_DONT_CARE);
-			} else {
+			if (playerNames[playerCobo->selectedIndex()] != "")
+				this->_game->loadPlayer(playerNames[playerCobo->selectedIndex()]);
+			if (this->_game->getSettings().getWindowed())
 				glfwSetWindowMonitor(*(_win), NULL, 0, 0, this->_game->getSettings().getResolution().first, this->_game->getSettings().getResolution().first, GLFW_DONT_CARE);
-			}
+			else
+				glfwSetWindowMonitor(*(_win), glfwGetPrimaryMonitor(), 0, 0, this->_game->getSettings().getResolution().first, this->_game->getSettings().getResolution().first, GLFW_DONT_CARE);
+
 			_menuState = MenuState::MAIN_MENU;
 		});
 		b = new nanogui::Button(tools, "Delete");
@@ -234,10 +231,11 @@ void			Menu::settingsMenu() {
     nanoguiWindow->setLayout(new nanogui::GroupLayout);
 
     new nanogui::Label(nanoguiWindow, "Windowed :");
-    nanogui::CheckBox *cb = new nanogui::CheckBox(nanoguiWindow, "", [&tempSettings](bool state) {
+
+	nanogui::CheckBox *cb = new nanogui::CheckBox(nanoguiWindow, "", [&tempSettings](bool state) {
         tempSettings.setWindowed(state);
     });
-    cb->setChecked(_game->getSettings().getWindowed());
+    cb->setChecked(!tempSettings.getWindowed());
 
     new nanogui::Label(nanoguiWindow, "Resolution :    (requires restart)");
     nanogui::ComboBox *cobo = new nanogui::ComboBox(nanoguiWindow, { "800x600", "1280x800", "1920x1080" });
@@ -657,12 +655,4 @@ int				Menu::getHeight() const {
 
 void			Menu::setHeight(const int newHeight) {
 	this->_height = newHeight;
-}
-
-Settings		*Menu::getSettings() const {
-	return (this->_settings);
-}
-
-void			Menu::setSettings(Settings *newSettings){
-	this->_settings = newSettings;
 }
