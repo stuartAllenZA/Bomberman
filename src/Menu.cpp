@@ -46,9 +46,9 @@ Menu::~Menu() {
 void			Menu::menu() {
 #if defined(NANOGUI_GLAD)
 	std::cout << "initializing GLAD loader" << std::endl;
-		if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-			throw std::runtime_error("Could not initialize GLAD!");
-		glGetError(); // pull and ignore unhandled errors like GL_INVALID_ENUM
+	if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
+		throw std::runtime_error("Could not initialize GLAD!");
+	glGetError(); // pull and ignore unhandled errors like GL_INVALID_ENUM
 #endif
 	std::cout << "creating nanogui screen" << std::endl;
     screen = new nanogui::Screen;
@@ -82,6 +82,9 @@ void			Menu::menu() {
                 break;
             case MenuState::SETTINGS :
                 settingsMenu();
+                break;
+            case MenuState::KEYBINDING :
+                keyBindingButton();
                 break;
             case MenuState::PAUSE :
                 pauseMenu();
@@ -211,7 +214,7 @@ void			Menu::settingsMenu(){
     });
     cb->setChecked(_game->getSettings().getWindowed());
 
-    new nanogui::Label(nanoguiWindow, "Resolution :");
+    new nanogui::Label(nanoguiWindow, "Resolution :    (requires restart)");
     nanogui::ComboBox *cobo = new nanogui::ComboBox(nanoguiWindow, { "800x600", "1280x800", "1920x1080" });
     switch (tempSettings.getResolution().first) {
         case 800 :
@@ -257,13 +260,19 @@ void			Menu::settingsMenu(){
     });
     textBoxMusic->setAlignment(nanogui::TextBox::Alignment::Right);
 
+	nanogui::Widget *keyBindTools = new nanogui::Widget(nanoguiWindow);
+	keyBindTools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 2));
+	b = new nanogui::Button(keyBindTools, "Set Keybindings");
+	b->setCallback([&]{
+		keyBindingButton();
+	});
+	b->setFixedWidth(190);
     gui->addButton("Reset to default", [this, &cb, &sliderSfx, &textBoxSfx, &sliderMusic, &textBoxMusic]() {
         cb->setChecked(false);
         textBoxSfx->setValue("100");
         sliderMusic->setValue(100);
         textBoxMusic->setValue("100");
     });
-
     nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
     tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 2));
     b = new nanogui::Button(tools, "Return to menu");
@@ -308,6 +317,35 @@ void			Menu::settingsMenu(){
             else
                 _menuState = MenuState::MAIN_MENU;
         }
+        renderMenu();
+    }
+    if (glfwWindowShouldClose(*_win))
+        exitButton();
+    nanoguiWindow->dispose();
+}
+
+void            Menu::keyBindingMenu() {
+    nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
+    nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "SET KEYBINDINGS");
+
+	nanogui::Widget *upTools = new nanogui::Widget(nanoguiWindow);
+    upTools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 2));
+	new nanogui::Label(upTools, "Forward");
+	nanogui::Button *upButton = new nanogui::Button(upTools, "W");
+    upButton->setCallback([&]{
+
+    });
+
+    screen->setVisible(true);
+    screen->performLayout();
+    nanoguiWindow->center();
+    resetDelayTimer();
+    while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::PAUSE){
+        glfwPollEvents();
+        updateKeys();
+        updateMouse();
+        if (_keyPressArr[ENTER] && getDelayTimer() >= getMinimumTime())
+            _menuState = MenuState::SETTINGS;
         renderMenu();
     }
     if (glfwWindowShouldClose(*_win))
@@ -466,6 +504,11 @@ void            Menu::playerSelectButton() {
 void            Menu::settingsButton() {
     std::cout << "Settings pressed." << std::endl;
     _menuState = MenuState::SETTINGS;
+}
+
+void            Menu::keyBindingButton() {
+    std::cout << "keybinding menu" << std::endl;
+    _menuState = MenuState ::KEYBINDING;
 }
 
 void            Menu::resumeButton() {

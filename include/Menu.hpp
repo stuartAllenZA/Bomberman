@@ -26,6 +26,7 @@ enum class MenuState {
     LOAD_SAVE,
     MAIN_MENU,
     SETTINGS,
+    KEYBINDING,
     PAUSE,
     NO_MENU
 };
@@ -66,6 +67,7 @@ public:
     void            playerSelectMenu();
     void            mainMenu();
     void			settingsMenu();
+    void            keyBindingMenu();
     void            pauseMenu();
     bool            checkPlayerNameAvailability(std::string playerNameInputVar);
     void            createButton(std::string playerNameInputVar);
@@ -74,6 +76,7 @@ public:
     void            loadGameButton();
     void            playerSelectButton();
     void            settingsButton();
+    void            keyBindingButton();
     void            resumeButton();
     void            quitToMenuButton();
     void			renderMenu();
