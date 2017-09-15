@@ -106,24 +106,39 @@ void			Menu::playerSelectMenu() {
 	b->setVisible(false);
 	nanoguiWindow->setLayout(new nanogui::GroupLayout);
 
-	gui->addVariable("New Player", playerNameInput);
+	gui->addVariable("New Player :", playerNameInput);
 	gui->addButton("Create New Player", [this, &playerNameInput]() {
 		createButton(playerNameInput);
 	});
 
-	new nanogui::Label(nanoguiWindow, "Choose an Existing Player :");
-	nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
-	tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 6));
 	if (playerNames.size() > 0) {
-		nanogui::ComboBox *playerCobo = new nanogui::ComboBox(tools, playerNames);
+		new nanogui::Label(nanoguiWindow, "");
+		new nanogui::Label(nanoguiWindow, "Choose an Existing Player :");
+		nanogui::ComboBox *playerCobo = new nanogui::ComboBox(nanoguiWindow, playerNames);
+		playerCobo->setFixedWidth(200);
+		nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
+		tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 6));
 		b = new nanogui::Button(tools, "Select");
 		b->setCallback([&]{
 			this->_game->setPlayer(playerNames[playerCobo->selectedIndex()]);
 			this->_game->savePlayer();
+			//this->_game->loadPlayer(playerNames[playerCobo->selectedIndex()]);
+			if (!this->_game->getSettings().getWindowed()) {
+				std::cout << "entering full-screen mode" << std::endl;
+				glfwSetWindowMonitor(*(_win), glfwGetPrimaryMonitor(), 0, 0, this->_game->getSettings().getResolution().first, this->_game->getSettings().getResolution().first, GLFW_DONT_CARE);
+			} else {
+				glfwSetWindowMonitor(*(_win), NULL, 0, 0, this->_game->getSettings().getResolution().first, this->_game->getSettings().getResolution().first, GLFW_DONT_CARE);
+			}
+			_menuState = MenuState::MAIN_MENU;
+		});
+		b = new nanogui::Button(tools, "Delete");
+		b->setCallback([&]{
+			std::cout << "deleted : " << this->_game->getPlayer().getName();
 		});
 	}
 
-
+	new nanogui::Label(nanoguiWindow, "");
+	new nanogui::Label(nanoguiWindow, "");
 	gui->addButton("Exit", [this]() {
 		exitButton();
 	});
