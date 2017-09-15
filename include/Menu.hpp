@@ -33,33 +33,33 @@ enum class MenuState {
 
 class Menu {
 public:
-    Menu(int passedWidth, int passedHeight, Game *passedGame, GLFWwindow **passedWin);
-    Menu(Menu const &src);
-    Menu &operator=(Menu const &src);
-    ~Menu();
-    double          getMouseX() const;
-    void            setMouseX(const double newMouseX);
-    double          getMouseY() const;
-    void            setMouseY(const double newMouseY);
-    bool			getKeyPressArr(const int index) const;
-    void			setKeyPressArr(const int index, const bool newChoice);
-    MenuState       getMenuState() const;
-    void            setMenuState(const MenuState newMenuState);
-    double			getDelayTimer() const;
-    void 			resetDelayTimer();
-    void 			incrementDelayTimer();
-    double			getMinimumTime() const;
-    void			setMinimumTime(const double newMinimumTime);
-    Game			*getGame() const;
-    void			setGame(Game *newGame);
-    GLFWwindow		**getWin() const;
-    void			setWin(GLFWwindow **win);
-    int				getWidth() const;
-    void			setWidth(const int newWidth);
-    int				getHeight() const;
-    void			setHeight(const int newHeight);
-    Settings        *getSettings() const;
-    void            setSettings(Settings *newSettings);
+	Menu(int passedWidth, int passedHeight, Game *passedGame, GLFWwindow **passedWin);
+	Menu(Menu const &src);
+	Menu &operator=(Menu const &src);
+	~Menu();
+	double          getMouseX() const;
+	void            setMouseX(const double newMouseX);
+	double          getMouseY() const;
+	void            setMouseY(const double newMouseY);
+	bool			getKeyPressArr(const int index) const;
+	void			setKeyPressArr(const int index, const bool newChoice);
+	MenuState       getMenuState() const;
+	void            setMenuState(const MenuState newMenuState);
+	double			getDelayTimer() const;
+	void 			resetDelayTimer();
+	void 			incrementDelayTimer();
+	double			getMinimumTime() const;
+	void			setMinimumTime(const double newMinimumTime);
+	Game			*getGame() const;
+	void			setGame(Game *newGame);
+	GLFWwindow		**getWin() const;
+	void			setWin(GLFWwindow **win);
+	int				getWidth() const;
+	void			setWidth(const int newWidth);
+	int				getHeight() const;
+	void			setHeight(const int newHeight);
+	Settings        *getSettings() const;
+	void            setSettings(Settings *newSettings);
 
     void			updateKeys();
     void			updateMouse();
@@ -80,20 +80,21 @@ public:
     void            resumeButton();
     void            quitToMenuButton();
     void			renderMenu();
+	bool			iequals(const std::string& a, const std::string& b);
 
 private:
 
-    double			_mouseX;
-    double			_mouseY;
-    bool			_keyPressArr[7];
-    MenuState       _menuState;
-    double			_delayTimer;
-    double 			_minimumTime;
-    int				_width;
-    int				_height;
-    Game            *_game;
-    GLFWwindow		**_win;
-    Settings        *_settings;
+	double			_mouseX;
+	double			_mouseY;
+	bool			_keyPressArr[7];
+	MenuState       _menuState;
+	double			_delayTimer;
+	double 			_minimumTime;
+	int				_width;
+	int				_height;
+	Game            *_game;
+	GLFWwindow		**_win;
+	Settings        *_settings;
 };
 
 #endif
