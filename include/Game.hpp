@@ -64,11 +64,9 @@ class Game {
 		void 						setHasSave(const bool newHasSave);
 
 		void						initSound();
-		void						saveSettings();
 		void						savePlayer();
 		std::vector<std::string>	checkPlayers();
 		void						loadPlayer(std::string playerName);
-		void						loadSettings();
 		std::string					lexFile(std::string fileName, std::string find);
 		void						startBackgroundMusic();
 		void						stopBackgroundMusic();

@@ -2,7 +2,6 @@
 
 Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _gameInput(0), _settings(Settings()), _hasSave(false) {
 	std::cout << "Constructing Game\n";
-	loadSettings();
 	std::cout << "Game Constructed\n";
 }
 
@@ -13,7 +12,6 @@ Game::Game(Game const & src) {
 
 Game::~Game() {
 	std::cout << "De-Constructing Game\n";
-	saveSettings();
 	std::cout << "Game De-Constructed\n";
 }
 
@@ -92,29 +90,23 @@ void 					Game::setHasSave(const bool newHasSave){
 	this->_hasSave = newHasSave;
 }
 
-void					Game::saveSettings() {
-	std::ofstream settingsOut("resources/bomberman.config", std::ofstream::out);
-	settingsOut << "resolutionX:" + (std::to_string(this->_settings.getResolutionX()))+"\n";
-	settingsOut << "resolutionY:" + (std::to_string(this->_settings.getResolutionY()))+"\n";
-	if (this->_settings.getWindowed())
-		settingsOut << "windowed:true\n";
-	else
-		settingsOut << "windowed:false\n";
-	settingsOut << "upKey:" + (std::to_string(this->_settings.getUpKey()))+"\n";
-	settingsOut << "downKey:" + (std::to_string(this->_settings.getDownKey()))+"\n";
-	settingsOut << "leftKey:" + (std::to_string(this->_settings.getLeftKey()))+"\n";
-	settingsOut << "rightKey:" + (std::to_string(this->_settings.getRightKey()))+"\n";
-	settingsOut << "actionKey:" + (std::to_string(this->_settings.getActionKey()))+"\n";
-	settingsOut << "musicVol:" + (std::to_string(this->_settings.getMusicVol()))+"\n";
-	settingsOut << "FXVol:" + (std::to_string(this->_settings.getFXVol()))+"\n";
-	settingsOut.close();
-	std::cout << "Settings saved to ./resources/bomberman.config.\n";
-}
-
 void					Game::savePlayer() {
 	std::ofstream profileFileOut("resources/profiles/" + this->_player.getName() + ".player", std::ofstream::out);
 	profileFileOut << "level:" + (std::to_string(this->_player.getLevel()))+"\n";
 	profileFileOut << "experience:" + (std::to_string(this->_player.getExperience()))+"\n";
+	profileFileOut << "resolutionX:" + (std::to_string(this->_settings.getResolutionX()))+"\n";
+	profileFileOut << "resolutionY:" + (std::to_string(this->_settings.getResolutionY()))+"\n";
+	if (this->_settings.getWindowed())
+		profileFileOut << "windowed:true\n";
+	else
+		profileFileOut << "windowed:false\n";
+	profileFileOut << "upKey:" + (std::to_string(this->_settings.getUpKey()))+"\n";
+	profileFileOut << "downKey:" + (std::to_string(this->_settings.getDownKey()))+"\n";
+	profileFileOut << "leftKey:" + (std::to_string(this->_settings.getLeftKey()))+"\n";
+	profileFileOut << "rightKey:" + (std::to_string(this->_settings.getRightKey()))+"\n";
+	profileFileOut << "actionKey:" + (std::to_string(this->_settings.getActionKey()))+"\n";
+	profileFileOut << "musicVol:" + (std::to_string(this->_settings.getMusicVol()))+"\n";
+	profileFileOut << "FXVol:" + (std::to_string(this->_settings.getFXVol()))+"\n";
 	profileFileOut.close();
 	std::cout << "Player saved to ./resources/profiles/" << this->_player.getName() << ".player\n";
 }
@@ -146,36 +138,24 @@ void					Game::loadPlayer(std::string playerName) {
 	std::string fileName = "resources/profiles/" + playerName + ".profile";
 	this->_player.setLevel(std::stoi(lexFile(fileName, "level")));
 	this->_player.setExperience(std::stoi(lexFile(fileName, "experience")));
-}
+	int resX = std::stoi(lexFile(fileName, "resolutionX"));
+	int resY = std::stoi(lexFile(fileName, "resolutionY"));
+	std::pair<int, int> resolution = std::make_pair(resX, resY);
+	this->_settings.setResolution(resolution);
 
-void					Game::loadSettings() {
-	std::string fileName = "resources/bomberman.config";
-	struct stat buffer;
+	std::string ret = lexFile(fileName, "windowed");
+	if (ret == "false")
+		this->_settings.setWindowed(false);
+	else
+		this->_settings.setWindowed(true);
 
-	std::cout << "Loading Settings\n";
-	if (stat(fileName.c_str(), &buffer) != 0)
-		std::cout << "Cannot find file '" << fileName << "'. Using default settings.\n";
-	else {
-		std::cout << "Config file found at: '" << fileName << "'. Using saved settings.\n";
-		int resX = std::stoi(lexFile(fileName, "resolutionX"));
-		int resY = std::stoi(lexFile(fileName, "resolutionY"));
-		std::pair<int, int> resolution = std::make_pair(resX, resY);
-		this->_settings.setResolution(resolution);
-
-		std::string ret = lexFile(fileName, "windowed");
-		if (ret == "false")
-			this->_settings.setWindowed(false);
-		else
-			this->_settings.setWindowed(true);
-
-		this->_settings.setUpKey(std::stoi(lexFile(fileName, "upKey")));
-		this->_settings.setDownKey(std::stoi(lexFile(fileName, "downKey")));
-		this->_settings.setLeftKey(std::stoi(lexFile(fileName, "leftKey")));
-		this->_settings.setRightKey(std::stoi(lexFile(fileName, "rightKey")));
-		this->_settings.setActionKey(std::stoi(lexFile(fileName, "actionKey")));
-		this->_settings.setMusicVol(std::stoi(lexFile(fileName, "musicVol")));
-		this->_settings.setFXVol(std::stoi(lexFile(fileName, "FXVol")));
-	}
+	this->_settings.setUpKey(std::stoi(lexFile(fileName, "upKey")));
+	this->_settings.setDownKey(std::stoi(lexFile(fileName, "downKey")));
+	this->_settings.setLeftKey(std::stoi(lexFile(fileName, "leftKey")));
+	this->_settings.setRightKey(std::stoi(lexFile(fileName, "rightKey")));
+	this->_settings.setActionKey(std::stoi(lexFile(fileName, "actionKey")));
+	this->_settings.setMusicVol(std::stoi(lexFile(fileName, "musicVol")));
+	this->_settings.setFXVol(std::stoi(lexFile(fileName, "FXVol")));
 }
 
 std::string				Game::lexFile(std::string fileName, std::string find) {

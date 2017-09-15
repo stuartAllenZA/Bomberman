@@ -25,7 +25,6 @@ Core::~Core() {
 	std::cout << "De-Constructing Core\n";
 	if (this->_game.getPlayer().getName().size() > 0)
 		this->_game.savePlayer();
-	this->_game.saveSettings();
 	this->_game.stopBackgroundMusic();
 	std::cout << "closing nanogui screen" << std::endl;
 	nanogui::shutdown();
