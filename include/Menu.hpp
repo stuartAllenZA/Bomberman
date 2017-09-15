@@ -8,6 +8,7 @@
 #include <nanogui/screen.h>
 #include <nanogui/widget.h>
 #include <GLFW/glfw3.h>
+#include <utility>
 #include "Settings.hpp"
 #include "Game.hpp"
 #include "Sound.hpp"
@@ -27,12 +28,6 @@ enum class MenuState {
     SETTINGS,
     PAUSE,
     NO_MENU
-};
-
-enum class ResolutionState {
-    SVGA,       //800x600   4:3
-    XGA,        //1024x768  4:3
-    WXGA        //1280x800  16:10
 };
 
 class Menu {
