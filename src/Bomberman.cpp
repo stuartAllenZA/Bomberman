@@ -21,6 +21,10 @@ int main(int argc, char **argv) {
 		std::cerr << "Exceptions::SoundDeviceInitError" << exception.what() << std::endl;
 	}
 
+	catch (Exceptions::LoadPlayerError const & exception) {
+		std::cerr << "Exceptions::LoadPlayerError: " << exception.what() << std::endl;
+	}
+
 	catch (Exceptions::LexOpenFileError const & exception) {
 		std::cerr << "Exceptions::LexOpenFileError: " << exception.what() << std::endl;
 	}

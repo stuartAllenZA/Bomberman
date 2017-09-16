@@ -28,7 +28,8 @@ enum class MenuState {
     SETTINGS,
     KEYBINDING,
     PAUSE,
-    NO_MENU
+    NO_MENU,
+    BK2_PLAYER_SELECT
 };
 
 class Menu {

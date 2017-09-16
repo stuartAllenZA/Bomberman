@@ -1,26 +1,22 @@
 #include <Player.hpp>
 
-Player::Player(std::pair<int, int> xy, int lives, std::string name) : Character(xy, lives), _name(name), _level(1), _experience(0) {
-	this->_fileLocation = "resources/profiles/" + name + ".player";
+Player::Player(std::pair<int, int> xy, int lives, std::string name) : Character(xy, lives), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(1), _experience(0), _numberOfBombs(0) {
 	std::cout << "Player with name " << this->_name << ", XY & Lives Constructed\n";
 }
 
-Player::Player(std::pair<int, int> xy, std::string name) : Character(xy), _name(name), _level(1), _experience(0) {
-	this->_fileLocation = "resources/profiles/" + name + ".player";
+Player::Player(std::pair<int, int> xy, std::string name) : Character(xy), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(1), _experience(0), _numberOfBombs(0) {
 	std::cout << "Player with name " << this->_name << "& XY Constructed\n";
 }
 
-Player::Player(int lives, std::string name) : Character(lives), _name(name), _level(1), _experience(0) {
-	this->_fileLocation = "resources/profiles/" + name + ".player";
+Player::Player(int lives, std::string name) : Character(lives), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(1), _experience(0), _numberOfBombs(0) {
 	std::cout << "Player with name " << this->_name << " & Lives Constructed\n";
 }
 
-Player::Player(std::string name) : Character(), _name(name), _level(1), _experience(0) {
-	this->_fileLocation = "resources/profiles/" + name + ".player";
+Player::Player(std::string name) : Character(), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(1), _experience(0), _numberOfBombs(0) {
 	std::cout << "Player with name " << this->_name << " Constructed\n";
 }
 
-Player::Player() : Character(), _level(1), _experience(0) {
+Player::Player() : Character(), _level(1), _experience(0), _numberOfBombs(0) {
 	std::cout << "Player with no name Default Constructed\n";
 }
 
@@ -61,7 +57,6 @@ std::string	Player::getName() const {
 
 void		Player::setName(const std::string newName) {
 	this->_name = newName;
-	this->_fileLocation = "resources/profiles/" + this->_name + ".player";
 }
 
 int 		Player::getLevel() const {

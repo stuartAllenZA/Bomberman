@@ -1,0 +1,13 @@
+level:1
+experience:0
+noOfBombs:0
+resolutionX:800
+resolutionY:600
+windowed:true
+upKey:119
+downKey:115
+leftKey:97
+rightKey:100
+actionKey:32
+musicVol:69
+FXVol:69

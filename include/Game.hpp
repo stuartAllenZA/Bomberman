@@ -65,9 +65,10 @@ class Game {
 
 		void						initSound();
 		void						savePlayer();
-		std::vector<std::string>	checkPlayers();
-		void						loadPlayer(std::string playerName);
-		std::string					lexFile(std::string fileName, std::string find);
+		std::vector<std::string>	checkPlayers() const;
+		void						loadPlayer(const std::string playerName);
+		std::string					lexFile(const std::string fileName, const std::string find);
+		void						setWindowPos(const int xPos, const int yPos);
 		void						startBackgroundMusic();
 		void						stopBackgroundMusic();
 

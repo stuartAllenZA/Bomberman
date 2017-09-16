@@ -1,6 +1,6 @@
 #include <Settings.hpp>
 
-Settings::Settings() : _resolution(std::make_pair(800, 600)), _windowed(false), _upKey(119), _downKey(115), _leftKey(97), _rightKey(100), _actionKey(32), _musicVol(100), _FXVol(100) {
+Settings::Settings() : _resolution(std::make_pair(800, 600)), _windowed(true), _xPos(560), _yPos(153), _upKey(119), _downKey(115), _leftKey(97), _rightKey(100), _actionKey(32), _musicVol(100), _FXVol(100) {
 	std::cout << "Settings Default Constructed\n";
 }
 
@@ -17,6 +17,8 @@ Settings &			Settings::operator=(Settings const & src) {
 	this->_resolution = src.getResolution();
 	this->_lastPlayer = src.getLastPlayer();
 	this->_windowed = src.getWindowed();
+	this->_xPos = src.getXPos();
+	this->_yPos = src.getYPos();
 	this->_upKey = src.getUpKey();
 	this->_downKey = src.getDownKey();
 	this->_leftKey = src.getLeftKey();
@@ -49,6 +51,24 @@ bool				Settings::getWindowed() const {
 
 void				Settings::setWindowed(const bool newWin) {
 	this->_windowed = newWin;
+}
+
+int					Settings::getXPos() const {
+	return (this->_xPos);
+}
+
+void				Settings::setXPos(const int newXPos) {
+	this->_xPos = newXPos;
+	std::cout << "_xPos set to: " << newXPos << " Check: " << this->_xPos << std::endl;
+}
+
+int					Settings::getYPos() const {
+	return (this->_yPos);
+}
+
+void				Settings::setYPos(const int newYPos) {
+	this->_yPos = newYPos;
+	std::cout << "_yPos set to: " << newYPos << " Check: " << this->_yPos << std::endl;
 }
 
 int 				Settings::getUpKey() const {
@@ -119,6 +139,8 @@ std::ostream & 			operator<<(std::ostream & o, Settings const & rhs) {
 	o << "\n\nDumping Current Settings\nResolution: " << rhs.getResolutionX() << "x" << rhs.getResolutionY() <<
 	"\nLast Player: " << rhs.getLastPlayer() <<
 	"\nWindowed: " << std::boolalpha << rhs.getWindowed() <<
+	"\nX Pos: " << rhs.getXPos() <<
+	"\nY Pos: " << rhs.getYPos() <<
 	"\nUp Key: " << rhs.getUpKey() <<
 	"\nDown Key: " << rhs.getDownKey() <<
 	"\nLeft Key: " << rhs.getLeftKey() <<

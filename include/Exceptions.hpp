@@ -13,6 +13,15 @@ class Exceptions {
 				}
 		};
 
+		class LoadPlayerError: public std::exception {
+			public:
+				LoadPlayerError(std::string const & playerName) throw();
+				~LoadPlayerError() throw();
+				virtual const char*	what() const throw();
+			private:
+				std::string _msg;
+		};
+
 		class LexOpenFileError: public std::exception {
 			public:
 				LexOpenFileError(std::string const & fileName) throw();

@@ -8,8 +8,8 @@
 // Add variable checklist
 //		1. Getter & Setter
 //		1. Constructor & = operator
-//		1. Game::loadSettings
-//		3. Game::saveSettings
+//		1. Game::loadProfile
+//		3. Game::saveProfile
 
 class Settings
 {
@@ -24,6 +24,10 @@ public:
 	void				setLastPlayer(const std::string newLastPlayer);
 	bool				getWindowed() const;
 	void				setWindowed(const bool newWin);
+	int					getXPos() const;
+	void				setXPos(const int newXPos);
+	int					getYPos() const;
+	void				setYPos(const int newYPos);
 	int					getUpKey() const;
 	void				setUpKey(const int newKey);
 	int					getDownKey() const;
@@ -46,6 +50,8 @@ private:
 	std::pair<int, int>	_resolution;
 	std::string 		_lastPlayer;
 	bool				_windowed;
+	int					_xPos;
+	int					_yPos;
 	int					_upKey;
 	int					_downKey;
 	int					_leftKey;
