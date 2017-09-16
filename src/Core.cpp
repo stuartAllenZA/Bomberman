@@ -27,8 +27,8 @@ Core::~Core() {
 	std::cout << "closing nanogui screen" << std::endl;
 	nanogui::shutdown();
 	std::cout << "nanogui screen closed successfully" << std::endl;
-    delete this->_menu;
-    this->_menu = nullptr;
+	delete this->_menu;
+	this->_menu = nullptr;
 	glfwTerminate();
 	std::cout << "Core De-Constructed\n";
 }
@@ -106,6 +106,11 @@ void			Core::init() {
 	_win = glfwCreateWindow(_width, _height, "Bomberman", nullptr, nullptr);
 	if (_win == nullptr)
 		fatalError("GLFW context is shot");
+	else {
+		int xPos, yPos;
+		glfwGetWindowPos(_win, &xPos, &yPos);
+		this->_game.setWindowPos(xPos, yPos);
+	}
 	glfwMakeContextCurrent(_win);
 	glfwSwapInterval(1);
 
@@ -147,8 +152,8 @@ void			Core::gameLoop() {
 }
 
 void			Core::input() {
-    _menu->updateKeys();
-    _menu->updateMouse();
+	_menu->updateKeys();
+	_menu->updateMouse();
 }
 
 void			Core::drawGame() {
@@ -171,10 +176,10 @@ void			Core::fatalError(std::string errorString) {
 
 void			Core::initPlay() {
 	std::cout << "playing, ESC to exit" << std::endl;
-    if (_menu->getKeyPressArr(ESC)){
-        this->_game.setGameState(GameState::MENU);
-        _menu->setMenuState(MenuState::PAUSE);
-    }
+	if (_menu->getKeyPressArr(ESC)){
+		this->_game.setGameState(GameState::MENU);
+		_menu->setMenuState(MenuState::PAUSE);
+	}
 }
 
 void			Core::load() {

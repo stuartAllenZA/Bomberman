@@ -1,5 +1,14 @@
 #include <Exceptions.hpp>
 
+Exceptions::LoadPlayerError::LoadPlayerError(std::string const & playerName) throw() : _msg("Cannot load player: " + playerName + ". File not found") {}
+
+Exceptions::LoadPlayerError::~LoadPlayerError() throw() {}
+
+const char* Exceptions::LoadPlayerError::what() const throw()
+{
+	return this->_msg.c_str();
+}
+
 Exceptions::LexOpenFileError::LexOpenFileError(std::string const & fileName) throw() : _msg("Cannot open file: " + fileName) {}
 
 Exceptions::LexOpenFileError::~LexOpenFileError() throw() {}
