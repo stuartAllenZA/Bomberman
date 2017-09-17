@@ -378,17 +378,39 @@ void			Menu::settingsMenu() {
 void            Menu::keyBindingMenu() {
 	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
 	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "PAUSED");
+	nanogui::GridLayout *layout = new nanogui::GridLayout(nanogui::Orientation::Horizontal, 2, nanogui::Alignment::Middle, 15, 10);
+	layout->setColAlignment({ nanogui::Alignment::Middle, nanogui::Alignment::Fill });
+	layout->setSpacing(0, 10);
+	nanoguiWindow->setLayout(layout);
 
-	nanoguiWindow->setLayout(new nanogui::GroupLayout);
+	if (checkForKeySymbol(_game->getSettings().getUpKey()) != 0) {
+		new nanogui::Label(nanoguiWindow, "Up :");
+		nanogui::Button *upKeyButton = nanoguiWindow->add<nanogui::Button>("", checkForKeySymbol(_game->getSettings().getUpKey()));
+		upKeyButton->setCallback([&, this] {
 
-	nanogui::Button		*upKeyButton = new nanogui::Button(nanoguiWindow, "Up Key");
+		});
+	}
+	else {
+		new nanogui::Label(nanoguiWindow, "Up :");
+		nanogui::Button *upKeyButton = nanoguiWindow->add<nanogui::Button>(std::to_string('c'));
+		upKeyButton->setCallback([&, this] {
 
-	nanogui::Button		*downKeyButton = new nanogui::Button(nanoguiWindow, "Down Key");
+		});
+	}
 
-	nanogui::Button		*leftKeyButton = new nanogui::Button(nanoguiWindow, "Left Key");
+	new nanogui::Label(nanoguiWindow, "Down :");
+	nanogui::Button		*downKeyButton = nanoguiWindow->add<nanogui::Button>("", checkForKeySymbol('x'));
 
-	nanogui::Button		*rightKeyButton = new nanogui::Button(nanoguiWindow, "Right Key");
+	new nanogui::Label(nanoguiWindow, "Left :");
+	nanogui::Button		*leftKeyButton = nanoguiWindow->add<nanogui::Button>("", ENTYPO_ICON_LEFT);
 
+	new nanogui::Label(nanoguiWindow, "Right :");
+	nanogui::Button		*rightKeyButton = nanoguiWindow->add<nanogui::Button>("", ENTYPO_ICON_RIGHT);
+
+	nanogui::Button		*exitKeyBindingButton = nanoguiWindow->add<nanogui::Button>("Back");
+	exitKeyBindingButton->setCallback([&]{
+		_menuState = MenuState::SETTINGS;
+	});
 	screen->setVisible(true);
 	screen->performLayout();
 	nanoguiWindow->center();
@@ -405,6 +427,19 @@ void            Menu::keyBindingMenu() {
 	if (glfwWindowShouldClose(*_win))
 		exitButton();
 	nanoguiWindow->dispose();
+}
+
+int		Menu::checkForKeySymbol(int keyPressed) {
+	if (keyPressed == GLFW_KEY_UP)
+		return (ENTYPO_ICON_UP);
+	else if (keyPressed == GLFW_KEY_DOWN)
+		return (ENTYPO_ICON_DOWN);
+	else if (keyPressed == GLFW_KEY_LEFT)
+		return (ENTYPO_ICON_LEFT);
+	else if (keyPressed == GLFW_KEY_RIGHT)
+		return (ENTYPO_ICON_RIGHT);
+	else
+		return (0);
 }
 
 void            Menu::pauseMenu() {

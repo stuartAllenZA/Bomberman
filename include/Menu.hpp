@@ -12,6 +12,7 @@
 #include "Settings.hpp"
 #include "Game.hpp"
 #include "Sound.hpp"
+#include <sstream>
 
 #define UP		0
 #define DOWN	1
@@ -74,6 +75,7 @@ public:
     void            playerSelectButton();
     void            settingsButton();
     void            keyBindingButton();
+	int				checkForKeySymbol(int keyPressed);
     void            resumeButton();
     void            quitToMenuButton();
     void			renderMenu();
