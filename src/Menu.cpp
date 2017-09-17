@@ -356,36 +356,74 @@ void			Menu::settingsMenu() {
 }
 
 void            Menu::keyBindingMenu() {
+	enum class						BindingButtonState {
+		UP_BINDING,
+		DOWN_BINDING,
+		LEFT_BINDING,
+		RIGHT_BINDING,
+		NONE
+	};
+	char 							c;
+	bool 							breaker = false;
+	Settings                        tempSettings(this->_game->getSettings());
 	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
 	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "PAUSED");
 	nanogui::GridLayout *layout = new nanogui::GridLayout(nanogui::Orientation::Horizontal, 2, nanogui::Alignment::Middle, 15, 10);
-	layout->setColAlignment({ nanogui::Alignment::Middle, nanogui::Alignment::Fill });
+	layout->setColAlignment({ nanogui::Alignment::Maximum, nanogui::Alignment::Fill });
 	layout->setSpacing(0, 10);
 	nanoguiWindow->setLayout(layout);
 
-	if (checkForKeySymbol(_game->getSettings().getUpKey()) != 0) {
-		new nanogui::Label(nanoguiWindow, "Up :");
-		nanogui::Button *upKeyButton = nanoguiWindow->add<nanogui::Button>("", checkForKeySymbol(_game->getSettings().getUpKey()));
-		upKeyButton->setCallback([&, this] {
+	BindingButtonState bindingButtonState = BindingButtonState::NONE;
 
-		});
-	}
-	else {
-		new nanogui::Label(nanoguiWindow, "Up :");
-		nanogui::Button *upKeyButton = nanoguiWindow->add<nanogui::Button>(std::to_string('c'));
-		upKeyButton->setCallback([&, this] {
+	// UP
+	new nanogui::Label(nanoguiWindow, "Up :");
+	nanogui::Button *upKeyButton = new nanogui::Button(nanoguiWindow, "");
+	upKeyButton->setVisible(false);
+	if (checkForKeySymbol(_game->getSettings().getUpKey()) != 0)
+		upKeyButton = nanoguiWindow->add<nanogui::Button>("", checkForKeySymbol(_game->getSettings().getUpKey()));
+	else
+		upKeyButton = nanoguiWindow->add<nanogui::Button>(std::string(1, _game->getSettings().getUpKey()));
+	upKeyButton->setCallback([&, this] {
+		upKeyButton->setCaption("");
+		upKeyButton->setCaption("?");
+		bindingButtonState = BindingButtonState::UP_BINDING;
+	});
 
-		});
-	}
-
+	// DOWN
 	new nanogui::Label(nanoguiWindow, "Down :");
-	nanogui::Button		*downKeyButton = nanoguiWindow->add<nanogui::Button>("", checkForKeySymbol('x'));
+	nanogui::Button *downKeyButton = new nanogui::Button(nanoguiWindow, "");
+	downKeyButton->setVisible(false);
+	if (checkForKeySymbol(_game->getSettings().getDownKey()) != 0)
+		downKeyButton = nanoguiWindow->add<nanogui::Button>("", checkForKeySymbol(_game->getSettings().getDownKey()));
+	else
+		downKeyButton = nanoguiWindow->add<nanogui::Button>(std::string(1, _game->getSettings().getDownKey()));
+	downKeyButton->setCallback([&, this] {
 
+	});
+
+	// LEFT
 	new nanogui::Label(nanoguiWindow, "Left :");
-	nanogui::Button		*leftKeyButton = nanoguiWindow->add<nanogui::Button>("", ENTYPO_ICON_LEFT);
+	nanogui::Button *leftKeyButton = new nanogui::Button(nanoguiWindow, "");
+	leftKeyButton->setVisible(false);
+	if (checkForKeySymbol(_game->getSettings().getLeftKey()) != 0)
+		leftKeyButton = nanoguiWindow->add<nanogui::Button>("", checkForKeySymbol(_game->getSettings().getLeftKey()));
+	else
+		leftKeyButton = nanoguiWindow->add<nanogui::Button>(std::string(1, _game->getSettings().getLeftKey()));
+	leftKeyButton->setCallback([&, this] {
 
+	});
+
+	//RIGHT
 	new nanogui::Label(nanoguiWindow, "Right :");
-	nanogui::Button		*rightKeyButton = nanoguiWindow->add<nanogui::Button>("", ENTYPO_ICON_RIGHT);
+	nanogui::Button *rightKeyButton = new nanogui::Button(nanoguiWindow, "");
+	rightKeyButton->setVisible(false);
+	if (checkForKeySymbol(_game->getSettings().getRightKey()) != 0)
+		rightKeyButton = nanoguiWindow->add<nanogui::Button>("", checkForKeySymbol(_game->getSettings().getRightKey()));
+	else
+		rightKeyButton = nanoguiWindow->add<nanogui::Button>(std::string(1, _game->getSettings().getRightKey()));
+	rightKeyButton->setCallback([&, this] {
+
+	});
 
 	nanogui::Button		*exitKeyBindingButton = nanoguiWindow->add<nanogui::Button>("Back");
 	exitKeyBindingButton->setCallback([&]{
@@ -395,12 +433,20 @@ void            Menu::keyBindingMenu() {
 	screen->performLayout();
 	nanoguiWindow->center();
 	resetDelayTimer();
-	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::KEYBINDING){
+	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::KEYBINDING && !breaker){
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
 		if (this->_game->getKeyPressArr(ESCAPE) && getDelayTimer() >= getMinimumTime()) {
 			_menuState = MenuState::SETTINGS;
+		}
+		if (bindingButtonState == BindingButtonState::UP_BINDING) {
+			if (findKeyForBinding() != 0) {
+				tempSettings.setUpKey(findKeyForBinding());
+				this->_game->setSettings(tempSettings);
+				this->_game->savePlayer();
+				breaker = true;
+			}
 		}
 		renderMenu();
 	}
@@ -420,6 +466,14 @@ int		Menu::checkForKeySymbol(int keyPressed) {
 		return (ENTYPO_ICON_RIGHT);
 	else
 		return (0);
+}
+
+int		Menu::findKeyForBinding() {
+	for (int i = 65; i <= 90; i++) {
+		if (glfwGetKey(*_win, i) == GLFW_PRESS)
+			return (i);
+	}
+	return (0);
 }
 
 void            Menu::pauseMenu() {
