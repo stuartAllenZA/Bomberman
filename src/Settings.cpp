@@ -1,16 +1,16 @@
 #include <Settings.hpp>
 
-Settings::Settings() : _resolution(std::make_pair(800, 600)), _windowed(true), _xPos(560), _yPos(153), _upKey(119), _downKey(115), _leftKey(97), _rightKey(100), _actionKey(32), _musicVol(100), _FXVol(100) {
-	std::cout << "Settings Default Constructed\n";
+Settings::Settings() : _resolution(std::make_pair(800, 600)), _windowed(true), _xPos(560), _yPos(153), _upKey(GLFW_KEY_W), _downKey(GLFW_KEY_S), _leftKey(GLFW_KEY_A), _rightKey(GLFW_KEY_D), _actionKey(GLFW_KEY_SPACE), _acceptKey(GLFW_KEY_ENTER), _escapeKey(GLFW_KEY_ESCAPE), _musicVol(100), _FXVol(100) {
+	//std::cout << "Settings Default Constructed\n";
 }
 
 Settings::Settings(Settings const & src) {
-	std::cout << "Settings Copy-Constructed\n";
+	//std::cout << "Settings Copy-Constructed\n";
 	*this = src;
 }
 
 Settings::~Settings() {
-	std::cout << "Settings De-Constructed\n";
+	//std::cout << "Settings De-Constructed\n";
 }
 
 Settings &			Settings::operator=(Settings const & src) {
@@ -24,6 +24,8 @@ Settings &			Settings::operator=(Settings const & src) {
 	this->_leftKey = src.getLeftKey();
 	this->_rightKey = src.getRightKey();
 	this->_actionKey = src.getActionKey();
+	this->_acceptKey = src.getAcceptKey();
+	this->_escapeKey = src.getEscapeKey();
 	this->_musicVol = src.getMusicVol();
 	this->_FXVol = src.getFXVol();
 	return (*this);
@@ -109,6 +111,22 @@ int 				Settings::getActionKey() const {
 
 void				Settings::setActionKey(const int newKey) {
 	this->_actionKey = newKey;
+}
+
+int 				Settings::getAcceptKey() const {
+	return (this->_acceptKey);
+}
+
+void				Settings::setAcceptKey(const int newKey) {
+	this->_acceptKey = newKey;
+}
+
+int 				Settings::getEscapeKey() const {
+	return (this->_escapeKey);
+}
+
+void				Settings::setEscapeKey(const int newKey) {
+	this->_escapeKey = newKey;
 }
 
 int 				Settings::getMusicVol() const {

@@ -1,6 +1,7 @@
 #include <Menu.hpp>
 
 nanogui::Screen *screen = nullptr;
+int				lastKeyPressed = 0;
 
 Menu::Menu(int passedWidth, int passedHeight, Game *passedGame, GLFWwindow **passedWin) : _width(passedWidth), _height(passedHeight), _game(passedGame), _win(passedWin) {
 	std::cout << "Constructing Menu\n";
@@ -15,9 +16,6 @@ Menu::Menu(Menu const & src) {
 }
 
 Menu &			Menu::operator=(Menu const & src) {
-	for (int i = 0; i < 7; i++) {
-		this->_keyPressArr[i] = src.getKeyPressArr(i);
-	}
 	this->_mouseX = src.getMouseX();
 	this->_mouseY = src.getMouseY();
 	this->_menuState = src.getMenuState();
@@ -57,17 +55,21 @@ void			Menu::menu() {
 	std::cout << "nanogui window initialized, screen integrated with window" << std::endl;
 
 	glfwSetCursorPosCallback(*_win, [](GLFWwindow *, double x, double y) {
-		screen->cursorPosCallbackEvent(x, y); }
-		);
+		screen->cursorPosCallbackEvent(x, y);
+	});
 	glfwSetMouseButtonCallback(*_win, [](GLFWwindow *, int button, int action, int modifiers) {
-		screen->mouseButtonCallbackEvent(button, action, modifiers); }
-		);
+		screen->mouseButtonCallbackEvent(button, action, modifiers);
+	});
 	glfwSetKeyCallback(*_win, [](GLFWwindow *, int key, int scancode, int action, int mods) {
-		screen->keyCallbackEvent(key, scancode, action, mods); }
-		);
+		screen->keyCallbackEvent(key, scancode, action, mods);
+		if (key != GLFW_KEY_UNKNOWN)
+			lastKeyPressed = key;
+		else
+			lastKeyPressed = scancode;
+	});
 	glfwSetCharCallback(*_win, [](GLFWwindow *, unsigned int codepoint) {
-		screen->charCallbackEvent(codepoint); }
-		);
+		screen->charCallbackEvent(codepoint);
+	});
 
 	while (this->_game->getGameState() == GameState::MENU) {
 		switch (_menuState) {
@@ -125,11 +127,13 @@ void			Menu::playerSelectMenu() {
 		b->setCallback([&]{
 			if (playerNames[playerCobo->selectedIndex()] != "")
 				this->_game->loadPlayer(playerNames[playerCobo->selectedIndex()]);
+			//std::cout << "Player Loaded!\n";
 			if (this->_game->getSettings().getWindowed())
 				glfwSetWindowMonitor(*(_win), NULL, this->_game->getSettings().getXPos(), this->_game->getSettings().getYPos(), this->_game->getSettings().getResolutionX(), this->_game->getSettings().getResolutionY(), GLFW_DONT_CARE);
 			else
 				glfwSetWindowMonitor(*(_win), glfwGetPrimaryMonitor(), 0, 0, this->_game->getSettings().getResolutionX(), this->_game->getSettings().getResolutionY(), GLFW_DONT_CARE);
 			_menuState = MenuState::MAIN_MENU;
+			std::cout << "HERE!\n";
 		});
 		b = new nanogui::Button(tools, "Delete");
 		b->setCallback([&]{
@@ -152,15 +156,14 @@ void			Menu::playerSelectMenu() {
 	screen->performLayout();
 	nanoguiWindow->center();
 	resetDelayTimer();
-	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::PLAYER_SELECT){
+	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::PLAYER_SELECT) {
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
-		if (_keyPressArr[ENTER])
+		if (lastKeyPressed == this->_game->getSettings().getAcceptKey() && getDelayTimer() >= getMinimumTime())
 			createButton(playerNameInput);
-		else if (_keyPressArr[ESC] && getDelayTimer() >= getMinimumTime()) {
+		else if (lastKeyPressed == this->_game->getSettings().getEscapeKey() && getDelayTimer() >= getMinimumTime())
 			exitButton();
-		}
 		renderMenu();
 	}
 	if (glfwWindowShouldClose(*_win))
@@ -221,12 +224,10 @@ void            Menu::mainMenu() {
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
-		if (_keyPressArr[ESC] && getDelayTimer() >= getMinimumTime()) {
-			playerSelectMenu();
-		}
-		else if (_keyPressArr[ENTER] && getDelayTimer() >= getMinimumTime()) {
+		if (lastKeyPressed == this->_game->getSettings().getAcceptKey() && getDelayTimer() >= getMinimumTime())
 			newGameButton();
-		}
+		else if (lastKeyPressed == this->_game->getSettings().getEscapeKey() && getDelayTimer() >= getMinimumTime())
+			playerSelectButton();
 		renderMenu();
 	}
 	if (glfwWindowShouldClose(*_win))
@@ -360,7 +361,7 @@ void			Menu::settingsMenu() {
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
-		if (_keyPressArr[ESC] && getDelayTimer() >= getMinimumTime())
+		if (lastKeyPressed == this->_game->getSettings().getEscapeKey() && getDelayTimer() >= getMinimumTime())
 		{
 			if (this->_game->getPlayState() == PlayState::GAME_PLAY)
 				_menuState = MenuState::PAUSE;
@@ -394,6 +395,9 @@ void            Menu::keyBindingMenu() {
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
+		if (lastKeyPressed == this->_game->getSettings().getEscapeKey() && getDelayTimer() >= getMinimumTime()) {
+			_menuState = MenuState::SETTINGS;
+		}
 		renderMenu();
 	}
 	if (glfwWindowShouldClose(*_win))
@@ -429,8 +433,7 @@ void            Menu::pauseMenu() {
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
-		if (_keyPressArr[ENTER] && getDelayTimer() >= getMinimumTime())
-		{
+		if (lastKeyPressed == this->_game->getSettings().getEscapeKey() && getDelayTimer() >= getMinimumTime()) {
 			_menuState = MenuState::NO_MENU;
 			this->_game->setGameState(GameState::PLAY);
 		}
@@ -442,10 +445,16 @@ void            Menu::pauseMenu() {
 }
 
 void			Menu::updateKeys() {
+	this->_game->setKeyPress(lastKeyPressed);
+	if (glfwGetKey(*_win, lastKeyPressed) == GLFW_PRESS)
+		this->_game->setKeyPressState(true);
+	else
+		this->_game->setKeyPressState(false);
+	/*
 	int		state;
 	bool	pressed = false;
 
-	state = glfwGetKey(*_win, GLFW_KEY_LEFT);
+	state = glfwGetKey(*_win, this->_gameInput);
 	if (state == GLFW_PRESS)
 		_keyPressArr[LEFT] = true;
 	else
@@ -480,6 +489,7 @@ void			Menu::updateKeys() {
 		_keyPressArr[ESC] = true;
 	else
 		_keyPressArr[ESC] = false;
+	*/
 }
 
 void			Menu::updateMouse() {
@@ -612,14 +622,6 @@ double			Menu::getMouseY() const {
 
 void			Menu::setMouseY(const double newMouseY) {
 	this->_mouseY = newMouseY;
-}
-
-bool			Menu::getKeyPressArr(const int index) const {
-	return (this->_keyPressArr[index]);
-}
-
-void			Menu::setKeyPressArr(const int index, const bool newChoice){
-	this->_keyPressArr[index] = newChoice;
 }
 
 MenuState		Menu::getMenuState() const {

@@ -50,8 +50,10 @@ class Game {
 		void						setGameState(const GameState newState);
 		PlayState					getPlayState() const;
 		void						setPlayState(const PlayState newState);
-		int							getGameInput() const;
-		void						setGameInput(const int newInput);
+		int							getKeyPress() const;
+		void						setKeyPress(const int newInput);
+		bool						getKeyPressState() const;
+		void						setKeyPressState(const bool newState);
 		Settings					getSettings() const;
 		void						setSettings(const Settings newSettings);
 		Player						getPlayer() const;
@@ -69,18 +71,22 @@ class Game {
 		void						loadPlayer(const std::string playerName);
 		std::string					lexFile(const std::string fileName, const std::string find);
 		void						setWindowPos(const int xPos, const int yPos);
-		void						startBackgroundMusic();
-		void						stopBackgroundMusic();
+		void						startMenuMusic();
+		void						stopMenuMusic();
+		void						startGameMusic();
+		void						stopGameMusic();
+		void						processKeyInput();
 
 	private:
-		GameState				_gameState;
-		PlayState				_playState;
-		int						_gameInput;
-		Settings				_settings;
-		Sound					_sound;
-		Player					_player;
-		std::vector<Character*>	_enemies;
-		bool					_hasSave;
+		GameState					_gameState;
+		PlayState					_playState;
+		int							_keyPress;
+		bool						_keyPressState;
+		Settings					_settings;
+		Sound						_sound;
+		Player						_player;
+		std::vector<Character*>		_enemies;
+		bool						_hasSave;
 };
 
 std::ostream &					operator<<(std::ostream & o, Game const & rhs);
