@@ -68,6 +68,7 @@ public:
     void            playerSelectButton();
     void            settingsButton();
     void            keyBindingButton();
+	int				findKeyForBinding();
 	int				checkForKeySymbol(int keyPressed);
     void            resumeButton();
     void            quitToMenuButton();
