@@ -1,7 +1,10 @@
 #include <Game.hpp>
 
-Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _keyPress(0), _keyPressState(false), _settings(Settings()), _hasSave(false) {
+Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _settings(Settings()), _hasSave(false) {
 	std::cout << "Constructing Game\n";
+	for (int i = 0; i < 7; i++) {
+		this->_keyPressArr[i] = false;
+	}
 	if (this->checkPlayers().size() > 0)
 		this->_hasSave = true;
 	std::cout << "Game Constructed\n";
@@ -22,8 +25,9 @@ Game::~Game() {
 Game &					Game::operator=(Game const & src) {
 	this->_gameState = src.getGameState();
 	this->_playState = src.getPlayState();
-	this->_keyPress = src.getKeyPress();
-	this->_keyPressState = src.getKeyPressState();
+	for (int i = 0; i < 7; i++) {
+		this->_keyPressArr[i] = src.getKeyPressArr(i);
+	}
 	this->_settings = src.getSettings();
 	this->_settings = src.getSettings();
 	this->_enemies = src.getEnemies();
@@ -47,20 +51,12 @@ void					Game::setPlayState(const PlayState newState) {
 	this->_playState = newState;
 }
 
-int						Game::getKeyPress() const {
-	return (this->_keyPress);
+bool					Game::getKeyPressArr(const int index) const {
+	return (this->_keyPressArr[index]);
 }
 
-void					Game::setKeyPress(const int newInput) {
-	this->_keyPress = newInput;
-}
-
-bool					Game::getKeyPressState() const {
-	return (this->_keyPressState);
-}
-
-void					Game::setKeyPressState(const bool newState){
-	this->_keyPressState = newState;
+void					Game::setKeyPressArr(const int index, const bool newState){
+	this->_keyPressArr[index] = newState;
 }
 
 Settings				Game::getSettings() const {
@@ -262,20 +258,15 @@ void					Game::stopGameMusic() {
 	this->_sound.stopGameMusic();
 }
 
-void					Game::processKeyInput() {
-	
-}
-
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	int num = 0;
 	o << "Dumping Game State" <<
 	"\nGame State: " << static_cast<std::underlying_type<GameState>::type>(rhs.getGameState()) <<
 	"\nPlay State: " << static_cast<std::underlying_type<PlayState>::type>(rhs.getPlayState()) <<
-	"\nKey Press: " << rhs.getKeyPress() << std::endl <<
-	"\nKey Press State: " << rhs.getKeyPressState() << std::endl <<
-	"\nHas Save: " << std::boolalpha << rhs.getHasSave() <<
-	"\nSettings: " << rhs.getSettings() << std::endl <<
-	"\nPlayer: " << rhs.getPlayer();
+	"\nHas Save: " << std::boolalpha << rhs.getHasSave();
+	for (int i = 0; i < 7; i++) {
+		o << "keyPressArr[" << i << "]: " << std::boolalpha << rhs.getKeyPressArr(i) << std::endl;
+	}
 	if (rhs.getEnemies().size() > 0) {
 		for (std::vector<Character*>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it) {
 			num++;
@@ -284,7 +275,7 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	}
 	else
 		o << "Enemies: 0\n";
-	o << rhs.getSettings() << std::endl;
+	o << "\nSettings: " << rhs.getSettings() << std::endl << "\nPlayer: " << rhs.getPlayer();
 	return o;
 }
 
