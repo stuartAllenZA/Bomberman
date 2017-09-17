@@ -13,14 +13,6 @@
 #include "Game.hpp"
 #include "Sound.hpp"
 
-#define UP		0
-#define DOWN	1
-#define LEFT	2
-#define RIGHT	3
-#define SPACE	4
-#define ENTER	5
-#define ESC		6
-
 enum class MenuState {
     PLAYER_SELECT,
     LOAD_SAVE,
@@ -69,6 +61,7 @@ public:
     bool            checkPlayerNameAvailability(std::string playerNameInputVar);
     void            createButton(std::string playerNameInputVar);
     void            exitButton();
+    void            logoutButton();
     void            newGameButton();
     void            loadGameButton();
     void            playerSelectButton();

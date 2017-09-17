@@ -18,6 +18,14 @@
 #include <irrKlang.h>
 #include <dirent.h>
 
+#define UP		0
+#define DOWN	1
+#define LEFT	2
+#define RIGHT	3
+#define ACTION	4
+#define ACCEPT	5
+#define ESCAPE	6
+
 // Add variable checklist
 
 //		1. Getter & Setter
@@ -28,9 +36,6 @@
 enum class GameState {
 	MENU,
 	PLAY,
-	LOAD,
-	SET,
-	SAVE,
 	EXIT
 };
 
@@ -50,10 +55,8 @@ class Game {
 		void						setGameState(const GameState newState);
 		PlayState					getPlayState() const;
 		void						setPlayState(const PlayState newState);
-		int							getKeyPress() const;
-		void						setKeyPress(const int newInput);
-		bool						getKeyPressState() const;
-		void						setKeyPressState(const bool newState);
+		bool						getKeyPressArr(const int index) const;
+		void						setKeyPressArr(const int index, const bool newState);
 		Settings					getSettings() const;
 		void						setSettings(const Settings newSettings);
 		Player						getPlayer() const;
@@ -75,13 +78,11 @@ class Game {
 		void						stopMenuMusic();
 		void						startGameMusic();
 		void						stopGameMusic();
-		void						processKeyInput();
 
 	private:
 		GameState					_gameState;
 		PlayState					_playState;
-		int							_keyPress;
-		bool						_keyPressState;
+		bool						_keyPressArr[7];
 		Settings					_settings;
 		Sound						_sound;
 		Player						_player;
