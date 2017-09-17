@@ -12,6 +12,7 @@
 #include "Settings.hpp"
 #include "Game.hpp"
 #include "Sound.hpp"
+#include <sstream>
 
 enum class MenuState {
     PLAYER_SELECT,
@@ -67,6 +68,7 @@ public:
     void            playerSelectButton();
     void            settingsButton();
     void            keyBindingButton();
+	int				checkForKeySymbol(int keyPressed);
     void            resumeButton();
     void            quitToMenuButton();
     void			renderMenu();
