@@ -37,12 +37,10 @@ public:
 	void			drawGame();
 	void			newPlayer(const std::string playerName);
 	void			initPlay();
-	void			load();
-	void			settings();
-	void			save();
 	void			exit();
 	void			setExit();
 	void			fatalError(std::string errorString);
+	void			updateKeys();
 
 private:
 

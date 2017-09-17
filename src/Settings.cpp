@@ -1,6 +1,6 @@
 #include <Settings.hpp>
 
-Settings::Settings() : _resolution(std::make_pair(800, 600)), _windowed(true), _xPos(560), _yPos(153), _upKey(GLFW_KEY_W), _downKey(GLFW_KEY_S), _leftKey(GLFW_KEY_A), _rightKey(GLFW_KEY_D), _actionKey(GLFW_KEY_SPACE), _acceptKey(GLFW_KEY_ENTER), _escapeKey(GLFW_KEY_ESCAPE), _musicVol(100), _FXVol(100) {
+Settings::Settings() : _resolution(std::make_pair(800, 600)), _windowed(true), _xPos(560), _yPos(240), _upKey(GLFW_KEY_W), _downKey(GLFW_KEY_S), _leftKey(GLFW_KEY_A), _rightKey(GLFW_KEY_D), _actionKey(GLFW_KEY_SPACE), _acceptKey(GLFW_KEY_ENTER), _escapeKey(GLFW_KEY_ESCAPE), _musicVol(100), _FXVol(100) {
 	//std::cout << "Settings Default Constructed\n";
 }
 
@@ -37,6 +37,10 @@ std::pair<int, int>	Settings::getResolution() const {
 
 void				Settings::setResolution(const std::pair<int, int> wh) {
 	this->_resolution = wh;
+	this->_xPos = (1920 - this->_resolution.first) / 2;
+	this->_yPos = (1080 - this->_resolution.second) / 2;
+	if (this->_windowed && this->_resolution.first == 1920)
+		this->_resolution = std::make_pair(1920, 1034);
 }
 
 std::string			Settings::getLastPlayer() const {

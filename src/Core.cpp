@@ -133,15 +133,6 @@ void			Core::gameLoop() {
 			case GameState::PLAY :
 			initPlay();
 			break;
-			case GameState::LOAD :
-			load();
-			break;
-			case GameState::SET :
-			settings();
-			break;
-			case GameState::SAVE :
-			save();
-			break;
 			case GameState::EXIT :
 			loop = false;
 			break;
@@ -175,23 +166,49 @@ void			Core::fatalError(std::string errorString) {
 }
 
 void			Core::initPlay() {
+	updateKeys();
 	std::cout << "playing, ESC to exit" << std::endl;
-	if (_game.getKeyPress() == _game.getSettings().getEscapeKey()){
+	if (_game.getKeyPressArr(ESCAPE)){
 		this->_game.setGameState(GameState::MENU);
 		_menu->setMenuState(MenuState::PAUSE);
 	}
 }
 
-void			Core::load() {
+void			Core::updateKeys() {
+	if (glfwGetKey(_win, this->_game.getSettings().getUpKey()) == GLFW_PRESS)
+		this->_game.setKeyPressArr(UP, true);
+	else
+		this->_game.setKeyPressArr(UP, false);
 
-}
+	if (glfwGetKey(_win, this->_game.getSettings().getDownKey()) == GLFW_PRESS)
+		this->_game.setKeyPressArr(DOWN, true);
+	else
+		this->_game.setKeyPressArr(DOWN, false);
 
-void			Core::settings() {
+	if (glfwGetKey(_win, this->_game.getSettings().getLeftKey()) == GLFW_PRESS)
+		this->_game.setKeyPressArr(LEFT, true);
+	else
+		this->_game.setKeyPressArr(LEFT, false);
 
-}
+	if (glfwGetKey(_win, this->_game.getSettings().getRightKey()) == GLFW_PRESS)
+		this->_game.setKeyPressArr(RIGHT, true);
+	else
+		this->_game.setKeyPressArr(RIGHT, false);
 
-void			Core::save() {
+	if (glfwGetKey(_win, this->_game.getSettings().getActionKey()) == GLFW_PRESS)
+		this->_game.setKeyPressArr(ACTION, true);
+	else
+		this->_game.setKeyPressArr(ACTION, false);
 
+	if (glfwGetKey(_win, this->_game.getSettings().getAcceptKey()) == GLFW_PRESS)
+		this->_game.setKeyPressArr(ACCEPT, true);
+	else
+		this->_game.setKeyPressArr(ACCEPT, false);
+
+	if (glfwGetKey(_win, this->_game.getSettings().getEscapeKey()) == GLFW_PRESS)
+		this->_game.setKeyPressArr(ESCAPE, true);
+	else
+		this->_game.setKeyPressArr(ESCAPE, false);
 }
 
 Game			Core::getGame() const {
