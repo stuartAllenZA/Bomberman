@@ -42,8 +42,6 @@ public:
 	void            setMouseX(const double newMouseX);
 	double          getMouseY() const;
 	void            setMouseY(const double newMouseY);
-	bool			getKeyPressArr(const int index) const;
-	void			setKeyPressArr(const int index, const bool newChoice);
 	MenuState       getMenuState() const;
 	void            setMenuState(const MenuState newMenuState);
 	double			getDelayTimer() const;
@@ -85,7 +83,6 @@ private:
 
 	double			_mouseX;
 	double			_mouseY;
-	bool			_keyPressArr[7];
 	MenuState       _menuState;
 	double			_delayTimer;
 	double 			_minimumTime;

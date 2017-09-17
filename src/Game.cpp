@@ -1,6 +1,6 @@
 #include <Game.hpp>
 
-Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _gameInput(0), _settings(Settings()), _hasSave(false) {
+Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _keyPress(0), _keyPressState(false), _settings(Settings()), _hasSave(false) {
 	std::cout << "Constructing Game\n";
 	if (this->checkPlayers().size() > 0)
 		this->_hasSave = true;
@@ -22,10 +22,12 @@ Game::~Game() {
 Game &					Game::operator=(Game const & src) {
 	this->_gameState = src.getGameState();
 	this->_playState = src.getPlayState();
-	this->_gameInput = src.getGameInput();
+	this->_keyPress = src.getKeyPress();
+	this->_keyPressState = src.getKeyPressState();
 	this->_settings = src.getSettings();
-	this->_player = src.getPlayer();
+	this->_settings = src.getSettings();
 	this->_enemies = src.getEnemies();
+	this->_hasSave = src.getHasSave();
 	return (*this);
 }
 
@@ -45,12 +47,20 @@ void					Game::setPlayState(const PlayState newState) {
 	this->_playState = newState;
 }
 
-int						Game::getGameInput() const {
-	return (this->_gameInput);
+int						Game::getKeyPress() const {
+	return (this->_keyPress);
 }
 
-void					Game::setGameInput(const int newInput) {
-	this->_gameInput = newInput;
+void					Game::setKeyPress(const int newInput) {
+	this->_keyPress = newInput;
+}
+
+bool					Game::getKeyPressState() const {
+	return (this->_keyPressState);
+}
+
+void					Game::setKeyPressState(const bool newState){
+	this->_keyPressState = newState;
 }
 
 Settings				Game::getSettings() const {
@@ -116,6 +126,8 @@ void					Game::savePlayer() {
 	profileFileOut << "leftKey:" + (std::to_string(this->_settings.getLeftKey()))+"\n";
 	profileFileOut << "rightKey:" + (std::to_string(this->_settings.getRightKey()))+"\n";
 	profileFileOut << "actionKey:" + (std::to_string(this->_settings.getActionKey()))+"\n";
+	profileFileOut << "acceptKey:" + (std::to_string(this->_settings.getAcceptKey()))+"\n";
+	profileFileOut << "escapeKey:" + (std::to_string(this->_settings.getEscapeKey()))+"\n";
 	profileFileOut << "musicVol:" + (std::to_string(this->_settings.getMusicVol()))+"\n";
 	profileFileOut << "FXVol:" + (std::to_string(this->_settings.getFXVol()))+"\n";
 	profileFileOut.close();
@@ -186,6 +198,8 @@ void					Game::loadPlayer(const std::string playerName) {
 						this->_settings.setLeftKey(std::stoi(lexFile(fileName, "leftKey")));
 						this->_settings.setRightKey(std::stoi(lexFile(fileName, "rightKey")));
 						this->_settings.setActionKey(std::stoi(lexFile(fileName, "actionKey")));
+						this->_settings.setAcceptKey(std::stoi(lexFile(fileName, "acceptKey")));
+						this->_settings.setEscapeKey(std::stoi(lexFile(fileName, "escapeKey")));
 						this->_settings.setMusicVol(std::stoi(lexFile(fileName, "musicVol")));
 						this->_settings.setFXVol(std::stoi(lexFile(fileName, "FXVol")));
 						std::cout << "Post loading player profile!\n" << this->_settings << std::endl;
@@ -232,12 +246,24 @@ void					Game::initSound() {
 	this->_sound.init();
 }
 
-void					Game::startBackgroundMusic() {
+void					Game::startMenuMusic() {
 	this->_sound.startMenuMusic();
 }
 
-void					Game::stopBackgroundMusic() {
+void					Game::stopMenuMusic() {
 	this->_sound.stopMenuMusic();
+}
+
+void					Game::startGameMusic() {
+	this->_sound.startGameMusic();
+}
+
+void					Game::stopGameMusic() {
+	this->_sound.stopGameMusic();
+}
+
+void					Game::processKeyInput() {
+	
 }
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
@@ -245,7 +271,10 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	o << "Dumping Game State" <<
 	"\nGame State: " << static_cast<std::underlying_type<GameState>::type>(rhs.getGameState()) <<
 	"\nPlay State: " << static_cast<std::underlying_type<PlayState>::type>(rhs.getPlayState()) <<
-	"\nGame Input: " << rhs.getGameInput() << std::endl <<
+	"\nKey Press: " << rhs.getKeyPress() << std::endl <<
+	"\nKey Press State: " << rhs.getKeyPressState() << std::endl <<
+	"\nHas Save: " << std::boolalpha << rhs.getHasSave() <<
+	"\nSettings: " << rhs.getSettings() << std::endl <<
 	"\nPlayer: " << rhs.getPlayer();
 	if (rhs.getEnemies().size() > 0) {
 		for (std::vector<Character*>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it) {

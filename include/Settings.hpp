@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <GLFW/glfw3.h>
 
 // Add variable checklist
 //		1. Getter & Setter
@@ -38,6 +39,10 @@ public:
 	void				setRightKey(const int newKey);
 	int					getActionKey() const;
 	void				setActionKey(const int newKey);
+	int					getAcceptKey() const;
+	void				setAcceptKey(const int newKey);
+	int					getEscapeKey() const;
+	void				setEscapeKey(const int newKey);
 	int					getMusicVol() const;
 	void				setMusicVol(const int newVol);
 	int					getFXVol() const;
@@ -57,6 +62,8 @@ private:
 	int					_leftKey;
 	int					_rightKey;
 	int					_actionKey;
+	int					_acceptKey;
+	int					_escapeKey;
 	int					_musicVol;
 	int					_FXVol;
 };

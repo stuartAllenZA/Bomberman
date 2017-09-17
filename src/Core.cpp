@@ -23,7 +23,7 @@ Core &			Core::operator=(Core const & src) {
 
 Core::~Core() {
 	std::cout << "De-Constructing Core\n";
-	this->_game.stopBackgroundMusic();
+	this->_game.stopMenuMusic();
 	std::cout << "closing nanogui screen" << std::endl;
 	nanogui::shutdown();
 	std::cout << "nanogui screen closed successfully" << std::endl;
@@ -86,7 +86,7 @@ void			Core::run() {
 
 void			Core::init() {
 	this->_game.initSound();
-	this->_game.startBackgroundMusic();
+	this->_game.startMenuMusic();
 	_win = nullptr;
 	std::cout << "creating glfw window" << std::endl;
 	glfwInit();
@@ -176,7 +176,7 @@ void			Core::fatalError(std::string errorString) {
 
 void			Core::initPlay() {
 	std::cout << "playing, ESC to exit" << std::endl;
-	if (_menu->getKeyPressArr(ESC)){
+	if (_game.getKeyPress() == _game.getSettings().getEscapeKey()){
 		this->_game.setGameState(GameState::MENU);
 		_menu->setMenuState(MenuState::PAUSE);
 	}
