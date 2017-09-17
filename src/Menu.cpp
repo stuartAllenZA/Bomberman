@@ -377,15 +377,17 @@ void			Menu::settingsMenu() {
 
 void            Menu::keyBindingMenu() {
 	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
-	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "SET KEYBINDINGS");
+	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "PAUSED");
 
-	nanogui::Widget *upTools = new nanogui::Widget(nanoguiWindow);
-	upTools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 2));
-	new nanogui::Label(upTools, "Forward");
-	nanogui::Button *upButton = new nanogui::Button(upTools, "W");
-	upButton->setCallback([&]{
+	nanoguiWindow->setLayout(new nanogui::GroupLayout);
 
-	});
+	nanogui::Button		*upKeyButton = new nanogui::Button(nanoguiWindow, "Up Key");
+
+	nanogui::Button		*downKeyButton = new nanogui::Button(nanoguiWindow, "Down Key");
+
+	nanogui::Button		*leftKeyButton = new nanogui::Button(nanoguiWindow, "Left Key");
+
+	nanogui::Button		*rightKeyButton = new nanogui::Button(nanoguiWindow, "Right Key");
 
 	screen->setVisible(true);
 	screen->performLayout();
@@ -606,6 +608,7 @@ void			Menu::renderMenu() {
 	screen->drawWidgets();
 	glfwSwapBuffers(*_win);
 	incrementDelayTimer();
+	lastKeyPressed = 0;
 }
 
 double			Menu::getMouseX() const {
