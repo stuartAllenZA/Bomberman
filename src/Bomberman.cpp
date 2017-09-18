@@ -9,11 +9,14 @@ int main(int argc, char **argv) {
 	}
 
 	try {
+		GraphicsEngineInit();
+		/*
 		std::cout << "initializing core" << std::endl;
 		Core core;
         std::cout << "running" << std::endl;
         core.run();
 		std::cout << "end of try" << std::endl;
+		*/
 	}
 
 	//Catch Fatal Exceptions

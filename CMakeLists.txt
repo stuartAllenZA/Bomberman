@@ -4,6 +4,8 @@ project(Bomberman)
 include(ExternalProject)
 set(BOMBERMAN_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(NANOGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.nanogui)
+set(GLM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.glm)
+set(TINYGLTF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.tinyGltf)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -g3")
@@ -26,6 +28,14 @@ if (NOT IS_DIRECTORY "${NANOGUI_DIR}")
 	execute_process(COMMAND sh .compile.sh)
 endif()
 
+#if (NOT IS_DIRECTORY "${GLM_DIR}")
+#	execute_process(COMMAND git clone https://github.com/g-truc/glm.git .glm)
+#endif()
+
+if (NOT IS_DIRECTORY "${TINYGLTF_DIR}")
+	execute_process(COMMAND git clone https://github.com/syoyo/tinygltf.git .tinyGltf)
+endif()
+
 set(SOURCE_FILES
 		src/Bomb.cpp
 		src/Bomberman.cpp
@@ -38,6 +48,7 @@ set(SOURCE_FILES
 		src/Exceptions.cpp
 		src/ExtraBomb.cpp
 		src/Game.cpp
+		src/GraphicsEngine.cpp
 		src/LevelHatch.cpp
 		src/Menu.cpp
 		src/Player.cpp
@@ -45,6 +56,7 @@ set(SOURCE_FILES
 		src/RemoteDetonator.cpp
 		src/Settings.cpp
 		src/Sound.cpp
+		src/stb_image.cpp
 		src/UnbreakableBox.cpp)
 
 include_directories(
@@ -54,8 +66,10 @@ include_directories(
 		${NANOGUI_DIR}/include
 		${NANOGUI_DIR}/ext/eigen
 		${NANOGUI_DIR}/ext/nanovg/src
+		#		${GLM_DIR}
+		#${GLM_DIR}/gtc
+		${TINYGLTF_DIR}
 		$ENV{HOME}/.brew/Cellar/glew/2.1.0/include
-		/System/Library/Frameworks/AGL.framework/Versions/A/Headers
 )
 
 link_directories(
