@@ -21,20 +21,14 @@ Menu &			Menu::operator=(Menu const & src) {
 	this->_height = src.getHeight();
 	this->_game = src.getGame();
 	this->_win = src.getWin();
-
-
 	return (*this);
 }
 
 Menu::~Menu() {
-	std::cout << "De-Constructing Menu\n";
-	std::cout << "closing nanogui screen" << std::endl;
 	nanogui::shutdown();
-	std::cout << "nanogui screen closed successfully" << std::endl;
 	glfwTerminate();
 	std::cout << "Menu De-Constructed\n";
 }
-
 
 void			Menu::menu() {
 #if defined(NANOGUI_GLAD)
@@ -43,13 +37,8 @@ void			Menu::menu() {
 		throw std::runtime_error("Could not initialize GLAD!");
 	glGetError(); // pull and ignore unhandled errors like GL_INVALID_ENUM
 #endif
-	std::cout << "creating nanogui screen" << std::endl;
 	screen = new nanogui::Screen;
-	std::cout << "nanogui screen created" << std::endl;
-	std::cout << "initializing nanogui window" << std::endl;
 	screen->initialize(*_win, true);
-	std::cout << "nanogui window initialized, screen integrated with window" << std::endl;
-
 	glfwSetCursorPosCallback(*_win, [](GLFWwindow *, double x, double y) {
 		screen->cursorPosCallbackEvent(x, y);
 	});
@@ -91,22 +80,60 @@ void			Menu::menu() {
 	}
 }
 
+void			Menu::errorPopup(nanogui::FormHelper *parent, const std::string & title, const std::string & message, const std::string & btnText) {
+	std::cout << "Creating errorPopup Window\n";
+	nanogui::ref<nanogui::Window>	popupWindow = parent->addWindow(Eigen::Vector2i(400, 800), title);
+	std::cout << "Setting Layout\n";
+	popupWindow->setLayout(new nanogui::GroupLayout);
+	new nanogui::Label(popupWindow, message);
+	nanogui::Button *dismissBtn = new nanogui::Button(popupWindow, btnText);
+	dismissBtn->setCallback([&] {
+		std::cout << "In errorPopup Btn Callback\n";
+		popupWindow->dispose();
+	});
+	screen->setVisible(true);
+	screen->performLayout();
+	popupWindow->center();
+	resetDelayTimer();
+	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::PAUSE){
+		glfwPollEvents();
+		updateKeys();
+		updateMouse();
+		if (this->_game->getKeyPressArr(ESCAPE) && getDelayTimer() >= getMinimumTime()) {
+			_menuState = MenuState::NO_MENU;
+			this->_game->setGameState(GameState::PLAY);
+		}
+		renderMenu();
+	}
+	if (glfwWindowShouldClose(*_win))
+		exitButton();
+	popupWindow->dispose();
+}
+
 void			Menu::playerSelectMenu() {
 	glfwSetWindowPos(*(_win), this->_game->getSettings().getXPos(), this->_game->getSettings().getYPos());
 	nanogui::FormHelper				*gui = new nanogui::FormHelper(screen);
 	nanogui::ref<nanogui::Window>	nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "Player Select");
-	nanogui::Button					*b = new nanogui::Button(nanoguiWindow, "Plain button");
 	std::vector<std::string>		playerNames = this->_game->checkPlayers();
 	std::string						playerNameInput = "Enter your name";
 	int								temp = 0;
 
-	b->setVisible(false);
 	nanoguiWindow->setLayout(new nanogui::GroupLayout);
-
 	gui->addVariable("New Player :", playerNameInput);
-	gui->addButton("Create New Player", [this, &playerNameInput]() {
-		std::cout << "Creting new profile named: " << playerNameInput << std::endl;
-		createButton(playerNameInput);
+	nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
+	tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation::Horizontal, nanogui::Alignment::Middle, 0, 6));
+	nanogui::Button *CreatePlayerBtn = new nanogui::Button(tools, "Create New Player");
+	CreatePlayerBtn->setCallback([&] {
+		std::cout << "In Create New Player Btn Callback\n";
+		if (!(playerNameInput == "Enter your name")) {
+			std::cout << "In if1\n";
+			this->createButton(playerNameInput);
+		}
+		else {
+			std::cout << "In if2\n";
+			nanoguiWindow->dispose();
+			errorPopup(gui, "Bad Name", "Please enter a diffrenet name.", "OK");			
+		}
 	});
 
 	if (playerNames.size() > 0) {
@@ -116,7 +143,7 @@ void			Menu::playerSelectMenu() {
 		playerCobo->setFixedWidth(200);
 		nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
 		tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 6));
-		b = new nanogui::Button(tools, "Select");
+		nanogui::Button *b = new nanogui::Button(tools, "Select");
 		b->setCallback([&]{
 			if (playerNames[playerCobo->selectedIndex()] != "")
 				this->_game->loadPlayer(playerNames[playerCobo->selectedIndex()]);

@@ -74,6 +74,7 @@ public:
     void            quitToMenuButton();
     void			renderMenu();
 	bool			iequals(const std::string& a, const std::string& b);
+	void			errorPopup(nanogui::FormHelper *parent, const std::string & title, const std::string & message, const std::string & btnText);
 
 private:
 
