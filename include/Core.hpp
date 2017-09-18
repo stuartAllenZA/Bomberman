@@ -13,6 +13,7 @@
 #include "Player.hpp"
 #include "Settings.hpp"
 #include "Menu.hpp"
+#include "GraphicsEngine.hpp"
 
 class Core {
 public:
@@ -49,6 +50,7 @@ private:
 	Game			_game;
     Menu            *_menu;
     GLFWwindow		*_win;
+	GraphicsEngine	*_gfx;
 };
 
 #endif

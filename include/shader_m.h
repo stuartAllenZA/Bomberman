@@ -2,21 +2,19 @@
 #define SHADER_H
 
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include "../gfxUtils/glm/glm.hpp"
 
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
-class Shader
+class Shader2
 {
 	public:
 		unsigned int ID;
 		// constructor generates the shader on the fly
 		// ------------------------------------------------------------------------
-		Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr)
+		Shader2(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr)
 		{
 			// 1. retrieve the vertex/fragment source code from filePath
 			std::string vertexCode;

@@ -1,31 +1,41 @@
 #pragma once
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <stb_image.h>
 
+#include <GL/glew.h>
+#include "glfw3.h"
 #include "../gfxUtils/glm/glm.hpp"
-#include "../gfxUtils/glm/gtc/matrix_transform.hpp"
 #include "../gfxUtils/glm/gtc/type_ptr.hpp"
 
-//#include <glm/glm.hpp>
-//#include <glm/gtc/matrix_transform.hpp>
-//#include <glm/gtc/type_ptr.hpp>
+#include "camera.hpp"
+#include "Shader.hpp"
+#include "Game.hpp"
+#include "shader_m.h"
+#include "Model.hpp"
+#include "tiny_gltf.h"
+#include "stb_image.h"
+#include "picojson.h"
+#include "util.h"
 
-#include <shader_m.h>
-
-#include <iostream>
-
-int	GraphicsEngineInit();
-/*
 class GraphicsEngine {
 	private:
+	Camera							*_camera;
+	Shader							*_shader;
+	std::map<std::string, Model*>	_models;
+	Game							*_game;
+	GLFWwindow						*_window;
+	float	_deltaTime;
+
+	void	_loadResources();
+	void	_loadModels();
+	void	_loadModel();
 
 	public:
+		GraphicsEngine(Game	*game, GLFWwindow **window);
 		GraphicsEngine();
+		GraphicsEngine(GLFWwindow **window);
+		GraphicsEngine(GLFWwindow *window);
 		~GraphicsEngine();
-		GraphicsEngine(GraphicsEngine const &src);
-		GraphicsEngine &operator=(GraphicsEngine const &src);
-		int		init();
+		void	init();
+		void	initSystems();
+		bool	processInput();
 		void	render();
 };
-*/

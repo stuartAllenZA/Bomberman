@@ -113,6 +113,15 @@ void			Core::init() {
 	}
 	glfwMakeContextCurrent(_win);
 	glfwSwapInterval(1);
+	glewExperimental = true; // Needed for core profile
+	if (glewInit() != GLEW_OK) {
+		fprintf(stderr, "Failed to initialize GLEW\n");
+		getchar();
+		glfwTerminate();
+	}
+	glEnable(GL_DEPTH_TEST);
+	_gfx = new GraphicsEngine(&_game, &_win);
+	_gfx->init();
 
 	std::cout << "glfw window created" << std::endl;
 }
@@ -166,7 +175,12 @@ void			Core::fatalError(std::string errorString) {
 }
 
 void			Core::initPlay() {
-	updateKeys();
+//	updateKeys();
+	bool exitStatus = false;
+	while (!exitStatus) {
+		exitStatus = _gfx->processInput();
+		_gfx->render();	
+	}
 	std::cout << "playing, ESC to exit" << std::endl;
 	if (_game.getKeyPressArr(ESCAPE)){
 		this->_game.setGameState(GameState::MENU);

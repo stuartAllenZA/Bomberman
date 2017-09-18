@@ -37,27 +37,36 @@ if (NOT IS_DIRECTORY "${TINYGLTF_DIR}")
 endif()
 
 set(SOURCE_FILES
-		src/Bomb.cpp
-		src/Bomberman.cpp
-		src/Box.cpp
-		src/BreakableBox.cpp
-		src/Character.cpp
-		src/Core.cpp
-		src/Drop.cpp
-		src/EnemyDrop.cpp
-		src/Exceptions.cpp
-		src/ExtraBomb.cpp
-		src/Game.cpp
-		src/GraphicsEngine.cpp
-		src/LevelHatch.cpp
-		src/Menu.cpp
-		src/Player.cpp
-		src/RangeExtender.cpp
-		src/RemoteDetonator.cpp
-		src/Settings.cpp
-		src/Sound.cpp
-		src/stb_image.cpp
-		src/UnbreakableBox.cpp)
+	src/animation.cpp
+	src/Bomb.cpp
+	src/Bomberman.cpp
+	src/Box.cpp
+	src/BreakableBox.cpp
+	src/camera.cpp
+	src/Character.cpp
+	src/Core.cpp
+	src/Drop.cpp
+	src/Enemy.cpp
+	src/EnemyDrop.cpp
+	src/Exceptions.cpp
+	src/ExtraBomb.cpp
+	src/Game.cpp
+	src/GraphicsEngine.cpp
+	src/input.cpp
+	src/LevelHatch.cpp
+	src/material.cpp
+	src/Menu.cpp
+	src/Model.cpp
+	src/Player.cpp
+	src/RangeExtender.cpp
+	src/RemoteDetonator.cpp
+	src/Settings.cpp
+	src/Shader.cpp
+	src/Sound.cpp
+	src/stb_image.cpp
+	src/UnbreakableBox.cpp
+	src/util.cpp
+	src/window.cpp)
 
 include_directories(
 		${PROJECT_SOURCE_DIR}/include
