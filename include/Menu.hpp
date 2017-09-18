@@ -25,6 +25,17 @@ enum class MenuState {
     BK2_PLAYER_SELECT
 };
 
+enum class BindingButtonState {
+	UP_BINDING,
+	DOWN_BINDING,
+	LEFT_BINDING,
+	RIGHT_BINDING,
+	ACTION_BINDING,
+	ACCEPT_BINDING,
+	ESCAPE_BINDING,
+	NONE
+};
+
 class Menu {
 public:
 	Menu(int passedWidth, int passedHeight, Game *passedGame, GLFWwindow **passedWin);
@@ -70,6 +81,8 @@ public:
     void            keyBindingButton();
 	int				findKeyForBinding();
 	int				checkForKeySymbol(int keyPressed);
+	std::string		findNameForBinding(int keyPressed);
+	void			bindKeysWithoutConflicts(BindingButtonState bindingButtonState, Settings *tempSettings);
     void            resumeButton();
     void            quitToMenuButton();
     void			renderMenu();
