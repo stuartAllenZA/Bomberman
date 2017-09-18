@@ -53,7 +53,7 @@ public:
 
     void			updateKeys();
     void			updateMouse();
-    void			menu();
+	void			menu();
     void            playerSelectMenu();
     void            mainMenu();
     void			settingsMenu();
@@ -74,7 +74,7 @@ public:
     void            quitToMenuButton();
     void			renderMenu();
 	bool			iequals(const std::string& a, const std::string& b);
-	void			errorPopup(nanogui::FormHelper *parent, const std::string & title, const std::string & message, const std::string & btnText);
+	void			errorPopup(const std::string & title, const std::string & message, const std::string & btnText);
 
 private:
 
