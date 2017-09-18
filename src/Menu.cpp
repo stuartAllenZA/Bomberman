@@ -112,7 +112,7 @@ void			Menu::errorPopup(const std::string & title, const std::string & message, 
 void			Menu::playerSelectMenu() {
 	glfwSetWindowPos(*(_win), this->_game->getSettings().getXPos(), this->_game->getSettings().getYPos());
 	nanogui::FormHelper				*gui = new nanogui::FormHelper(screen);
-	nanogui::ref<nanogui::Window>	nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "Player Select");
+	nanogui::ref<nanogui::Window>	nanoguiWindow = gui->addWindow(Eigen::Vector2i(100, 100), "Player Select");
 	std::vector<std::string>		playerNames = this->_game->checkPlayers();
 	std::string						playerNameInput = "Enter your name";
 	int								temp = 0;
@@ -405,6 +405,7 @@ void            Menu::keyBindingMenu() {
 
 	BindingButtonState bindingButtonState = BindingButtonState::NONE;
 
+	std::cout << "starting keybinding menu" << std::endl;
 	// UP
 	new nanogui::Label(nanoguiWindow, "Up :");
 	nanogui::Button *upKeyButton = new nanogui::Button(nanoguiWindow, "");
@@ -465,18 +466,22 @@ void            Menu::keyBindingMenu() {
 	exitKeyBindingButton->setCallback([&] {
 		_menuState = MenuState::SETTINGS;
 	});
+	std::cout << "Callbacks declared" << std::endl;
 	screen->setVisible(true);
 	screen->performLayout();
 	nanoguiWindow->center();
 	resetDelayTimer();
 	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::KEYBINDING && !breaker) {
+		std::cout << "start of while" << std::endl;
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
 		if (this->_game->getKeyPressArr(ESCAPE) && getDelayTimer() >= getMinimumTime()) {
 			_menuState = MenuState::SETTINGS;
 		}
+		std::cout << "Before if" << std::endl;
 		if (findKeyForBinding() != 0) {
+			std::cout << "inside if" << std::endl;
 			switch (bindingButtonState) {
 				case BindingButtonState::UP_BINDING :
 					tempSettings.setUpKey(findKeyForBinding());
@@ -494,19 +499,25 @@ void            Menu::keyBindingMenu() {
 					break;
 			}
 		}
+		std::cout << "after if" << std::endl;
 		if (bindingButtonState != BindingButtonState::NONE) {
+			std::cout << "in second if" << std::endl;
 			if (findKeyForBinding() != 0) {
+				std::cout << "in third if" << std::endl;
 				this->_game->setSettings(tempSettings);
 				this->_game->savePlayer();
 				breaker = true;
 			}
-			renderMenu();
+
 		}
-		if (glfwWindowShouldClose(*_win))
-			exitButton();
-		nanoguiWindow->dispose();
+		std::cout << "after second if" << std::endl;
+		renderMenu();
 	}
+	if (glfwWindowShouldClose(*_win))
+		exitButton();
+	nanoguiWindow->dispose();
 }
+
 int		Menu::checkForKeySymbol(int keyPressed) {
 	if (keyPressed == GLFW_KEY_UP)
 		return (ENTYPO_ICON_UP);
@@ -526,13 +537,21 @@ int		Menu::findKeyForBinding() {
 			return (i);
 	}
 	if (glfwGetKey(*_win, GLFW_KEY_UP) == GLFW_PRESS)
-		return (ENTYPO_ICON_UP);
+		return (GLFW_KEY_UP);
 	else if (glfwGetKey(*_win, GLFW_KEY_DOWN) == GLFW_PRESS)
-		return (ENTYPO_ICON_DOWN);
+		return (GLFW_KEY_DOWN);
 	else if (glfwGetKey(*_win, GLFW_KEY_LEFT) == GLFW_PRESS)
-		return (ENTYPO_ICON_LEFT);
+		return (GLFW_KEY_LEFT);
 	else if (glfwGetKey(*_win, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		return (ENTYPO_ICON_RIGHT);
+		return (GLFW_KEY_RIGHT);
+	else if (glfwGetKey(*_win, GLFW_KEY_ENTER) == GLFW_PRESS)
+		return (GLFW_KEY_ENTER);
+	else if (glfwGetKey(*_win, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		return (GLFW_KEY_ESCAPE);
+	else if (glfwGetKey(*_win, GLFW_KEY_SPACE) == GLFW_PRESS)
+		return (GLFW_KEY_SPACE);
+	else if (glfwGetKey(*_win, GLFW_KEY_BACKSPACE) == GLFW_PRESS)
+		return (GLFW_KEY_BACKSPACE);
 	return (0);
 }
 

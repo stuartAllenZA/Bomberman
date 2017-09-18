@@ -122,7 +122,7 @@ void			Core::gameLoop() {
 	bool loop = true;
 
 	std::cout << "THE ORIGINAL SETTINGS!!!" << std::endl << this->_game.getSettings() << std::endl;
-
+	glfwSetWindowPos(_win, this->_game.getSettings().getXPos(), this->_game.getSettings().getYPos());
 	while (loop == true && !glfwWindowShouldClose(_win)) {
 		input();
 		gs = this->_game.getGameState();
