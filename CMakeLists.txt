@@ -26,6 +26,11 @@ if (NOT IS_DIRECTORY "${NANOGUI_DIR}")
 	execute_process(COMMAND sh .compile.sh)
 endif()
 
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    message(STATUS "GCC detected, adding compile flags")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -Wextra")
+endif()
+
 set(SOURCE_FILES
 		src/Bomb.cpp
 		src/Bomberman.cpp
@@ -49,13 +54,13 @@ set(SOURCE_FILES
 
 include_directories(
 		${PROJECT_SOURCE_DIR}/include
-		${PROJECT_SOURCE_DIR}/.irrKlang/include
-		${NANOGUI_DIR}/ext/glfw/include
-		${NANOGUI_DIR}/include
-		${NANOGUI_DIR}/ext/eigen
-		${NANOGUI_DIR}/ext/nanovg/src
-		$ENV{HOME}/.brew/Cellar/glew/2.1.0/include
-		/System/Library/Frameworks/AGL.framework/Versions/A/Headers
+		SYSTEM ${PROJECT_SOURCE_DIR}/.irrKlang/include
+		SYSTEM ${NANOGUI_DIR}/ext/glfw/include
+		SYSTEM ${NANOGUI_DIR}/include
+		SYSTEM ${NANOGUI_DIR}/ext/eigen
+		SYSTEM ${NANOGUI_DIR}/ext/nanovg/src
+		SYSTEM $ENV{HOME}/.brew/Cellar/glew/2.1.0/include
+		SYSTEM /System/Library/Frameworks/AGL.framework/Versions/A/Headers
 )
 
 link_directories(

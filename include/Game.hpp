@@ -3,12 +3,12 @@
 
 #include <iostream>
 #include <vector>
-#include "Exceptions.hpp"
-#include "Character.hpp"
-#include "Settings.hpp"
-#include "Player.hpp"
-#include "Sound.hpp"
-#include "Box.hpp"
+#include <Exceptions.hpp>
+#include <Character.hpp>
+#include <Settings.hpp>
+#include <Player.hpp>
+#include <Sound.hpp>
+#include <Box.hpp>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -74,6 +74,7 @@ class Game {
 		void						loadPlayer(const std::string playerName);
 		std::string					lexFile(const std::string fileName, const std::string find);
 		void						setWindowPos(const int xPos, const int yPos);
+		void						updateSound();
 		void						startMenuMusic();
 		void						stopMenuMusic();
 		void						startGameMusic();

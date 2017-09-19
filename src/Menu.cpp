@@ -116,7 +116,6 @@ void			Menu::playerSelectMenu() {
 	nanogui::ref<nanogui::Window>	nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "Player Select");
 	std::vector<std::string>		playerNames = this->_game->checkPlayers();
 	std::string						playerNameInput = "Enter your name";
-	int								temp = 0;
 
 	nanoguiWindow->setLayout(new nanogui::GroupLayout);
 	gui->addVariable("New Player :", playerNameInput);
@@ -164,12 +163,9 @@ void			Menu::playerSelectMenu() {
 			_menuState = MenuState::BK2_PLAYER_SELECT;
 		});
 	}
-	new nanogui::Label(nanoguiWindow, "");
-	new nanogui::Label(nanoguiWindow, "");
 	gui->addButton("Exit", [this]() {
 		exitButton();
 	});
-
 	screen->setVisible(true);
 	screen->performLayout();
 	nanoguiWindow->center();
@@ -194,7 +190,7 @@ void            Menu::mainMenu() {
 	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
 	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(100, 100), this->_game->getPlayer().getName() + "'s Account");
 
-	std::cout << *_game << std::endl;
+	//std::cout << *_game << std::endl;
 
 	gui->addButton("New Game", [this]() {
 		newGameButton();
@@ -246,7 +242,6 @@ void			Menu::settingsMenu() {
 	nanogui::FormHelper             *gui = new nanogui::FormHelper(screen);
 	nanogui::ref<nanogui::Window>   nanoguiWindow = gui->addWindow(Eigen::Vector2i(2000, 2000), "SETTINGS");
 	nanogui::Button                 *b = new nanogui::Button(nanoguiWindow, "Plain button");
-	bool                            windowed;
 	Settings                        tempSettings(this->_game->getSettings());
 
 	std::cout << *_game << std::endl;
@@ -258,12 +253,14 @@ void			Menu::settingsMenu() {
 
 	new nanogui::Label(nanoguiWindow, "Windowed :");
 
-	nanogui::CheckBox *cb = new nanogui::CheckBox(nanoguiWindow, "", [&tempSettings](bool state) {
+	nanogui::CheckBox *cb = new nanogui::CheckBox(nanoguiWindow, "", [&](bool state) {
 		tempSettings.setWindowed(state);
+		this->_game->setSettings(tempSettings);
+		std::cout << "Changes applied" << std::endl;
 	});
 	cb->setChecked(tempSettings.getWindowed());
 
-	new nanogui::Label(nanoguiWindow, "Resolution :    (requires restart)");
+	new nanogui::Label(nanoguiWindow, "Resolution :");
 	nanogui::ComboBox *cobo = new nanogui::ComboBox(nanoguiWindow, { "800x600", "1280x800", "1920x1080" });
 	switch (tempSettings.getResolutionX()) {
 		case 800 :
@@ -285,11 +282,13 @@ void			Menu::settingsMenu() {
 	sliderSfx->setValue(tempSettings.getFXVol());
 	nanogui::TextBox *textBoxSfx = new nanogui::TextBox(panel);
 	textBoxSfx->setFixedSize(nanogui::Vector2i(60, 25));
-	textBoxSfx->setValue(std::to_string((int) (tempSettings.getFXVol())));
+	textBoxSfx->setValue(std::to_string((int) (tempSettings.getFXVol() * 100)));
 	textBoxSfx->setUnits("%");
-	sliderSfx->setCallback([textBoxSfx, &tempSettings](float sfxVolume) {
+	sliderSfx->setCallback([&](float sfxVolume) {
 		textBoxSfx->setValue(std::to_string((int) (sfxVolume * 100)));
-		tempSettings.setFXVol((int) (sfxVolume * 100));
+		tempSettings.setFXVol(sfxVolume);
+		this->_game->setSettings(tempSettings);
+		std::cout << "Changes applied" << std::endl;
 	});
 	textBoxSfx->setAlignment(nanogui::TextBox::Alignment::Right);
 
@@ -301,11 +300,13 @@ void			Menu::settingsMenu() {
 	sliderMusic->setFixedWidth(100);
 	sliderMusic->setValue(tempSettings.getMusicVol());
 	textBoxMusic->setFixedSize(nanogui::Vector2i(60, 25));
-	textBoxMusic->setValue(std::to_string((int) (tempSettings.getMusicVol())));
+	textBoxMusic->setValue(std::to_string((int) (tempSettings.getMusicVol() * 100)));
 	textBoxMusic->setUnits("%");
-	sliderMusic->setCallback([textBoxMusic, &tempSettings](float musicVolume) {
+	sliderMusic->setCallback([&](float musicVolume) {
 		textBoxMusic->setValue(std::to_string((int) (musicVolume * 100)));
-		tempSettings.setMusicVol((int) (musicVolume * 100));
+		tempSettings.setMusicVol(musicVolume);
+		this->_game->setSettings(tempSettings);
+		std::cout << "Changes applied" << std::endl;
 	});
 	textBoxMusic->setAlignment(nanogui::TextBox::Alignment::Right);
 
@@ -326,16 +327,12 @@ void			Menu::settingsMenu() {
 	tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 2));
 	b = new nanogui::Button(tools, "Back");
 	b->setCallback([&]{
-		if (this->_game->getPlayState() == PlayState::GAME_PLAY) {
-			std::cout << "accepted changes 1" << std::endl;
+		if (this->_game->getPlayState() == PlayState::GAME_PLAY)
 			_menuState = MenuState::PAUSE;
-		}
-		else {
-			std::cout << "accepted changes 2" << std::endl;
+		else
 			quitToMenuButton();
-		}
 	});
-	b = new nanogui::Button(tools, "Apply");
+	b = new nanogui::Button(tools, "Save");
 	b->setCallback([&]{
 		switch (cobo->selectedIndex()) {
 			case 0 :
@@ -349,8 +346,13 @@ void			Menu::settingsMenu() {
 			break;
 		}
 		this->_game->setSettings(tempSettings);
+		std::cout << "Changes applied" << std::endl;
 		this->_game->savePlayer();
-		std::cout << this->_game->getSettings() << std::endl << "Changes applied" << std::endl;
+		std::cout << "Player Saved" << std::endl;
+		if (this->_game->getSettings().getWindowed())
+				glfwSetWindowMonitor(*(_win), NULL, this->_game->getSettings().getXPos(), this->_game->getSettings().getYPos(), this->_game->getSettings().getResolutionX(), this->_game->getSettings().getResolutionY(), GLFW_DONT_CARE);
+			else
+				glfwSetWindowMonitor(*(_win), glfwGetPrimaryMonitor(), 0, 0, this->_game->getSettings().getResolutionX(), this->_game->getSettings().getResolutionY(), GLFW_DONT_CARE);
 		if (this->_game->getPlayState() == PlayState::GAME_PLAY) {
 			std::cout << "accepted changes 1" << std::endl;
 			_menuState = MenuState::PAUSE;
@@ -390,7 +392,7 @@ void            Menu::keyBindingMenu() {
 		RIGHT_BINDING,
 		NONE
 	};
-	char 							c;
+
 	bool 							breaker = false;
 	Settings                        tempSettings(this->_game->getSettings());
 	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
@@ -589,13 +591,13 @@ void			Menu::updateMouse() {
 	state = glfwGetMouseButton(*_win, GLFW_MOUSE_BUTTON_1);
 	if (state == GLFW_PRESS && wasClicked == false) {
 		this->_game->getSound().playMenuClick();
-		std::cout << "clicked at:   " << _mouseX << ",  " << _mouseY << std::endl;
+		//std::cout << "clicked at:   " << _mouseX << ",  " << _mouseY << std::endl;
 		wasClicked = true;
 		clickX = _mouseX;
 		clickY = _mouseY;
 	}
 	else if (state == GLFW_RELEASE && wasClicked) {
-		std::cout << "released at:  " << _mouseX << ",  " << _mouseY << std::endl;
+		//std::cout << "released at:  " << _mouseX << ",  " << _mouseY << std::endl;
 		wasClicked = false;
 	}
 }
