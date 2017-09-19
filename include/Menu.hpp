@@ -74,6 +74,7 @@ public:
     void			settingsMenu();
     void            keyBindingMenu();
     void            pauseMenu();
+	int				checkMenuSelectionKeys();
     bool            checkPlayerNameAvailability(std::string playerNameInputVar);
     void            createButton(std::string playerNameInputVar);
     void            exitButton();
