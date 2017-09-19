@@ -1,7 +1,7 @@
 #ifndef ENEMY_HPP
 #define ENEMY_HPP
 
-#include "Character.hpp"
+#include <Character.hpp>
 // Add variable checklist
 
 //		1. Getter & Setter

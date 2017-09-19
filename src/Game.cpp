@@ -1,7 +1,7 @@
 #include <Game.hpp>
 
 Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _settings(Settings()), _hasSave(false) {
-	std::cout << "Constructing Game\n";
+	//std::cout << "Constructing Game\n";
 	for (int i = 0; i < 7; i++) {
 		this->_keyPressArr[i] = false;
 	}
@@ -12,14 +12,14 @@ Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT)
 
 Game::Game(Game const & src) {
 	*this = src;
-	std::cout << "Game Copy-Constructed\n";
+	//std::cout << "Game Copy-Constructed\n";
 }
 
 Game::~Game() {
-	std::cout << "De-Constructing Game\n";
+	//std::cout << "De-Constructing Game\n";
 	if (this->_player.getName().size() > 0)
 		savePlayer();
-	std::cout << "Game De-Constructed\n";
+	//std::cout << "Game De-Constructed\n";
 }
 
 Game &					Game::operator=(Game const & src) {
@@ -65,6 +65,7 @@ Settings				Game::getSettings() const {
 
 void					Game::setSettings(const Settings newSettings) {
 	this->_settings = newSettings;
+	updateSound();
 }
 
 Player					Game::getPlayer() const {
@@ -137,7 +138,7 @@ std::vector<std::string>		Game::checkPlayers() const {
 	char						*temp;
 	int							len;
 
-	std::cout << "Checking for old players.\n";
+	//std::cout << "Checking for old players.\n";
 	if ((dir = opendir ("resources/profiles/")) != NULL) {
 		while ((ent = readdir(dir)) != NULL) {
 			if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
@@ -145,7 +146,7 @@ std::vector<std::string>		Game::checkPlayers() const {
 				if (temp) {
 					len = temp - ent->d_name;
 					std::string push(ent->d_name, len);
-					std::cout << "Adding: " << push << std::endl;
+					//std::cout << "Adding: " << push << std::endl;
 					arr.push_back(push);
 				}
 			}
@@ -199,6 +200,7 @@ void					Game::loadPlayer(const std::string playerName) {
 						this->_settings.setMusicVol(std::stoi(lexFile(fileName, "musicVol")));
 						this->_settings.setFXVol(std::stoi(lexFile(fileName, "FXVol")));
 						std::cout << "Post loading player profile!\n" << this->_settings << std::endl;
+						this->updateSound();
 					}
 				}
 			}
@@ -233,13 +235,22 @@ std::string				Game::lexFile(const std::string fileName, const std::string find)
 }
 
 void					Game::setWindowPos(const int xPos, const int yPos) {
-	std::cout << "Setting Xpos: " << xPos << " yPos: " << yPos << std::endl;
+	//std::cout << "Setting Xpos: " << xPos << " yPos: " << yPos << std::endl;
 	this->_settings.setXPos(xPos);
 	this->_settings.setYPos(yPos);
 }
 
 void					Game::initSound() {
 	this->_sound.init();
+	this->_sound.setVerbose(false);
+}
+
+void					Game::updateSound() {
+	std::cout << "Update sound called in Game" << std::endl;
+	this->_sound.setMusicVol(this->_settings.getMusicVol());
+	this->_sound.setFXVol(this->_settings.getFXVol());
+	this->_sound.updateMusicVol();
+	this->_sound.updateFXVol();
 }
 
 void					Game::startMenuMusic() {
@@ -263,7 +274,7 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	o << "Dumping Game State" <<
 	"\nGame State: " << static_cast<std::underlying_type<GameState>::type>(rhs.getGameState()) <<
 	"\nPlay State: " << static_cast<std::underlying_type<PlayState>::type>(rhs.getPlayState()) <<
-	"\nHas Save: " << std::boolalpha << rhs.getHasSave();
+	"\nHas Save: " << std::boolalpha << rhs.getHasSave() << std::endl;
 	for (int i = 0; i < 7; i++) {
 		o << "keyPressArr[" << i << "]: " << std::boolalpha << rhs.getKeyPressArr(i) << std::endl;
 	}
@@ -274,8 +285,8 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 		}
 	}
 	else
-		o << "Enemies: 0\n";
-	o << "\nSettings: " << rhs.getSettings() << std::endl << "\nPlayer: " << rhs.getPlayer();
+		o << "Enemies: 0";
+	o << "\nSettings: " << rhs.getSettings() << std::endl << "Player: " << rhs.getPlayer();
 	return o;
 }
 
