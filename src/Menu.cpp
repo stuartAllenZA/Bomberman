@@ -2,7 +2,7 @@
 
 nanogui::Screen *screen = nullptr;
 
-Menu::Menu(int passedWidth, int passedHeight, Game *passedGame, GLFWwindow **passedWin) : _menuState(MenuState::PLAYER_SELECT), _minimumTime(50), _width(passedWidth), _height(passedHeight), _game(passedGame), _win(passedWin) {
+Menu::Menu(int passedWidth, int passedHeight, Game *passedGame, GLFWwindow **passedWin) : _menuState(MenuState::PLAYER_SELECT), _minimumTime(10), _width(passedWidth), _height(passedHeight), _game(passedGame), _win(passedWin) {
 	std::cout << "Menu Constructed\n";
 }
 
@@ -205,32 +205,48 @@ void            Menu::mainMenu() {
 
 	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
 	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(100, 100), this->_game->getPlayer().getName() + "'s Account");
+	static int 			index = 1;
+	bool 				breaker = false;
 
-	//std::cout << *_game << std::endl;
-
-	gui->addButton("New Game", [this]() {
+	nanoguiWindow->setLayout(new nanogui::GroupLayout);
+	nanogui::Button *b = new nanogui::Button(nanoguiWindow, "New Game");
+	b->setCallback([this]{
 		newGameButton();
 	});
+	if (index == 1)
+		b->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
 
+	b = new nanogui::Button(nanoguiWindow, "Load Game");
+	b->setCallback([this]{
+		loadGameButton();
+	});
+	if (this->_game->getHasSave()) {
+		b->setEnabled(false);
+	}
+	if (index == 2)
+		b->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
 
-	if (this->_game->getHasSave())
-		gui->addButton("Load Game", [this]() {
-			loadGameButton();
-		});
-	else
-		gui->addButton("Load Game", []() { std::cout << "NO SAVES" << std::endl; })->setEnabled(false);
-
-	gui->addButton("Settings", [this]() {
+	b = new nanogui::Button(nanoguiWindow, "Settings");
+	b->setCallback([this]{
 		settingsButton();
 	});
+	if (index == 3)
+		b->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
 
-	gui->addButton("Logout", [this]() {
+	b = new nanogui::Button(nanoguiWindow, "Logout");
+	b->setCallback([this]{
 		logoutButton();
-	})->setBackgroundColor(Eigen::Vector4i(57, 62, 25, 255));
+	});
+	if (index == 4)
+		b->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
 
-	gui->addButton("Exit", [this] {
+	b = new nanogui::Button(nanoguiWindow, "Exit");
+	b->setCallback([this]{
 		exitButton();
 	});
+	if (index == 5)
+		b->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
+
 
 	std::cout << "visualizing screen" << std::endl;
 	screen->setVisible(true);
@@ -239,12 +255,42 @@ void            Menu::mainMenu() {
 
 	std::cout << "starting screen loop" << std::endl;
 	resetDelayTimer();
-	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::MAIN_MENU){
+	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::MAIN_MENU && !breaker){
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
-		if (this->_game->getKeyPressArr(ACCEPT) && getDelayTimer() >= getMinimumTime())
-			newGameButton();
+		if (getDelayTimer() >= 10) {
+			if (checkMenuSelectionKeys() != 0) {
+				index += checkMenuSelectionKeys();
+				if (index > 5)
+					index = 1;
+				if (index < 1)
+					index = 5;
+				breaker = true;
+			}
+		}
+		if (this->_game->getKeyPressArr(ACCEPT) && getDelayTimer() >= 10)
+			switch (index) {
+				case 1 :
+					newGameButton();
+					break;
+				case 2 :
+					if (this->_game->getHasSave())
+						loadGameButton();
+					else
+						errorPopup("ERROR!", "No previous saved games.", "OK");
+					break;
+				case 3 :
+					settingsButton();
+					break;
+				case 4 :
+					logoutButton();
+					break;
+				case 5 :
+					exitButton();
+					break;
+
+			}
 		else if (this->_game->getKeyPressArr(ESCAPE) && getDelayTimer() >= getMinimumTime())
 			playerSelectButton();
 		renderMenu();
@@ -259,6 +305,7 @@ void			Menu::settingsMenu() {
 	nanogui::ref<nanogui::Window>   nanoguiWindow = gui->addWindow(Eigen::Vector2i(2000, 2000), "Settings");
 	nanogui::Button                 *b = new nanogui::Button(nanoguiWindow, "Plain button");
 	Settings                        tempSettings(this->_game->getSettings());
+	//static int						index = 0;
 
 	std::cout << *_game << std::endl;
 	std::cout << "_________________________________________________________________________________" << std::endl;
@@ -549,6 +596,20 @@ void            Menu::keyBindingMenu() {
 	if (glfwWindowShouldClose(*_win))
 		exitButton();
 	nanoguiWindow->dispose();
+}
+
+int		Menu::checkMenuSelectionKeys() {
+	if (glfwGetKey(*_win, GLFW_KEY_UP) == GLFW_PRESS) {
+		//this->_game->getSound().playMenuKeypress();
+		return (-1);
+	}
+	else if (glfwGetKey(*_win, GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(*_win, GLFW_KEY_TAB) == GLFW_PRESS) {
+		//this->_game->getSound().playMenuKeypress();
+		std::cout << "just tab" << std::endl;
+		return (1);
+	}
+	else
+		return (0);
 }
 
 int		Menu::checkForKeySymbol(int keyPressed) {
