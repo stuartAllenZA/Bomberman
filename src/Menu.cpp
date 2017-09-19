@@ -207,9 +207,6 @@ void            Menu::mainMenu() {
 	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(100, 100), this->_game->getPlayer().getName() + "'s Account");
 	static int 			index = 1;
 	bool 				breaker = false;
-//
-//	defaultColorHolder = b->backgroundColor();
-//	selectedColorHolder = Eigen::Vector4i(105,105,105, 255);
 
 	nanoguiWindow->setLayout(new nanogui::GroupLayout);
 	nanogui::Button *b = new nanogui::Button(nanoguiWindow, "New Game");
@@ -308,6 +305,7 @@ void			Menu::settingsMenu() {
 	nanogui::ref<nanogui::Window>   nanoguiWindow = gui->addWindow(Eigen::Vector2i(2000, 2000), "Settings");
 	nanogui::Button                 *b = new nanogui::Button(nanoguiWindow, "Plain button");
 	Settings                        tempSettings(this->_game->getSettings());
+	//static int						index = 0;
 
 	std::cout << *_game << std::endl;
 	std::cout << "_________________________________________________________________________________" << std::endl;
