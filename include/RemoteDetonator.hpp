@@ -1,7 +1,7 @@
 #ifndef REMOTEDETONATOR_HPP
 #define REMOTEDETONATOR_HPP
 
-#include "Drop.hpp"
+#include <Drop.hpp>
 
 class RemoteDetonator : public Drop {
 	public:

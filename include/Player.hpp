@@ -1,7 +1,7 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include "Character.hpp"
+#include <Character.hpp>
 // Add variable checklist
 
 //	1. Getter & Setter

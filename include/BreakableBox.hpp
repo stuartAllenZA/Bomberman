@@ -1,8 +1,8 @@
 #ifndef INCLUDE_BREAKABLE_BOX_CLASS_HPP_
 #define INCLUDE_BREAKABLE_BOX_CLASS_HPP_
 
-#include "Box.hpp"
-#include "Drop.hpp"
+#include <Box.hpp>
+#include <Drop.hpp>
 
 class BreakableBox : public Box {
 public:

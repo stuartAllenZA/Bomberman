@@ -1,7 +1,7 @@
 #include <Core.hpp>
 
 Core::Core() {
-	std::cout << "Constructing Core\n";
+	//std::cout << "Constructing Core\n";
 	this->_width = this->_game.getSettings().getResolutionX();
 	this->_height = this->_game.getSettings().getResolutionY();
 	this->_menu = new Menu(_width, _height, &_game, &_win);
@@ -9,7 +9,7 @@ Core::Core() {
 }
 
 Core::Core(Core const & src) {
-	std::cout << "Core Copy-Constructed\n";
+	//std::cout << "Core Copy-Constructed\n";
 	*this = src;
 }
 
@@ -22,11 +22,10 @@ Core &			Core::operator=(Core const & src) {
 }
 
 Core::~Core() {
-	std::cout << "De-Constructing Core\n";
-	this->_game.stopMenuMusic();
-	std::cout << "closing nanogui screen" << std::endl;
+	//std::cout << "De-Constructing Core\n";
+	//std::cout << "Closing Nanogui Screen" << std::endl;
 	nanogui::shutdown();
-	std::cout << "nanogui screen closed successfully" << std::endl;
+	//std::cout << "Nanogui screen closed successfully" << std::endl;
 	delete this->_menu;
 	this->_menu = nullptr;
 	glfwTerminate();
@@ -34,10 +33,10 @@ Core::~Core() {
 }
 
 void			Core::run() {
-	std::cout << "initializing" << std::endl;
+	//std::cout << "Starting Core" << std::endl;
 	init();
 	gameLoop();
-	std::cout << "Done" << std::endl;
+	std::cout << "Done with gameLoop!" << std::endl;
 	// Start main menu (set game state, render menu)
 	// Simulate selection of 'New Game'
 	// Spawn player
@@ -85,10 +84,10 @@ void			Core::run() {
 }
 
 void			Core::init() {
+	std::cout << "Initializing Core" << std::endl;
 	this->_game.initSound();
-	this->_game.startMenuMusic();
 	_win = nullptr;
-	std::cout << "creating glfw window" << std::endl;
+	//std::cout << "Creating GLFW Window" << std::endl;
 	glfwInit();
 	glfwSetTime(0);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -114,12 +113,13 @@ void			Core::init() {
 	glfwMakeContextCurrent(_win);
 	glfwSwapInterval(1);
 
-	std::cout << "glfw window created" << std::endl;
+	std::cout << "GLFW Window Created." << std::endl;
 }
 
 void			Core::gameLoop() {
 	GameState gs;
 	bool loop = true;
+
 
 	std::cout << "THE ORIGINAL SETTINGS!!!" << std::endl << this->_game.getSettings() << std::endl;
 	glfwSetWindowPos(_win, this->_game.getSettings().getXPos(), this->_game.getSettings().getYPos());
@@ -128,10 +128,14 @@ void			Core::gameLoop() {
 		gs = this->_game.getGameState();
 		switch (gs) {
 			case GameState::MENU :
+			_game.startMenuMusic();
 			_menu->menu();
+			_game.startMenuMusic();
 			break;
 			case GameState::PLAY :
+			_game.startGameMusic();
 			initPlay();
+			_game.stopGameMusic();
 			break;
 			case GameState::EXIT :
 			loop = false;
