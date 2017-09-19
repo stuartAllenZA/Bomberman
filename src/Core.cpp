@@ -121,7 +121,7 @@ void			Core::gameLoop() {
 	bool loop = true;
 
 
-	std::cout << "THE ORIGINAL SETTINGS!!!" << std::endl << this->_game.getSettings() << std::endl;
+	//std::cout << "THE ORIGINAL SETTINGS!!!" << std::endl << this->_game.getSettings() << std::endl;
 	glfwSetWindowPos(_win, this->_game.getSettings().getXPos(), this->_game.getSettings().getYPos());
 	while (loop == true && !glfwWindowShouldClose(_win)) {
 		input();
@@ -130,7 +130,7 @@ void			Core::gameLoop() {
 			case GameState::MENU :
 			_game.startMenuMusic();
 			_menu->menu();
-			_game.startMenuMusic();
+			_game.stopMenuMusic();
 			break;
 			case GameState::PLAY :
 			_game.startGameMusic();
@@ -170,11 +170,14 @@ void			Core::fatalError(std::string errorString) {
 }
 
 void			Core::initPlay() {
-	updateKeys();
 	std::cout << "playing, ESC to exit" << std::endl;
-	if (_game.getKeyPressArr(ESCAPE)){
-		this->_game.setGameState(GameState::MENU);
-		_menu->setMenuState(MenuState::PAUSE);
+	while (_game.getGameState() == GameState::PLAY) {
+		glfwPollEvents();
+		updateKeys();
+		if (_game.getKeyPressArr(ESCAPE)){
+			this->_game.setGameState(GameState::MENU);
+			_menu->setMenuState(MenuState::PAUSE);
+		}
 	}
 }
 

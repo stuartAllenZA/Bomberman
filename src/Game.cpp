@@ -242,7 +242,7 @@ void					Game::setWindowPos(const int xPos, const int yPos) {
 
 void					Game::initSound() {
 	this->_sound.init();
-	this->_sound.setVerbose(false);
+	this->_sound.setVerbose(true);
 }
 
 void					Game::updateSound() {
