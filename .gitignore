@@ -3,6 +3,7 @@
 *.DS*
 *.so
 Bomberman
+tasks
 cmake-build-debug/
 CMakeCache.txt
 .idea/

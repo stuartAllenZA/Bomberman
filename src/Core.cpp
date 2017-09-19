@@ -175,17 +175,18 @@ void			Core::fatalError(std::string errorString) {
 }
 
 void			Core::initPlay() {
-//	updateKeys();
+	std::cout << "playing, ESC to exit" << std::endl;
 	bool exitStatus = false;
+	glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//while (!_game.getKeyPressArr(ESCAPE)) {
 	while (!exitStatus) {
+		//updateKeys();
 		exitStatus = _gfx->processInput();
 		_gfx->render();	
 	}
-	std::cout << "playing, ESC to exit" << std::endl;
-	if (_game.getKeyPressArr(ESCAPE)){
-		this->_game.setGameState(GameState::MENU);
-		_menu->setMenuState(MenuState::PAUSE);
-	}
+	glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	this->_game.setGameState(GameState::MENU);
+	_menu->setMenuState(MenuState::PAUSE);
 }
 
 void			Core::updateKeys() {

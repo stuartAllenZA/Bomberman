@@ -6,9 +6,8 @@
 #include "../gfxUtils/glm/gtc/type_ptr.hpp"
 
 #include "camera.hpp"
-#include "Shader.hpp"
 #include "Game.hpp"
-#include "shader_m.h"
+#include "Shader.hpp"
 #include "Model.hpp"
 #include "tiny_gltf.h"
 #include "stb_image.h"
@@ -36,6 +35,10 @@ class GraphicsEngine {
 		~GraphicsEngine();
 		void	init();
 		void	initSystems();
-		bool	processInput();
 		void	render();
+		void	framebuffer_size_callback(int width, int height);
+		void	mouse_callback(double xpos, double ypos);
+		void	scroll_callback(double xoffset, double yoffset);
+		bool	processInput();
+
 };

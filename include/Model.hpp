@@ -1,7 +1,5 @@
 #pragma once
 #include "util.h"
-//#include "tiny_gltf.h"
-//#include "picojson.h"
 #include "Shader.hpp"
 #include "material.hpp"
 #include "animation.hpp"
