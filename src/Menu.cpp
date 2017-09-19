@@ -2,7 +2,7 @@
 
 nanogui::Screen *screen = nullptr;
 
-Menu::Menu(int passedWidth, int passedHeight, Game *passedGame, GLFWwindow **passedWin) : _menuState(MenuState::PLAYER_SELECT), _minimumTime(50), _width(passedWidth), _height(passedHeight), _game(passedGame), _win(passedWin) {
+Menu::Menu(int passedWidth, int passedHeight, Game *passedGame, GLFWwindow **passedWin) : _menuState(MenuState::PLAYER_SELECT), _minimumTime(10), _width(passedWidth), _height(passedHeight), _game(passedGame), _win(passedWin) {
 	std::cout << "Menu Constructed\n";
 }
 
@@ -280,6 +280,8 @@ void            Menu::mainMenu() {
 				case 2 :
 					if (this->_game->getHasSave())
 						loadGameButton();
+					else
+						errorPopup("ERROR!", "No previous saved games.", "OK");
 					break;
 				case 3 :
 					settingsButton();
@@ -599,10 +601,15 @@ void            Menu::keyBindingMenu() {
 }
 
 int		Menu::checkMenuSelectionKeys() {
-	if (glfwGetKey(*_win, GLFW_KEY_UP) == GLFW_PRESS || (glfwGetKey(*_win, GLFW_KEY_TAB) == GLFW_PRESS))
+	if (glfwGetKey(*_win, GLFW_KEY_UP) == GLFW_PRESS) {
+		//this->_game->getSound().playMenuKeypress();
 		return (-1);
-	else if (glfwGetKey(*_win, GLFW_KEY_DOWN) == GLFW_PRESS)
+	}
+	else if (glfwGetKey(*_win, GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(*_win, GLFW_KEY_TAB) == GLFW_PRESS) {
+		//this->_game->getSound().playMenuKeypress();
+		std::cout << "just tab" << std::endl;
 		return (1);
+	}
 	else
 		return (0);
 }
