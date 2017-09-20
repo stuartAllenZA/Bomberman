@@ -89,7 +89,7 @@ int			Player::getDifficulty() const {
 }
 
 void		Player::setDifficulty(const int newDifficulty) {
-	this->_difficulty = bombs;
+	this->_difficulty = newDifficulty;
 }
 
 std::ostream & 			operator<<(std::ostream & o, Player const & rhs) {

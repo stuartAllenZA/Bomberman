@@ -127,7 +127,7 @@ void			Core::fatalError(std::string errorString) {
 void			Core::initPlay() {
 	//std::cout << "playing, ESC to exit" << std::endl;
 	std::cout << "Playing, on 10x10 board" << std::endl;
-	_game.
+	_game.initLevelOne();
 	// Spawn player
 	// Spawn u-box
 	// Spawn box0 - empty

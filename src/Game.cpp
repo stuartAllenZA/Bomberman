@@ -263,6 +263,14 @@ void					Game::stopMenuMusic() {
 	this->_sound.stopMenuMusic();
 }
 
+void					Game::startGameMusic() {
+	this->_sound.startCreditsMusic();
+}
+
+void					Game::stopGameMusic() {
+	this->_sound.stopCreditsMusic();
+}
+
 void					Game::startCreditsMusic() {
 	this->_sound.startCreditsMusic();
 }
@@ -299,12 +307,12 @@ void					Game::unbreakableRing(int x, int y) {
 	for (int i = xStart; i < x; i++) {
 		if (i == xStart || i == x-1) {
 			for (int j = yStart; i < y; j++) {
-				_unbreakableB.push(unbreakableBox(std::make_pair(i, j)));
+				_unbreakableB.push_back(UnbreakableBox(std::make_pair(i, j)));
 			}
 		}
 		if (i > xStart && i < x-1) {
-			_unbreakableB.push(unbreakableBox(std::make_pair(i, yStart)));
-			_unbreakableB.push(unbreakableBox(std::make_pair(i, y-1)));
+			_unbreakableB.push_back(UnbreakableBox(std::make_pair(i, yStart)));
+			_unbreakableB.push_back(UnbreakableBox(std::make_pair(i, y-1)));
 		}
 	}
 }
@@ -316,12 +324,12 @@ void					Game::breakableRing(int x, int y) {
 	for (int i = xStart; i < x; i++) {
 		if (i == xStart || i == x-1) {
 			for (int j = yStart; i < y; j++) {
-				_breakableB.push(breakableBox(std::make_pair(i, j)));
+				_breakableB.push_back(BreakableBox(std::make_pair(i, j)));
 			}
 		}
 		if (i > xStart && i < x-1) {
-			_breakableB.push(breakableBox(std::make_pair(i, yStart)));
-			_breakableB.push(breakableBox(std::make_pair(i, y-1)));
+			_breakableB.push_back(BreakableBox(std::make_pair(i, yStart)));
+			_breakableB.push_back(BreakableBox(std::make_pair(i, y-1)));
 		}
 	}
 }
@@ -336,16 +344,16 @@ void					Game::breakableRing(int x, int y, std::pair<int, int> skip) {
 			for (int j = yStart; i < y; j++) {
 				temp = std::make_pair(i, j);
 				if (temp != skip)
-					_breakableB.push(breakableBox(temp));
+					_breakableB.push_back(BreakableBox(temp));
 			}
 		}
 		if (i > xStart && i < x-1) {
 			temp = std::make_pair(i, yStart);
 			if (temp != skip)
-				_breakableB.push(breakableBox(temp));
+				_breakableB.push_back(BreakableBox(temp));
 			temp = std::make_pair(i, y-1);
 			if (temp != skip)
-				_breakableB.push(breakableBox(temp));
+				_breakableB.push_back(BreakableBox(temp));
 		}
 	}
 }
@@ -356,10 +364,10 @@ void					Game::cornerBox(int x, int y) {
 	int		y1 = (_mapSize.second - y);
 	int		y2 = y;
 
-	_breakableB.push(breakableBox(std::make_pair(x1, y1)));
-	_breakableB.push(breakableBox(std::make_pair(x1, y2)));
-	_breakableB.push(breakableBox(std::make_pair(x2, y1)));
-	_breakableB.push(breakableBox(std::make_pair(x2, y2)));
+	_breakableB.push_back(BreakableBox(std::make_pair(x1, y1)));
+	_breakableB.push_back(BreakableBox(std::make_pair(x1, y2)));
+	_breakableB.push_back(BreakableBox(std::make_pair(x2, y1)));
+	_breakableB.push_back(BreakableBox(std::make_pair(x2, y2)));
 }
 
 int					Game::dropFreeBoxInd() {

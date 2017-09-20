@@ -11,6 +11,10 @@
 #include <Box.hpp>
 #include <BreakableBox.hpp>
 #include <UnbreakableBox.hpp>
+#include <LevelHatch.hpp>
+#include <RemoteDetonator.hpp>
+#include <ExtraBomb.hpp>
+#include <RangeExtender.hpp>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -83,13 +87,15 @@ class Game {
 		void						stopMenuMusic();
 		void						startGameMusic();
 		void						stopGameMusic();
+		void						startCreditsMusic();
+		void						stopCreditsMusic();
 		void						unbreakableRing(int x, int y);
 		void						breakableRing(int x, int y);
 		void						breakableRing(int x, int y, std::pair<int, int> skip);
 		void						cornerBox(int x, int y);
 		void						initLevelOne();
 		int							dropFreeBoxInd();
-	
+
 	private:
 		GameState					_gameState;
 		PlayState					_playState;
@@ -99,7 +105,7 @@ class Game {
 		Player						_player;
 		std::vector<Character*>		_enemies;
 		std::vector<BreakableBox>	_breakableB;
-		std::vector<unbreakableBox>	_unbreakableB;
+		std::vector<UnbreakableBox>	_unbreakableB;
 		bool						_hasSave;
 		std::pair<int, int>			_mapSize;
 };
