@@ -81,7 +81,7 @@ void					Sound::init() {
 		this->_menuFail = _engine->addSoundSourceFromFile("resources/sounds/menuFail.wav");
 		this->_menuHover = _engine->addSoundSourceFromFile("resources/sounds/menuHover.wav");
 		this->_menuClick = _engine->addSoundSourceFromFile("resources/sounds/menuClick.mp3");
-		this->_menuKeypress = _engine->addSoundSourceFromFile("resources/sounds/menuKeypess.wav");
+		this->_menuKeypress = _engine->addSoundSourceFromFile("resources/sounds/menuKeypress.wav");
 		this->_menuLimit = _engine->addSoundSourceFromFile("resources/sounds/menuLimit.wav");
 		this->_gameSaved = _engine->addSoundSourceFromFile("resources/sounds/gameSaved.wav");
 		this->_playerSpawn = _engine->addSoundSourceFromFile("resources/sounds/playerSpawn");
