@@ -985,6 +985,7 @@ void			Menu::createButton(std::string playerNameInputVar) {
 		this->_game->savePlayer();
 		_menuState = MenuState::MAIN_MENU;
 		std::cout << "Player : " << playerNameInputVar << " created" << std::endl;
+		_game->getSound().playMenuPass();
 	}
 	else
 		errorPopup("ERROR!", "Name already in use.", "OK");
