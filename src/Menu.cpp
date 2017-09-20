@@ -73,9 +73,6 @@ void			Menu::menu() {
 			break;
 			case MenuState::NO_MENU :
 			break;
-			case MenuState::BK2_PLAYER_SELECT :
-			_menuState = MenuState::PLAYER_SELECT;
-			break;
 		}
 	}
 }
@@ -95,11 +92,12 @@ void			Menu::errorPopup(const std::string & title, const std::string & message, 
 	screen->performLayout();
 	nanoguiWindow->center();
 	_game->getSound().playMenuFail();
+	resetDelayTimer();
 	while (!glfwWindowShouldClose(*_win) && !breaker){
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
-		if (this->_game->getKeyPressArr(ESCAPE) && getDelayTimer() >= getMinimumTime()) {
+		if ((glfwGetKey(*_win, GLFW_KEY_ENTER) == GLFW_PRESS || (glfwGetKey(*_win, GLFW_KEY_ESCAPE) == GLFW_PRESS)) && getDelayTimer() >= getMinimumTime()) {
 			breaker = true;
 		}
 		renderMenu();
@@ -151,6 +149,10 @@ void			Menu::playerSelectMenu() {
 		b = new nanogui::Button(tools, "Delete");
 		b->setCallback([&]{
 			deleteButton(playerNames, playerCobo->selectedIndex());
+			breaker = true;
+			playerNames = this->_game->checkPlayers();
+			if (playerNames.empty())
+				index = 1;
 		});
 		if (index == 3)
 			b->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -180,6 +182,8 @@ void			Menu::playerSelectMenu() {
 		updateMouse();
 		if (getDelayTimer() >= getMinimumTime()) {
 			if (playerNames.empty()) {
+				if (index != 1 && index != 4)
+					index = 1;
 				if (checkMenuSelectionKeys() != 0) {
 					if (index == 1)
 						index = 4;
@@ -197,7 +201,6 @@ void			Menu::playerSelectMenu() {
 					breaker = true;
 				}
 			}
-			std::cout << "INDEX : " << index << std::endl;
 			if (glfwGetKey(*_win, GLFW_KEY_ENTER) == GLFW_PRESS) {
 				switch (index) {
 					case 1 :
@@ -208,11 +211,15 @@ void			Menu::playerSelectMenu() {
 						break;
 					case 3 :
 						deleteButton(playerNames, playerCobo->selectedIndex());
+						playerNames = this->_game->checkPlayers();
+						breaker = true;
+						index = 1;
 						break;
 					case 4 :
 						exitButton();
 						break;
 				}
+				breaker = true;
 			} else if (this->_game->getKeyPressArr(ESCAPE) && getDelayTimer() >= getMinimumTime())
 				exitButton();
 		}
@@ -330,7 +337,6 @@ void			Menu::settingsMenu() {
 	nanogui::Button                 *b = new nanogui::Button(nanoguiWindow, "Plain button");
 	Settings                        tempSettings(this->_game->getSettings());
 	static int						index = 1;
-	static int						resolutionIndex = 0;
 	bool							breaker = false;
 	Settings                        buSettings(this->_game->getSettings());
 
@@ -411,13 +417,9 @@ void			Menu::settingsMenu() {
 		b->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
 	b->setFixedWidth(180);
 	b = new nanogui::Button(keyBindTools, "Reset to default");
-	b->setCallback([this, &cb, &sliderSfx, &textBoxSfx, &sliderMusic, &textBoxMusic, &cobo, &tempSettings]{
-		cb->setChecked(false);
-		textBoxSfx->setValue("100");
-		sliderMusic->setValue(100);
-		textBoxMusic->setValue("100");
-
-		cobo->setSelectedIndex(0);
+	b->setCallback([&]{
+		this->_game->setSettings(Settings());
+		breaker = true;
 	});
 	if (index == 2)
 		b->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -465,11 +467,7 @@ void			Menu::settingsMenu() {
 						_menuState = MenuState::KEYBINDING;
 						break;
 					case 2 :
-						cb->setChecked(false);
-						textBoxSfx->setValue("100");
-						sliderMusic->setValue(100);
-						textBoxMusic->setValue("100");
-						resolutionIndex = 0;
+						this->_game->setSettings(Settings());
 						break;
 					case 3 :
 						if (this->_game->getPlayState() == PlayState::GAME_PLAY)
@@ -496,6 +494,7 @@ void			Menu::settingsMenu() {
 
 void            Menu::keyBindingMenu() {
 	bool 		breaker = false;
+	static int 	index = 1;
 	Settings tempSettings(this->_game->getSettings());
 	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
 	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "PAUSED");
@@ -506,6 +505,8 @@ void            Menu::keyBindingMenu() {
 	nanoguiWindow->setLayout(layout);
 
 	BindingButtonState bindingButtonState = BindingButtonState::NONE;
+
+	std::cout << "INDEX :" << index << std::endl;
 
 	// UP
 	new nanogui::Label(nanoguiWindow, "Up :");
@@ -520,6 +521,9 @@ void            Menu::keyBindingMenu() {
 		upKeyButton->setCaption("?");
 		bindingButtonState = BindingButtonState::UP_BINDING;
 	});
+	if (index == 1)
+		upKeyButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
+
 
 	// DOWN
 	new nanogui::Label(nanoguiWindow, "Down :");
@@ -534,6 +538,8 @@ void            Menu::keyBindingMenu() {
 		downKeyButton->setCaption("?");
 		bindingButtonState = BindingButtonState::DOWN_BINDING;
 	});
+	if (index == 2)
+		downKeyButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
 
 	// LEFT
 	new nanogui::Label(nanoguiWindow, "Left :");
@@ -548,6 +554,8 @@ void            Menu::keyBindingMenu() {
 		leftKeyButton->setCaption("?");
 		bindingButtonState = BindingButtonState::LEFT_BINDING;
 	});
+	if (index == 3)
+		leftKeyButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
 
 	//RIGHT
 	new nanogui::Label(nanoguiWindow, "Right :");
@@ -562,7 +570,9 @@ void            Menu::keyBindingMenu() {
 		rightKeyButton->setCaption("?");
 		bindingButtonState = BindingButtonState::RIGHT_BINDING;
 	});
-	
+	if (index == 4)
+		rightKeyButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
+
 	//ACTION
 	new nanogui::Label(nanoguiWindow, "Action :");
 	nanogui::Button *actionKeyButton = new nanogui::Button(nanoguiWindow, "");
@@ -576,7 +586,9 @@ void            Menu::keyBindingMenu() {
 		actionKeyButton->setCaption("?");
 		bindingButtonState = BindingButtonState::ACTION_BINDING;
 	});
-	
+	if (index == 5)
+		actionKeyButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
+
 	//ACCEPT
 	new nanogui::Label(nanoguiWindow, "Accept :");
 	nanogui::Button *acceptKeyButton = new nanogui::Button(nanoguiWindow, "");
@@ -590,7 +602,9 @@ void            Menu::keyBindingMenu() {
 		acceptKeyButton->setCaption("?");
 		bindingButtonState = BindingButtonState::ACCEPT_BINDING;
 	});
-	
+	if (index == 6)
+		acceptKeyButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
+
 	//ESCAPE
 	new nanogui::Label(nanoguiWindow, "Escape :");
 	nanogui::Button *escapeKeyButton = new nanogui::Button(nanoguiWindow, "");
@@ -604,11 +618,16 @@ void            Menu::keyBindingMenu() {
 		escapeKeyButton->setCaption("?");
 		bindingButtonState = BindingButtonState::ESCAPE_BINDING;
 	});
-	
+	if (index == 7)
+		escapeKeyButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
+
 	nanogui::Button *exitKeyBindingButton = nanoguiWindow->add<nanogui::Button>("Back");
 	exitKeyBindingButton->setCallback([&] {
 		_menuState = MenuState::SETTINGS;
 	});
+	if (index == 8)
+		exitKeyBindingButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
+
 	screen->setVisible(true);
 	screen->performLayout();
 	nanoguiWindow->center();
@@ -617,21 +636,74 @@ void            Menu::keyBindingMenu() {
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
-		if (this->_game->getKeyPressArr(ESCAPE) && getDelayTimer() >= getMinimumTime() && bindingButtonState == BindingButtonState::NONE) {
-			_menuState = MenuState::SETTINGS;
-		}
-		if (findKeyForBinding() != 0) {
-			nanoguiWindow->setVisible(false);
-			bindKeysWithoutConflicts(bindingButtonState, &tempSettings);
-			nanoguiWindow->setVisible(true);
-		}
-		if (bindingButtonState != BindingButtonState::NONE) {
+		if (getDelayTimer() >= getMinimumTime()) {
 			if (findKeyForBinding() != 0) {
-				this->_game->setSettings(tempSettings);
-				this->_game->savePlayer();
-				breaker = true;
+				nanoguiWindow->setVisible(false);
+				bindKeysWithoutConflicts(bindingButtonState, &tempSettings);
+				nanoguiWindow->setVisible(true);
 			}
+			if (bindingButtonState != BindingButtonState::NONE) {
+				if (findKeyForBinding() != 0) {
+					this->_game->setSettings(tempSettings);
+					this->_game->savePlayer();
+					breaker = true;
+				}
 
+			} else {
+				if (checkMenuSelectionKeys() != 0) {
+					index += checkMenuSelectionKeys();
+					if (index > 8)
+						index = 1;
+					if (index < 1)
+						index = 8;
+					breaker = true;
+				}
+				if (glfwGetKey(*_win, GLFW_KEY_ENTER)) {
+					switch (index) {
+						case 1 :
+							upKeyButton->setCaption("");
+							upKeyButton->setCaption("?");
+							bindingButtonState = BindingButtonState::UP_BINDING;
+							break;
+						case 2 :
+							downKeyButton->setCaption("");
+							downKeyButton->setCaption("?");
+							bindingButtonState = BindingButtonState::DOWN_BINDING;
+							break;
+						case 3 :
+							leftKeyButton->setCaption("");
+							leftKeyButton->setCaption("?");
+							bindingButtonState = BindingButtonState::LEFT_BINDING;
+							break;
+						case 4 :
+							rightKeyButton->setCaption("");
+							rightKeyButton->setCaption("?");
+							bindingButtonState = BindingButtonState::RIGHT_BINDING;
+							break;
+						case 5 :
+							actionKeyButton->setCaption("");
+							actionKeyButton->setCaption("?");
+							bindingButtonState = BindingButtonState::ACTION_BINDING;
+							break;
+						case 6 :
+							acceptKeyButton->setCaption("");
+							acceptKeyButton->setCaption("?");
+							bindingButtonState = BindingButtonState::ACCEPT_BINDING;
+							break;
+						case 7 :
+							escapeKeyButton->setCaption("");
+							escapeKeyButton->setCaption("?");
+							bindingButtonState = BindingButtonState::ESCAPE_BINDING;
+							break;
+						case 8 :
+							_menuState = MenuState::SETTINGS;
+							break;
+					}
+					resetDelayTimer();
+				}
+				else if (this->_game->getKeyPressArr(ESCAPE))
+					_menuState = MenuState::SETTINGS;
+			}
 		}
 		renderMenu();
 	}
@@ -935,7 +1007,6 @@ void			Menu::deleteButton(std::vector<std::string> playerNames, int nameIndex) {
 		std::cerr << "Error: Could not delete file: " << fileName << std::endl;
 	else
 		std::cout << "Deleted profile: " << fileName << std::endl;
-	_menuState = MenuState::BK2_PLAYER_SELECT;
 
 }
 

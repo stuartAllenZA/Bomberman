@@ -25,8 +25,7 @@ enum class MenuState {
     SETTINGS,
     KEYBINDING,
     PAUSE,
-    NO_MENU,
-    BK2_PLAYER_SELECT
+    NO_MENU
 };
 
 enum class BindingButtonState {
