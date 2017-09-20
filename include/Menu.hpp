@@ -77,6 +77,8 @@ public:
 	int				checkMenuSelectionKeys();
     bool            checkPlayerNameAvailability(std::string playerNameInputVar);
     void            createButton(std::string playerNameInputVar);
+	void			selectButton(std::vector<std::string> playerNames, int nameIndex);
+	void			deleteButton(std::vector<std::string> playerNames, int nameIndex);
     void            exitButton();
     void            logoutButton();
     void            newGameButton();
@@ -84,6 +86,7 @@ public:
     void            playerSelectButton();
     void            settingsButton();
     void            keyBindingButton();
+	void 			applyButton(int selectedIndex, Settings *tempSettings);
 	int				findKeyForBinding();
 	int				checkForKeySymbol(int keyPressed);
 	std::string		findNameForBinding(int keyPressed);
