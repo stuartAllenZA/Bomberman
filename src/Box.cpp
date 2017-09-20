@@ -1,6 +1,6 @@
 #include <Box.hpp>
 
-Box::Box() {
+Box::Box() : _drop(nullptr) {
 	std::cout << "Box Default Constructed\n";
 }
 
@@ -11,7 +11,7 @@ Box::Box(Drop *drop) : _drop(drop) {
 		std::cout << "Box was passed a NULL drop, Constructed\n";
 }
 
-Box::Box(std::pair<int, int> xy) : _xy(xy) {
+Box::Box(std::pair<int, int> xy) : _xy(xy), _drop(nullptr) {
 	std::cout << "Box at x: " << xy.first << " y: " << xy.second << " Constructed\n";
 }
 

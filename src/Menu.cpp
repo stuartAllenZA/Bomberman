@@ -216,7 +216,7 @@ void            Menu::mainMenu() {
 	if (index == 1)
 		b->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
 
-	b = new nanogui::Button(nanoguiWindow, "Load Game");
+	b = new nanogui::Button(nanoguiWindow, "Continue");
 	b->setCallback([this]{
 		loadGameButton();
 	});
