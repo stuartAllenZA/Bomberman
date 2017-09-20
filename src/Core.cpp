@@ -37,50 +37,6 @@ void			Core::run() {
 	init();
 	gameLoop();
 	std::cout << "Done with gameLoop!" << std::endl;
-	// Start main menu (set game state, render menu)
-	// Simulate selection of 'New Game'
-	// Spawn player
-	// Spawn u-box
-	// Spawn box0 - empty
-	// Spawn box1 - enemy
-	// Spawn box2 - upgrade
-	// Spawn box3 - hatch
-	// Move player
-	// Place bomb
-	// move player
-	// detonate bomb
-	// destroy box
-	// Move player
-	// Place bomb
-	// move player
-	// explode bomb
-	// destroy box
-	// drop enemy
-	// move player
-	// move enemy
-	// place bomb
-	// move player
-	// move enemy
-	// detonate bomb
-	// kill enemy
-	// xp up player
-	// move player
-	// place bomb
-	// move player
-	// detonate bomb
-	// destroy box
-	// drop upgrade
-	// move player
-	// collect upgrade
-	// activate upgrade on player
-	// move player
-	// place bomb
-	// move player
-	// detonate bomb
-	// destroy box
-	// drop hatch
-	// move player
-	// finish demo
 }
 
 void			Core::init() {
@@ -119,7 +75,6 @@ void			Core::init() {
 void			Core::gameLoop() {
 	GameState gs;
 	bool loop = true;
-
 
 	//std::cout << "THE ORIGINAL SETTINGS!!!" << std::endl << this->_game.getSettings() << std::endl;
 	glfwSetWindowPos(_win, this->_game.getSettings().getXPos(), this->_game.getSettings().getYPos());
@@ -170,7 +125,51 @@ void			Core::fatalError(std::string errorString) {
 }
 
 void			Core::initPlay() {
-	std::cout << "playing, ESC to exit" << std::endl;
+	//std::cout << "playing, ESC to exit" << std::endl;
+	std::cout << "Playing, on 10x10 board" << std::endl;
+	_game.initLevelOne();
+	// Spawn player
+	// Spawn u-box
+	// Spawn box0 - empty
+	// Spawn box1 - enemy
+	// Spawn box2 - upgrade
+	// Spawn box3 - hatch
+	// Move player
+	// Place bomb
+	// move player
+	// detonate bomb
+	// destroy box
+	// Move player
+	// Place bomb
+	// move player
+	// explode bomb
+	// destroy box
+	// drop enemy
+	// move player
+	// move enemy
+	// place bomb
+	// move player
+	// move enemy
+	// detonate bomb
+	// kill enemy
+	// xp up player
+	// move player
+	// place bomb
+	// move player
+	// detonate bomb
+	// destroy box
+	// drop upgrade
+	// move player
+	// collect upgrade
+	// activate upgrade on player
+	// move player
+	// place bomb
+	// move player
+	// detonate bomb
+	// destroy box
+	// drop hatch
+	// move player
+	// finish demo
 	while (_game.getGameState() == GameState::PLAY) {
 		glfwPollEvents();
 		updateKeys();

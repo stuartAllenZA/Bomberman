@@ -8,6 +8,8 @@ int main(int argc, char **argv) {
 			std::cout << "Please run Bomberman without any arguments as all configs are done in game.\n";
 	}
 
+	srand (time(NULL));
+
 	try {
 		//std::cout << "initializing core" << std::endl;
 		Core core;

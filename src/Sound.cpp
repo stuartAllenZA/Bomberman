@@ -305,6 +305,12 @@ void					Sound::playPlayerWalk() {
 	this->_engine->play2D(this->_playerWalk, false, false, true);
 }
 
+void					Sound::playPlayerHit() {
+	if (this->_verbose)
+		std::cout << "Playing Player Hit\n";
+	this->_engine->play2D(this->_playerHit, false, false, true);
+}
+
 void					Sound::playEnemySpawn() {
 	if (this->_verbose)
 		std::cout << "Playing Enemy Spawn\n";

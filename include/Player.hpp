@@ -8,7 +8,6 @@
 //	2. Add to << overload
 //	3. Game::loadPlayer
 //	4. Game::savePlayer
-//	5. Character::*your method* virtual member (Only if player polymorphs, which it isn't)
 
 class Player : public Character
 {
@@ -31,6 +30,8 @@ public:
 	void		setExperience(const int newExp);
 	int			getNumberOfBombs() const;
 	void		setNumberOfBombs(const int bombs);
+	int			getDifficulty() const;
+	void		setDifficulty(const int newDifficulty);
 
 private:
 	std::string	_fileLocation;
@@ -38,7 +39,7 @@ private:
 	int			_level;
 	int			_experience;
 	int			_numberOfBombs;
-	
+	int			_difficulty;
 };
 
 std::ostream &					operator<<(std::ostream & o, Player const & rhs);

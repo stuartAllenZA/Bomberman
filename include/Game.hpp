@@ -9,6 +9,12 @@
 #include <Player.hpp>
 #include <Sound.hpp>
 #include <Box.hpp>
+#include <BreakableBox.hpp>
+#include <UnbreakableBox.hpp>
+#include <LevelHatch.hpp>
+#include <RemoteDetonator.hpp>
+#include <ExtraBomb.hpp>
+#include <RangeExtender.hpp>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -17,6 +23,8 @@
 #include <string>
 #include <irrKlang.h>
 #include <dirent.h>
+#include <cstdlib>
+#include <ctime>
 
 #define UP		0
 #define DOWN	1
@@ -79,6 +87,14 @@ class Game {
 		void						stopMenuMusic();
 		void						startGameMusic();
 		void						stopGameMusic();
+		void						startCreditsMusic();
+		void						stopCreditsMusic();
+		void						unbreakableRing(int x, int y);
+		void						breakableRing(int x, int y);
+		void						breakableRing(int x, int y, std::pair<int, int> skip);
+		void						cornerBox(int x, int y);
+		void						initLevelOne();
+		int							dropFreeBoxInd();
 
 	private:
 		GameState					_gameState;
@@ -88,7 +104,10 @@ class Game {
 		Sound						_sound;
 		Player						_player;
 		std::vector<Character*>		_enemies;
+		std::vector<BreakableBox>	_breakableB;
+		std::vector<UnbreakableBox>	_unbreakableB;
 		bool						_hasSave;
+		std::pair<int, int>			_mapSize;
 };
 
 std::ostream &					operator<<(std::ostream & o, Game const & rhs);
