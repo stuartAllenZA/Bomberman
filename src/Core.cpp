@@ -37,8 +37,97 @@ void			Core::run() {
 	init();
 	gameLoop();
 	std::cout << "Done with gameLoop!" << std::endl;
-	// Start main menu (set game state, render menu)
-	// Simulate selection of 'New Game'
+}
+
+void			Core::init() {
+	std::cout << "Initializing Core" << std::endl;
+	this->_game.initSound();
+	_win = nullptr;
+	//std::cout << "Creating GLFW Window" << std::endl;
+	glfwInit();
+	glfwSetTime(0);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_SAMPLES, 0);
+	glfwWindowHint(GLFW_RED_BITS, 8);
+	glfwWindowHint(GLFW_GREEN_BITS, 8);
+	glfwWindowHint(GLFW_BLUE_BITS, 8);
+	glfwWindowHint(GLFW_ALPHA_BITS, 8);
+	glfwWindowHint(GLFW_STENCIL_BITS, 8);
+	glfwWindowHint(GLFW_DEPTH_BITS, 24);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	_win = glfwCreateWindow(_width, _height, "Bomberman", nullptr, nullptr);
+	if (_win == nullptr)
+		fatalError("GLFW context is shot");
+	else {
+		int xPos, yPos;
+		glfwGetWindowPos(_win, &xPos, &yPos);
+		this->_game.setWindowPos(xPos, yPos);
+	}
+	glfwMakeContextCurrent(_win);
+	glfwSwapInterval(1);
+
+	std::cout << "GLFW Window Created." << std::endl;
+}
+
+void			Core::gameLoop() {
+	GameState gs;
+	bool loop = true;
+
+	//std::cout << "THE ORIGINAL SETTINGS!!!" << std::endl << this->_game.getSettings() << std::endl;
+	glfwSetWindowPos(_win, this->_game.getSettings().getXPos(), this->_game.getSettings().getYPos());
+	while (loop == true && !glfwWindowShouldClose(_win)) {
+		input();
+		gs = this->_game.getGameState();
+		switch (gs) {
+			case GameState::MENU :
+			_game.startMenuMusic();
+			_menu->menu();
+			_game.stopMenuMusic();
+			break;
+			case GameState::PLAY :
+			_game.startGameMusic();
+			initPlay();
+			_game.stopGameMusic();
+			break;
+			case GameState::EXIT :
+			loop = false;
+			break;
+		}
+		drawGame();
+		std::cout << "Main gameLoop looping." << std::endl;
+	}
+}
+
+void			Core::input() {
+	_menu->updateKeys();
+	_menu->updateMouse();
+}
+
+void			Core::drawGame() {
+	glfwGetFramebufferSize(_win, &_width, &_height);
+
+	glViewport(0, 0, _width, _height);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glfwSwapBuffers(_win);
+	glfwPollEvents();
+}
+
+void			Core::fatalError(std::string errorString) {
+	std::cout << errorString << std::endl;
+	std::cout << "Press any key to exit" << std::endl;
+	int temp;
+	std::cin >> temp;
+	std::exit(1);
+}
+
+void			Core::initPlay() {
+	//std::cout << "playing, ESC to exit" << std::endl;
+	std::cout << "Playing, on 10x10 board" << std::endl;
+	_game.initLevelOne();
 	// Spawn player
 	// Spawn u-box
 	// Spawn box0 - empty
@@ -81,100 +170,13 @@ void			Core::run() {
 	// drop hatch
 	// move player
 	// finish demo
-}
-
-void			Core::init() {
-	std::cout << "Initializing Core" << std::endl;
-	this->_game.initSound();
-	_win = nullptr;
-	//std::cout << "Creating GLFW Window" << std::endl;
-	glfwInit();
-	glfwSetTime(0);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_SAMPLES, 0);
-	glfwWindowHint(GLFW_RED_BITS, 8);
-	glfwWindowHint(GLFW_GREEN_BITS, 8);
-	glfwWindowHint(GLFW_BLUE_BITS, 8);
-	glfwWindowHint(GLFW_ALPHA_BITS, 8);
-	glfwWindowHint(GLFW_STENCIL_BITS, 8);
-	glfwWindowHint(GLFW_DEPTH_BITS, 24);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	_win = glfwCreateWindow(_width, _height, "Bomberman", nullptr, nullptr);
-	if (_win == nullptr)
-		fatalError("GLFW context is shot");
-	else {
-		int xPos, yPos;
-		glfwGetWindowPos(_win, &xPos, &yPos);
-		this->_game.setWindowPos(xPos, yPos);
-	}
-	glfwMakeContextCurrent(_win);
-	glfwSwapInterval(1);
-
-	std::cout << "GLFW Window Created." << std::endl;
-}
-
-void			Core::gameLoop() {
-	GameState gs;
-	bool loop = true;
-
-
-	std::cout << "THE ORIGINAL SETTINGS!!!" << std::endl << this->_game.getSettings() << std::endl;
-	glfwSetWindowPos(_win, this->_game.getSettings().getXPos(), this->_game.getSettings().getYPos());
-	while (loop == true && !glfwWindowShouldClose(_win)) {
-		input();
-		gs = this->_game.getGameState();
-		switch (gs) {
-			case GameState::MENU :
-			_game.startMenuMusic();
-			_menu->menu();
-			_game.startMenuMusic();
-			break;
-			case GameState::PLAY :
-			_game.startGameMusic();
-			initPlay();
-			_game.stopGameMusic();
-			break;
-			case GameState::EXIT :
-			loop = false;
-			break;
+	while (_game.getGameState() == GameState::PLAY) {
+		glfwPollEvents();
+		updateKeys();
+		if (_game.getKeyPressArr(ESCAPE)){
+			this->_game.setGameState(GameState::MENU);
+			_menu->setMenuState(MenuState::PAUSE);
 		}
-		drawGame();
-		std::cout << "Main gameLoop looping." << std::endl;
-	}
-}
-
-void			Core::input() {
-	_menu->updateKeys();
-	_menu->updateMouse();
-}
-
-void			Core::drawGame() {
-	glfwGetFramebufferSize(_win, &_width, &_height);
-
-	glViewport(0, 0, _width, _height);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	glfwSwapBuffers(_win);
-	glfwPollEvents();
-}
-
-void			Core::fatalError(std::string errorString) {
-	std::cout << errorString << std::endl;
-	std::cout << "Press any key to exit" << std::endl;
-	int temp;
-	std::cin >> temp;
-	std::exit(1);
-}
-
-void			Core::initPlay() {
-	updateKeys();
-	std::cout << "playing, ESC to exit" << std::endl;
-	if (_game.getKeyPressArr(ESCAPE)){
-		this->_game.setGameState(GameState::MENU);
-		_menu->setMenuState(MenuState::PAUSE);
 	}
 }
 

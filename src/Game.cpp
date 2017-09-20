@@ -112,6 +112,7 @@ void					Game::savePlayer() {
 	profileFileOut << "level:" + (std::to_string(this->_player.getLevel()))+"\n";
 	profileFileOut << "experience:" + (std::to_string(this->_player.getExperience()))+"\n";
 	profileFileOut << "noOfBombs:" + (std::to_string(this->_player.getNumberOfBombs()))+"\n";
+	profileFileOut << "difficulty:" + (std::to_string(this->_player.getDifficulty()))+"\n";
 	profileFileOut << "resolutionX:" + (std::to_string(this->_settings.getResolutionX()))+"\n";
 	profileFileOut << "resolutionY:" + (std::to_string(this->_settings.getResolutionY()))+"\n";
 	if (this->_settings.getWindowed())
@@ -179,6 +180,7 @@ void					Game::loadPlayer(const std::string playerName) {
 						this->_player.setLevel(std::stoi(lexFile(fileName, "level")));
 						this->_player.setExperience(std::stoi(lexFile(fileName, "experience")));
 						this->_player.setNumberOfBombs(std::stoi(lexFile(fileName, "noOfBombs")));
+						this->_player.setDifficulty(std::stoi(lexFile(fileName, "difficulty")));
 						int resX = std::stoi(lexFile(fileName, "resolutionX"));
 						int resY = std::stoi(lexFile(fileName, "resolutionY"));
 						std::pair<int, int> resolution = std::make_pair(resX, resY);
@@ -242,7 +244,7 @@ void					Game::setWindowPos(const int xPos, const int yPos) {
 
 void					Game::initSound() {
 	this->_sound.init();
-	this->_sound.setVerbose(false);
+	this->_sound.setVerbose(true);
 }
 
 void					Game::updateSound() {
@@ -262,11 +264,19 @@ void					Game::stopMenuMusic() {
 }
 
 void					Game::startGameMusic() {
-	this->_sound.startGameMusic();
+	this->_sound.startCreditsMusic();
 }
 
 void					Game::stopGameMusic() {
-	this->_sound.stopGameMusic();
+	this->_sound.stopCreditsMusic();
+}
+
+void					Game::startCreditsMusic() {
+	this->_sound.startCreditsMusic();
+}
+
+void					Game::stopCreditsMusic() {
+	this->_sound.stopCreditsMusic();
 }
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
@@ -290,41 +300,113 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	return o;
 }
 
-/*
-void				Game::up() {
-	// update coords x++;
-}
+void					Game::unbreakableRing(int x, int y) {
+	int		xStart = (_mapSize.first - x) / 2;
+	int		yStart = (_mapSize.second - y) / 2;
 
-void				Game::updateGameData() {
-	switch (_gameInput) {
-		case UP:
-		case DOWN:
-		case LEFT:
-		case RIGHT:
-		case SPACE:
-		case ESC:
-	}
-	// detectCollisions
-	// AIBehaveUpdate
-	// detectCollisions
-}
-
-// map has to have an odd number of x's and y's
-// i.e. maxX and maxY must be even numbers (starting at 0)
-void				Game::mapGenerator(int xMax, int yMax) {
-	for (int xmin = 0; xmin < xmax; xmin++) {
-		for (int ymin = 0; ymin < ymax; ymin++) {
-			if (xmin != 0 && ymin != 0 && xmin != xmax && ymin != ymax) {
-				if (xmin % 2 == 0 && ymin % 2 == 0) {
-					unbreakableWallTemp	unbreakableWall(xmin, ymin);
-					_unbreakableWalls.push_back(*unbreakableWall);
-				}
+	for (int i = xStart; i < x; i++) {
+		if (i == xStart || i == x-1) {
+			for (int j = yStart; i < y; j++) {
+				_unbreakableB.push_back(UnbreakableBox(std::make_pair(i, j)));
 			}
-			else if (xmin == 0 || xmin == xmax || ymin == 0 || ymin == ymax) {
-				unbreakableWallTemp	unbreakableWall(xmin, ymin);
-				_unbreakableWalls.push_back(*unbreakableWall);
-			}
+		}
+		if (i > xStart && i < x-1) {
+			_unbreakableB.push_back(UnbreakableBox(std::make_pair(i, yStart)));
+			_unbreakableB.push_back(UnbreakableBox(std::make_pair(i, y-1)));
 		}
 	}
 }
-*/
+
+void					Game::breakableRing(int x, int y) {
+	int		xStart = (_mapSize.first - x) / 2;
+	int		yStart = (_mapSize.second - y) / 2;
+
+	for (int i = xStart; i < x; i++) {
+		if (i == xStart || i == x-1) {
+			for (int j = yStart; i < y; j++) {
+				_breakableB.push_back(BreakableBox(std::make_pair(i, j)));
+			}
+		}
+		if (i > xStart && i < x-1) {
+			_breakableB.push_back(BreakableBox(std::make_pair(i, yStart)));
+			_breakableB.push_back(BreakableBox(std::make_pair(i, y-1)));
+		}
+	}
+}
+
+void					Game::breakableRing(int x, int y, std::pair<int, int> skip) {
+	int		xStart = (_mapSize.first - x) / 2;
+	int		yStart = (_mapSize.second - y) / 2;
+	std::pair<int, int>	temp;
+
+	for (int i = xStart; i < x; i++) {
+		if (i == xStart || i == x-1) {
+			for (int j = yStart; i < y; j++) {
+				temp = std::make_pair(i, j);
+				if (temp != skip)
+					_breakableB.push_back(BreakableBox(temp));
+			}
+		}
+		if (i > xStart && i < x-1) {
+			temp = std::make_pair(i, yStart);
+			if (temp != skip)
+				_breakableB.push_back(BreakableBox(temp));
+			temp = std::make_pair(i, y-1);
+			if (temp != skip)
+				_breakableB.push_back(BreakableBox(temp));
+		}
+	}
+}
+
+void					Game::cornerBox(int x, int y) {
+	int		x1 = (_mapSize.first - x);
+	int		x2 = x;
+	int		y1 = (_mapSize.second - y);
+	int		y2 = y;
+
+	_breakableB.push_back(BreakableBox(std::make_pair(x1, y1)));
+	_breakableB.push_back(BreakableBox(std::make_pair(x1, y2)));
+	_breakableB.push_back(BreakableBox(std::make_pair(x2, y1)));
+	_breakableB.push_back(BreakableBox(std::make_pair(x2, y2)));
+}
+
+int					Game::dropFreeBoxInd() {
+	int		randomInt;
+
+	while (1) {
+		randomInt = rand() % _breakableB.size();
+		if (!_breakableB[randomInt].getDrop())
+			return (randomInt);
+	}
+}
+
+void					Game::initLevelOne() {
+	int		index;
+	//determine _mapSize
+	_mapSize = std::make_pair(_player.getDifficulty() * 10, _player.getDifficulty() * 10);
+	//Spawn Boxes
+	unbreakableRing(_mapSize.first, _mapSize.second);
+	for (int i = 1; i < _mapSize.first - 1; i++) {
+		if (i % 2 == 0) {
+			if (i == 2)
+				breakableRing(_mapSize.first - i, _mapSize.second - i, std::make_pair(2, 2));
+			else
+				breakableRing(_mapSize.first - i, _mapSize.second - i);
+		}
+		else
+			cornerBox(_mapSize.first - i, _mapSize.second - i);
+	}
+	//Spawn Player
+	_player.setXY(std::make_pair(1, 1));
+	//Randomize one of each drops
+	index = dropFreeBoxInd();
+	_breakableB[index].setDrop(new LevelHatch(_breakableB[index].getXY()));
+	index = dropFreeBoxInd();
+	_breakableB[index].setDrop(new RemoteDetonator(_breakableB[index].getXY()));
+	if (_player.getLevel() < 1) {
+		index = dropFreeBoxInd();
+		_breakableB[index].setDrop(new ExtraBomb(_breakableB[index].getXY()));
+		index = dropFreeBoxInd();
+		_breakableB[index].setDrop(new RangeExtender(_breakableB[index].getXY()));
+	}
+}

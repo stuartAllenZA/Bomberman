@@ -239,7 +239,7 @@ void            Menu::mainMenu() {
 	if (index == 1)
 		b->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
 
-	b = new nanogui::Button(nanoguiWindow, "Load Game");
+	b = new nanogui::Button(nanoguiWindow, "Continue");
 	b->setCallback([this]{
 		loadGameButton();
 	});
@@ -332,6 +332,7 @@ void			Menu::settingsMenu() {
 	static int						index = 1;
 	static int						resolutionIndex = 0;
 	bool							breaker = false;
+	Settings                        buSettings(this->_game->getSettings());
 
 	std::cout << *_game << std::endl;
 	std::cout << "_________________________________________________________________________________" << std::endl;
@@ -423,8 +424,9 @@ void			Menu::settingsMenu() {
 	b->setFixedWidth(180);
 	nanogui::Widget *tools = new nanogui::Widget(nanoguiWindow);
 	tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation ::Horizontal, nanogui::Alignment::Middle, 0, 2));
-	b = new nanogui::Button(tools, "Back");
+	b = new nanogui::Button(tools, "Cancel");
 	b->setCallback([&]{
+		this->_game->setSettings(buSettings);
 		if (this->_game->getPlayState() == PlayState::GAME_PLAY)
 			_menuState = MenuState::PAUSE;
 		else

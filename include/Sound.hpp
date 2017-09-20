@@ -27,20 +27,28 @@ public:
 	void					stopMenuMusic();
 	void					startGameMusic();
 	void					stopGameMusic();
+	void					startCreditsMusic();
+	void					stopCreditsMusic();
 	void					playMenuPass();
 	void					playMenuFail();
 	void					playMenuHover();
 	void					playMenuClick();
+	void					playMenuKeypress();
 	void					playMenuLimit();
 	void					playGameSaved();
 	void					playPlayerSpawn();
 	void					playPlayerWalk();
+	void					playPlayerHit();
 	void					playEnemySpawn();
 	void					playEnemyWalk();
+	void					playEnemyHit();
 	void					playPlantBomb();
 	void					playDetonateBomb();
-	void					playDropDrop();
-	void					playPickupDrop();
+	void					playBoxDrop();
+	void					playPickupExtraBomb();
+	void					playPickupRangeExtend();
+	void					playPickupRemoteDet();
+	void					playLevelComplete();
 
 private:
 	irrklang::ISoundEngine	*_engine;
@@ -52,35 +60,29 @@ private:
 	irrklang::ISound		*_menuMusicS;
 	irrklang::ISoundSource	*_gameMusic;
 	irrklang::ISound		*_gameMusicS;
+	irrklang::ISoundSource	*_creditsMusic;
+	irrklang::ISound		*_creditsMusicS;
 
 	irrklang::ISoundSource	*_menuPass;
-	irrklang::ISound		*_menuPassS;
 	irrklang::ISoundSource	*_menuFail;
-	irrklang::ISound		*_menuFailS;
 	irrklang::ISoundSource	*_menuHover;
-	irrklang::ISound		*_menuHoverS;
 	irrklang::ISoundSource	*_menuClick;
-	irrklang::ISound		*_menuClickS;
+	irrklang::ISoundSource	*_menuKeypress;
 	irrklang::ISoundSource	*_menuLimit;
-	irrklang::ISound		*_menuLimitS;
 	irrklang::ISoundSource	*_gameSaved;
-	irrklang::ISound		*_gameSavedS;
 	irrklang::ISoundSource	*_playerSpawn;
-	irrklang::ISound		*_playerSpawnS;
 	irrklang::ISoundSource	*_playerWalk;
-	irrklang::ISound		*_playerWalkS;
+	irrklang::ISoundSource	*_playerHit;
 	irrklang::ISoundSource	*_enemySpawn;
-	irrklang::ISound		*_enemySpawnS;
 	irrklang::ISoundSource	*_enemyWalk;
-	irrklang::ISound		*_enemyWalkS;
+	irrklang::ISoundSource	*_enemyHit;
 	irrklang::ISoundSource	*_plantBomb;
-	irrklang::ISound		*_plantBombS;
 	irrklang::ISoundSource	*_detonateBomb;
-	irrklang::ISound		*_detonateBombS;
-	irrklang::ISoundSource	*_dropDrop;
-	irrklang::ISound		*_dropDropS;
-	irrklang::ISoundSource	*_pickupDrop;
-	irrklang::ISound		*_pickupDropS;
+	irrklang::ISoundSource	*_boxDrop;
+	irrklang::ISoundSource	*_pickupExtraBomb;
+	irrklang::ISoundSource	*_pickupRangeExtend;
+	irrklang::ISoundSource	*_pickupRemoteDet;
+	irrklang::ISoundSource	*_levelComplete;
 };
 
 #endif
