@@ -297,6 +297,7 @@ void            Menu::mainMenu() {
 				if (index < 1)
 					index = 5;
 				breaker = true;
+				this->_game->getSound().playMenuKeypress();
 			}
 
 			if (glfwGetKey(*_win, GLFW_KEY_ENTER))
@@ -317,12 +318,15 @@ void            Menu::mainMenu() {
 						logoutButton();
 						break;
 					case 5 :
+						_game->getSound().playMenuClick();
 						exitButton();
 						break;
 
 				}
-			else if (this->_game->getKeyPressArr(ESCAPE))
+			else if (this->_game->getKeyPressArr(ESCAPE)) {
 				playerSelectButton();
+				_game->getSound().playMenuClick();
+			}
 		}
 		renderMenu();
 	}
@@ -412,6 +416,7 @@ void			Menu::settingsMenu() {
 	b = new nanogui::Button(keyBindTools, "Set Keybindings");
 	b->setCallback([&]{
 		_menuState = MenuState::KEYBINDING;
+		_game->getSound().playMenuClick();
 	});
 	if (index == 1)
 		b->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -420,6 +425,7 @@ void			Menu::settingsMenu() {
 	b->setCallback([&]{
 		this->_game->setSettings(Settings());
 		breaker = true;
+		_game->getSound().playMenuClick();
 	});
 	if (index == 2)
 		b->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -433,6 +439,7 @@ void			Menu::settingsMenu() {
 			_menuState = MenuState::PAUSE;
 		else
 			quitToMenuButton();
+		_game->getSound().playMenuClick();
 	});
 	if (index == 3)
 		b->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -440,6 +447,7 @@ void			Menu::settingsMenu() {
 	b = new nanogui::Button(tools, "Apply");
 	b->setCallback([&]{
 		applyButton(cobo->selectedIndex(), &tempSettings);
+		_game->getSound().playMenuClick();
 	});
 	if (index == 4)
 		b->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -460,21 +468,26 @@ void			Menu::settingsMenu() {
 				if (index < 1)
 					index = 4;
 				breaker = true;
+				this->_game->getSound().playMenuKeypress();
 			}
 			if (glfwGetKey(*_win, GLFW_KEY_ENTER))
 				switch (index) {
 					case 1 :
+						_game->getSound().playMenuClick();
 						_menuState = MenuState::KEYBINDING;
 						break;
 					case 2 :
 						this->_game->setSettings(Settings());
+						_game->getSound().playMenuClick();
 						break;
 					case 3 :
+						_game->getSound().playMenuClick();
 						if (this->_game->getPlayState() == PlayState::GAME_PLAY)
 							_menuState = MenuState::PAUSE;
 						else
 							quitToMenuButton();
 					case 4 :
+						_game->getSound().playMenuClick();
 						applyButton(cobo->selectedIndex(), &tempSettings);
 						break;
 				}
@@ -483,6 +496,7 @@ void			Menu::settingsMenu() {
 					_menuState = MenuState::PAUSE;
 				else
 					_menuState = MenuState::MAIN_MENU;
+				_game->getSound().playMenuClick();
 			}
 		}
 		renderMenu();
@@ -520,6 +534,7 @@ void            Menu::keyBindingMenu() {
 		upKeyButton->setCaption("");
 		upKeyButton->setCaption("?");
 		bindingButtonState = BindingButtonState::UP_BINDING;
+		_game->getSound().playMenuClick();
 	});
 	if (index == 1)
 		upKeyButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -537,6 +552,7 @@ void            Menu::keyBindingMenu() {
 		downKeyButton->setCaption("");
 		downKeyButton->setCaption("?");
 		bindingButtonState = BindingButtonState::DOWN_BINDING;
+		_game->getSound().playMenuClick();
 	});
 	if (index == 2)
 		downKeyButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -553,6 +569,7 @@ void            Menu::keyBindingMenu() {
 		leftKeyButton->setCaption("");
 		leftKeyButton->setCaption("?");
 		bindingButtonState = BindingButtonState::LEFT_BINDING;
+		_game->getSound().playMenuClick();
 	});
 	if (index == 3)
 		leftKeyButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -569,6 +586,7 @@ void            Menu::keyBindingMenu() {
 		rightKeyButton->setCaption("");
 		rightKeyButton->setCaption("?");
 		bindingButtonState = BindingButtonState::RIGHT_BINDING;
+		_game->getSound().playMenuClick();
 	});
 	if (index == 4)
 		rightKeyButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -585,6 +603,7 @@ void            Menu::keyBindingMenu() {
 		actionKeyButton->setCaption("");
 		actionKeyButton->setCaption("?");
 		bindingButtonState = BindingButtonState::ACTION_BINDING;
+		_game->getSound().playMenuClick();
 	});
 	if (index == 5)
 		actionKeyButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -601,6 +620,7 @@ void            Menu::keyBindingMenu() {
 		acceptKeyButton->setCaption("");
 		acceptKeyButton->setCaption("?");
 		bindingButtonState = BindingButtonState::ACCEPT_BINDING;
+		_game->getSound().playMenuClick();
 	});
 	if (index == 6)
 		acceptKeyButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -617,6 +637,7 @@ void            Menu::keyBindingMenu() {
 		escapeKeyButton->setCaption("");
 		escapeKeyButton->setCaption("?");
 		bindingButtonState = BindingButtonState::ESCAPE_BINDING;
+		_game->getSound().playMenuClick();
 	});
 	if (index == 7)
 		escapeKeyButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -624,6 +645,8 @@ void            Menu::keyBindingMenu() {
 	nanogui::Button *exitKeyBindingButton = nanoguiWindow->add<nanogui::Button>("Back");
 	exitKeyBindingButton->setCallback([&] {
 		_menuState = MenuState::SETTINGS;
+		_game->getSound().playMenuClick();
+		_game->getSound().playMenuClick();
 	});
 	if (index == 8)
 		exitKeyBindingButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -644,6 +667,7 @@ void            Menu::keyBindingMenu() {
 			}
 			if (bindingButtonState != BindingButtonState::NONE) {
 				if (findKeyForBinding() != 0) {
+					_game->getSound().playMenuClick();
 					this->_game->setSettings(tempSettings);
 					this->_game->savePlayer();
 					breaker = true;
@@ -657,6 +681,7 @@ void            Menu::keyBindingMenu() {
 					if (index < 1)
 						index = 8;
 					breaker = true;
+					this->_game->getSound().playMenuKeypress();
 				}
 				if (glfwGetKey(*_win, GLFW_KEY_ENTER)) {
 					switch (index) {
@@ -664,45 +689,55 @@ void            Menu::keyBindingMenu() {
 							upKeyButton->setCaption("");
 							upKeyButton->setCaption("?");
 							bindingButtonState = BindingButtonState::UP_BINDING;
+							_game->getSound().playMenuClick();
 							break;
 						case 2 :
 							downKeyButton->setCaption("");
 							downKeyButton->setCaption("?");
 							bindingButtonState = BindingButtonState::DOWN_BINDING;
+							_game->getSound().playMenuClick();
 							break;
 						case 3 :
 							leftKeyButton->setCaption("");
 							leftKeyButton->setCaption("?");
 							bindingButtonState = BindingButtonState::LEFT_BINDING;
+							_game->getSound().playMenuClick();
 							break;
 						case 4 :
 							rightKeyButton->setCaption("");
 							rightKeyButton->setCaption("?");
 							bindingButtonState = BindingButtonState::RIGHT_BINDING;
+							_game->getSound().playMenuClick();
 							break;
 						case 5 :
 							actionKeyButton->setCaption("");
 							actionKeyButton->setCaption("?");
 							bindingButtonState = BindingButtonState::ACTION_BINDING;
+							_game->getSound().playMenuClick();
 							break;
 						case 6 :
 							acceptKeyButton->setCaption("");
 							acceptKeyButton->setCaption("?");
 							bindingButtonState = BindingButtonState::ACCEPT_BINDING;
+							_game->getSound().playMenuClick();
 							break;
 						case 7 :
 							escapeKeyButton->setCaption("");
 							escapeKeyButton->setCaption("?");
 							bindingButtonState = BindingButtonState::ESCAPE_BINDING;
+							_game->getSound().playMenuClick();
 							break;
 						case 8 :
 							_menuState = MenuState::SETTINGS;
+							_game->getSound().playMenuClick();
 							break;
 					}
 					resetDelayTimer();
 				}
-				else if (this->_game->getKeyPressArr(ESCAPE))
+				else if (this->_game->getKeyPressArr(ESCAPE)) {
 					_menuState = MenuState::SETTINGS;
+					_game->getSound().playMenuClick();
+				}
 			}
 		}
 		renderMenu();
@@ -939,7 +974,6 @@ void			Menu::updateMouse() {
 	glfwGetCursorPos(*_win, &_mouseX, &_mouseY);
 	state = glfwGetMouseButton(*_win, GLFW_MOUSE_BUTTON_1);
 	if (state == GLFW_PRESS && wasClicked == false) {
-		this->_game->getSound().playMenuClick();
 		//std::cout << "clicked at:   " << _mouseX << ",  " << _mouseY << std::endl;
 		wasClicked = true;
 		clickX = _mouseX;
@@ -985,15 +1019,17 @@ void			Menu::createButton(std::string playerNameInputVar) {
 		this->_game->savePlayer();
 		_menuState = MenuState::MAIN_MENU;
 		std::cout << "Player : " << playerNameInputVar << " created" << std::endl;
-		_game->getSound().playMenuPass();
+		_game->getSound().playMenuClick();
 	}
 	else
 		errorPopup("ERROR!", "Name already in use.", "OK");
 }
 
 void 			Menu::selectButton(std::vector<std::string> playerNames, int nameIndex) {
-	if (playerNames[nameIndex] != "")
+	if (playerNames[nameIndex] != "") {
 		this->_game->loadPlayer(playerNames[nameIndex]);
+		_game->getSound().playMenuClick();
+	}
 	if (this->_game->getSettings().getWindowed())
 		glfwSetWindowMonitor(*(_win), NULL, this->_game->getSettings().getXPos(), this->_game->getSettings().getYPos(), this->_game->getSettings().getResolutionX(), this->_game->getSettings().getResolutionY(), GLFW_DONT_CARE);
 	else
@@ -1006,9 +1042,10 @@ void			Menu::deleteButton(std::vector<std::string> playerNames, int nameIndex) {
 	std::cout <<"Attempting removal of profile:" << fileName << std::endl;
 	if (remove(fileName.c_str()) != 0)
 		std::cerr << "Error: Could not delete file: " << fileName << std::endl;
-	else
+	else {
 		std::cout << "Deleted profile: " << fileName << std::endl;
-
+		_game->getSound().playMenuClick();
+	}
 }
 
 void			Menu::exitButton() {
@@ -1021,10 +1058,12 @@ void            Menu::newGameButton() {
 	this->_game->setGameState(GameState::PLAY);
 	this->_game->setPlayState(PlayState::GAME_PLAY);
 	_menuState = MenuState::NO_MENU;
+	_game->getSound().playMenuClick();
 }
 
 void            Menu::loadGameButton() {
 	std::cout << "HAS SAVES" << std::endl;
+	_game->getSound().playMenuClick();
 }
 
 void            Menu::playerSelectButton() {
@@ -1035,10 +1074,12 @@ void            Menu::playerSelectButton() {
 void            Menu::settingsButton() {
 	std::cout << "Settings pressed." << std::endl;
 	_menuState = MenuState::SETTINGS;
+	_game->getSound().playMenuClick();
 }
 
 void            Menu::logoutButton() {
 	std::cout << "Logout pressed." << std::endl;
+	_game->getSound().playMenuClick();
 	_menuState = MenuState::PLAYER_SELECT;
 	this->_game->setPlayer(Player());
 	this->_game->setSettings(Settings());
