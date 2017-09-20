@@ -37,12 +37,9 @@ if (NOT IS_DIRECTORY "${TINYGLTF_DIR}")
 endif()
 
 set(SOURCE_FILES
-	src/animation.cpp
 	src/Bomb.cpp
-	src/Bomberman.cpp
 	src/Box.cpp
 	src/BreakableBox.cpp
-	src/camera.cpp
 	src/Character.cpp
 	src/Core.cpp
 	src/Drop.cpp
@@ -52,21 +49,15 @@ set(SOURCE_FILES
 	src/ExtraBomb.cpp
 	src/Game.cpp
 	src/GraphicsEngine.cpp
-	src/input.cpp
 	src/LevelHatch.cpp
-	src/material.cpp
 	src/Menu.cpp
-	src/Model.cpp
 	src/Player.cpp
 	src/RangeExtender.cpp
 	src/RemoteDetonator.cpp
 	src/Settings.cpp
-	src/Shader.cpp
 	src/Sound.cpp
 	src/stb_image.cpp
-	src/UnbreakableBox.cpp
-	src/util.cpp
-	src/window.cpp)
+	src/UnbreakableBox.cpp)
 
 include_directories(
 		${PROJECT_SOURCE_DIR}/include
@@ -75,8 +66,6 @@ include_directories(
 		${NANOGUI_DIR}/include
 		${NANOGUI_DIR}/ext/eigen
 		${NANOGUI_DIR}/ext/nanovg/src
-		#		${GLM_DIR}
-		#${GLM_DIR}/gtc
 		${TINYGLTF_DIR}
 		$ENV{HOME}/.brew/Cellar/glew/2.1.0/include
 )

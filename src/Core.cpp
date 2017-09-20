@@ -120,8 +120,8 @@ void			Core::init() {
 		glfwTerminate();
 	}
 	glEnable(GL_DEPTH_TEST);
-	_gfx = new GraphicsEngine(&_game, &_win);
-	_gfx->init();
+	//_gfx = new GraphicsEngine(&_game, &_win);
+	//_gfx->init();
 
 	std::cout << "glfw window created" << std::endl;
 }
@@ -176,7 +176,7 @@ void			Core::fatalError(std::string errorString) {
 
 void			Core::initPlay() {
 	std::cout << "playing, ESC to exit" << std::endl;
-	bool exitStatus = false;
+/*	bool exitStatus = false;
 	glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	//while (!_game.getKeyPressArr(ESCAPE)) {
 	while (!exitStatus) {
@@ -185,6 +185,7 @@ void			Core::initPlay() {
 		_gfx->render();	
 	}
 	glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	*/
 	this->_game.setGameState(GameState::MENU);
 	_menu->setMenuState(MenuState::PAUSE);
 }
