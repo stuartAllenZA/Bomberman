@@ -25,6 +25,9 @@ enum class MenuState {
     SETTINGS,
     KEYBINDING,
     PAUSE,
+	DIFFICULTY,
+	LEVEL_PASS,
+	LEVEL_FAIL,
     NO_MENU
 };
 
@@ -73,6 +76,9 @@ public:
     void			settingsMenu();
     void            keyBindingMenu();
     void            pauseMenu();
+	void 			difficultyMenu();
+	void			levelPassMenu();
+	void			levelFailMenu();
 	int				checkMenuSelectionKeys();
     bool            checkPlayerNameAvailability(std::string playerNameInputVar);
     void            createButton(std::string playerNameInputVar);

@@ -55,24 +55,30 @@ void			Menu::menu() {
 	while (this->_game->getGameState() == GameState::MENU) {
 		switch (_menuState) {
 			case MenuState::PLAYER_SELECT :
-			playerSelectMenu();
-			break;
+				playerSelectMenu();
+				break;
 			case MenuState::MAIN_MENU :
-			mainMenu();
-			break;
+				mainMenu();
+				break;
 			case MenuState::LOAD_SAVE :
-			break;
+				break;
 			case MenuState::SETTINGS :
-			settingsMenu();
-			break;
+				settingsMenu();
+				break;
 			case MenuState::KEYBINDING :
-			keyBindingMenu();
-			break;
+				keyBindingMenu();
+				break;
 			case MenuState::PAUSE :
-			pauseMenu();
-			break;
+				pauseMenu();
+				break;
+			case MenuState::DIFFICULTY :
+				break;
+			case MenuState::LEVEL_FAIL :
+				break;
+			case MenuState::LEVEL_PASS :
+				break;
 			case MenuState::NO_MENU :
-			break;
+				break;
 		}
 	}
 }
@@ -190,6 +196,7 @@ void			Menu::playerSelectMenu() {
 					else
 						index = 1;
 					breaker = true;
+					this->_game->getSound().playMenuKeypress();
 				}
 			} else {
 				if (checkMenuSelectionKeys() != 0) {
@@ -199,6 +206,7 @@ void			Menu::playerSelectMenu() {
 					else if (index < 1)
 						index = 4;
 					breaker = true;
+					this->_game->getSound().playMenuKeypress();
 				}
 			}
 			if (glfwGetKey(*_win, GLFW_KEY_ENTER) == GLFW_PRESS) {
@@ -481,9 +489,10 @@ void			Menu::settingsMenu() {
 						_game->getSound().playMenuClick();
 						break;
 					case 3 :
-						_game->getSound().playMenuClick();
-						if (this->_game->getPlayState() == PlayState::GAME_PLAY)
+						if (this->_game->getPlayState() == PlayState::GAME_PLAY) {
+							_game->getSound().playMenuClick();
 							_menuState = MenuState::PAUSE;
+						}
 						else
 							quitToMenuButton();
 					case 4 :
@@ -892,34 +901,76 @@ void			Menu::bindKeysWithoutConflicts(BindingButtonState bindingButtonState, Set
 void            Menu::pauseMenu() {
 	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
 	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "PAUSED");
+	static int 			index = 1;
+	bool 				breaker = false;
 
-	gui->addButton("Resume", [this] {
+	nanogui::Button *nanoResumeButton = nanoguiWindow->add<nanogui::Button>("Resume");
+	nanoResumeButton->setCallback([&] {
 		resumeButton();
 	});
+	if (index == 1)
+		nanoResumeButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
 
-	gui->addButton("Settings", [this] {
+
+	nanogui::Button *nanoSettingsButton = nanoguiWindow->add<nanogui::Button>("Settings");
+	nanoSettingsButton->setCallback([&] {
 		settingsButton();
 	});
-
-	gui->addButton("Quit to Menu", [this] {
+	if (index == 2)
+		nanoSettingsButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
+	
+	nanogui::Button *nanoQuitToMenuButton = nanoguiWindow->add<nanogui::Button>("Quit To Menu");
+	nanoQuitToMenuButton->setCallback([&] {
 		quitToMenuButton();
 	});
+	if (index == 3)
+		nanoQuitToMenuButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
 
-	gui->addButton("Exit Program", [this] {
+	nanogui::Button *nanoExitButton = nanoguiWindow->add<nanogui::Button>("Exit Program");
+	nanoExitButton->setCallback([&] {
 		exitButton();
 	});
+	if (index == 4)
+		nanoExitButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
 
 	screen->setVisible(true);
 	screen->performLayout();
 	nanoguiWindow->center();
 	resetDelayTimer();
-	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::PAUSE){
+	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::PAUSE && !breaker){
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
-		if (this->_game->getKeyPressArr(ESCAPE) && getDelayTimer() >= getMinimumTime()) {
-			_menuState = MenuState::NO_MENU;
-			this->_game->setGameState(GameState::PLAY);
+		if (getDelayTimer() >= 10) {
+			if (checkMenuSelectionKeys() != 0) {
+				index += checkMenuSelectionKeys();
+				if (index > 4)
+					index = 1;
+				if (index < 1)
+					index = 4;
+				breaker = true;
+				this->_game->getSound().playMenuKeypress();
+			}
+
+			if (glfwGetKey(*_win, GLFW_KEY_ENTER))
+				switch (index) {
+					case 1 :
+						resumeButton();
+						break;
+					case 2 :
+						settingsButton();
+						break;
+					case 3 :
+						quitToMenuButton();
+						break;
+					case 4 :
+						exitButton();
+						break;
+				}
+			else if (this->_game->getKeyPressArr(ESCAPE)) {
+				playerSelectButton();
+				_game->getSound().playMenuClick();
+			}
 		}
 		renderMenu();
 	}
@@ -927,6 +978,8 @@ void            Menu::pauseMenu() {
 		exitButton();
 	nanoguiWindow->dispose();
 }
+
+
 
 void			Menu::updateKeys() {
 	if (glfwGetKey(*_win, this->_game->getSettings().getUpKey()) == GLFW_PRESS)
@@ -1122,11 +1175,13 @@ void            Menu::keyBindingButton() {
 }
 
 void            Menu::resumeButton() {
+	this->_game->getSound().playMenuClick();
 	this->_game->setGameState(GameState::PLAY);
 	_menuState = MenuState::NO_MENU;
 }
 
 void            Menu::quitToMenuButton() {
+	this->_game->getSound().playMenuClick();
 	_menuState = MenuState::MAIN_MENU;
 	this->_game->setGameState(GameState::MENU);
 	this->_game->setPlayState(PlayState::GAME_LOAD);
