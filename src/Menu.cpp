@@ -1017,7 +1017,6 @@ void 			Menu::difficultyMenu() {
 	nanogui::Button *nanoExitButton = nanoguiWindow->add<nanogui::Button>("Back");
 	nanoExitButton->setCallback([&] {
 		_menuState = MenuState::MAIN_MENU;
-		newGameButton();
 	});
 	if (index == 4)
 		nanoExitButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
@@ -1046,15 +1045,15 @@ void 			Menu::difficultyMenu() {
 				switch (index) {
 					case 1 :
 						this->_game->setDifficulty(1);
-						newGameButton();
+						//newGameButton();
 						break;
 					case 2 :
 						this->_game->setDifficulty(2);
-						newGameButton();
+						//newGameButton();
 						break;
 					case 3 :
 						this->_game->setDifficulty(3);
-						newGameButton();
+						//newGameButton();
 						break;
 					case 4 :
 						_menuState = MenuState::MAIN_MENU;
