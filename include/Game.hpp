@@ -114,6 +114,7 @@ public:
 	void						initLevelTwo();
 	void						initLevelThree();
 	int							dropFreeBoxInd();
+	void 						setDifficulty(const int dif);
 
 private:
 	GameState					_gameState;

@@ -343,6 +343,10 @@ int						Game::getPlayerLevel() {
 	return (_player.getLevel());
 }
 
+void				Game::setDifficulty(const int dif) {
+	this->_player.setDifficulty(dif);
+}
+
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	int num;
 	o << "Dumping Game State" <<
@@ -515,6 +519,7 @@ void					Game::initLevelOne() {
 }
 
 void					Game::initLevelTwo() {
+
 }
 
 void					Game::initLevelThree() {

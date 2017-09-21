@@ -191,6 +191,13 @@ void			Core::initPlay() {
 			this->_game.setGameState(GameState::MENU);
 			_menu->setMenuState(MenuState::PAUSE);
 		}
+		if (glfwGetKey(_win, GLFW_KEY_P) == GLFW_PRESS) {
+			_menu->setMenuState(MenuState::LEVEL_PASS);
+			_game.setGameState(GameState::MENU);
+		}
+		if (glfwGetKey(_win, GLFW_KEY_F) == GLFW_PRESS)
+			_menu->setMenuState(MenuState::LEVEL_FAIL);
+			_game.setGameState(GameState::MENU);
 	}
 }
 
