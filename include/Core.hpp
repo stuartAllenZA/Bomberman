@@ -41,6 +41,7 @@ public:
 	void			drawGame();
 	void			newPlayer(const std::string playerName);
 	void			initPlay();
+	void			resumePlay();
 	void			exit();
 	void			setExit();
 	void			fatalError(std::string errorString);

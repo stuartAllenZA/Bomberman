@@ -50,6 +50,7 @@ enum class GameState {
 enum class PlayState {
 	PLAYER_SELECT,
 	GAME_LOAD,
+	GAME_INIT,
 	GAME_PLAY
 };
 
@@ -84,16 +85,26 @@ class Game {
 		void						setWindowPos(const int xPos, const int yPos);
 		void						updateSound();
 		void						startMenuMusic();
+		void						pauseMenuMusic();
+		void						resumeMenuMusic();
 		void						stopMenuMusic();
 		void						startGameMusic();
+		void						pauseGameMusic();
+		void						resumeGameMusic();
 		void						stopGameMusic();
 		void						startCreditsMusic();
+		void						pauseCreditsMusic();
+		void						resumeCreditsMusic();
 		void						stopCreditsMusic();
+		void						setPlayerLevel(const int level);
+		int							getPlayerLevel();
 		void						unbreakableRing(int x, int y);
 		void						breakableRing(int x, int y);
 		void						breakableRing(int x, int y, std::pair<int, int> skip);
 		void						cornerBox(int x, int y);
 		void						initLevelOne();
+		void						initLevelTwo();
+		void						initLevelThree();
 		int							dropFreeBoxInd();
 		void 						setDifficulty(const int dif);
 
