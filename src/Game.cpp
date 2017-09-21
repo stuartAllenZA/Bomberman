@@ -259,24 +259,56 @@ void					Game::startMenuMusic() {
 	this->_sound.startMenuMusic();
 }
 
+void					Game::pauseMenuMusic() {
+	this->_sound.pauseMenuMusic();
+}
+
+void					Game::resumeMenuMusic() {
+	this->_sound.resumeMenuMusic();
+}
+
 void					Game::stopMenuMusic() {
 	this->_sound.stopMenuMusic();
 }
 
 void					Game::startGameMusic() {
-	this->_sound.startCreditsMusic();
+	this->_sound.startGameMusic();
+}
+
+void					Game::pauseGameMusic() {
+	this->_sound.pauseGameMusic();
+}
+
+void					Game::resumeGameMusic() {
+	this->_sound.resumeGameMusic();
 }
 
 void					Game::stopGameMusic() {
-	this->_sound.stopCreditsMusic();
+	this->_sound.stopGameMusic();
 }
 
 void					Game::startCreditsMusic() {
 	this->_sound.startCreditsMusic();
 }
 
+void					Game::pauseCreditsMusic() {
+	this->_sound.pauseCreditsMusic();
+}
+
+void					Game::resumeCreditsMusic() {
+	this->_sound.resumeCreditsMusic();
+}
+
 void					Game::stopCreditsMusic() {
 	this->_sound.stopCreditsMusic();
+}
+
+void					Game::setPlayerLevel(const int level) {
+	_player.setLevel(level);
+}
+
+int						Game::getPlayerLevel() {
+	return (_player.getLevel());
 }
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
@@ -301,12 +333,13 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 }
 
 void					Game::unbreakableRing(int x, int y) {
-	int		xStart = (_mapSize.first - x) / 2;
-	int		yStart = (_mapSize.second - y) / 2;
+	int		xStart = (_mapSize.first - x);
+	int		yStart = (_mapSize.second - y);
+	std::cout << "Passed x: " << x << " Passed y: " << y << " xStart: " << xStart << " yStart: " << yStart << std::endl;
 
 	for (int i = xStart; i < x; i++) {
 		if (i == xStart || i == x-1) {
-			for (int j = yStart; i < y; j++) {
+			for (int j = yStart; j < y; j++) {
 				_unbreakableB.push_back(UnbreakableBox(std::make_pair(i, j)));
 			}
 		}
@@ -318,12 +351,13 @@ void					Game::unbreakableRing(int x, int y) {
 }
 
 void					Game::breakableRing(int x, int y) {
-	int		xStart = (_mapSize.first - x) / 2;
-	int		yStart = (_mapSize.second - y) / 2;
+	int		xStart = (_mapSize.first - x);
+	int		yStart = (_mapSize.second - y);
+	std::cout << "Passed x: " << x << " Passed y: " << y << " xStart: " << xStart << " yStart: " << yStart << std::endl;
 
 	for (int i = xStart; i < x; i++) {
 		if (i == xStart || i == x-1) {
-			for (int j = yStart; i < y; j++) {
+			for (int j = yStart; j < y; j++) {
 				_breakableB.push_back(BreakableBox(std::make_pair(i, j)));
 			}
 		}
@@ -335,13 +369,14 @@ void					Game::breakableRing(int x, int y) {
 }
 
 void					Game::breakableRing(int x, int y, std::pair<int, int> skip) {
-	int		xStart = (_mapSize.first - x) / 2;
-	int		yStart = (_mapSize.second - y) / 2;
+	int		xStart = (_mapSize.first - x);
+	int		yStart = (_mapSize.second - y);
 	std::pair<int, int>	temp;
+	std::cout << "Passed x: " << x << " Passed y: " << y << " xStart: " << xStart << " yStart: " << yStart << std::endl;
 
 	for (int i = xStart; i < x; i++) {
 		if (i == xStart || i == x-1) {
-			for (int j = yStart; i < y; j++) {
+			for (int j = yStart; j < y; j++) {
 				temp = std::make_pair(i, j);
 				if (temp != skip)
 					_breakableB.push_back(BreakableBox(temp));
@@ -360,10 +395,11 @@ void					Game::breakableRing(int x, int y, std::pair<int, int> skip) {
 
 void					Game::cornerBox(int x, int y) {
 	int		x1 = (_mapSize.first - x);
-	int		x2 = x;
+	int		x2 = x - 1;
 	int		y1 = (_mapSize.second - y);
-	int		y2 = y;
+	int		y2 = y - 1;
 
+	std::cout << "Doing corners\n";
 	_breakableB.push_back(BreakableBox(std::make_pair(x1, y1)));
 	_breakableB.push_back(BreakableBox(std::make_pair(x1, y2)));
 	_breakableB.push_back(BreakableBox(std::make_pair(x2, y1)));
@@ -375,6 +411,7 @@ int					Game::dropFreeBoxInd() {
 
 	while (1) {
 		randomInt = rand() % _breakableB.size();
+		std::cout << "Int = " << randomInt << " size = " << _breakableB.size() << std::endl;
 		if (!_breakableB[randomInt].getDrop())
 			return (randomInt);
 	}
@@ -386,7 +423,7 @@ void					Game::initLevelOne() {
 	_mapSize = std::make_pair(_player.getDifficulty() * 10, _player.getDifficulty() * 10);
 	//Spawn Boxes
 	unbreakableRing(_mapSize.first, _mapSize.second);
-	for (int i = 1; i < _mapSize.first - 1; i++) {
+	for (int i = 1; i < (_mapSize.first / 2); i++) {
 		if (i % 2 == 0) {
 			if (i == 2)
 				breakableRing(_mapSize.first - i, _mapSize.second - i, std::make_pair(2, 2));
@@ -403,10 +440,16 @@ void					Game::initLevelOne() {
 	_breakableB[index].setDrop(new LevelHatch(_breakableB[index].getXY()));
 	index = dropFreeBoxInd();
 	_breakableB[index].setDrop(new RemoteDetonator(_breakableB[index].getXY()));
-	if (_player.getLevel() < 1) {
+	if (_player.getLevel() == 0) {
 		index = dropFreeBoxInd();
 		_breakableB[index].setDrop(new ExtraBomb(_breakableB[index].getXY()));
 		index = dropFreeBoxInd();
 		_breakableB[index].setDrop(new RangeExtender(_breakableB[index].getXY()));
 	}
+}
+
+void					Game::initLevelTwo() {
+}
+
+void					Game::initLevelThree() {
 }

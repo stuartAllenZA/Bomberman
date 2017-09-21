@@ -83,14 +83,24 @@ void			Core::gameLoop() {
 		gs = this->_game.getGameState();
 		switch (gs) {
 			case GameState::MENU :
-			_game.startMenuMusic();
+			if (_menu->getMenuState() == MenuState::PLAYER_SELECT)
+				_game.startMenuMusic();
+			else if (_menu->getMenuState() == MenuState::PAUSE)
+				_game.resumeMenuMusic();
 			_menu->menu();
-			_game.stopMenuMusic();
+			_game.pauseMenuMusic();
 			break;
 			case GameState::PLAY :
-			_game.startGameMusic();
-			initPlay();
-			_game.stopGameMusic();
+			if (_game.getPlayState() == PlayState::GAME_INIT) {
+				_game.startGameMusic();
+				initPlay();
+				_game.pauseGameMusic();
+			}
+			else if (_game.getPlayState() == PlayState::GAME_PLAY) {
+				_game.resumeGameMusic();
+				resumePlay();
+				_game.pauseGameMusic();
+			}
 			break;
 			case GameState::EXIT :
 			loop = false;
@@ -125,9 +135,18 @@ void			Core::fatalError(std::string errorString) {
 }
 
 void			Core::initPlay() {
-	//std::cout << "playing, ESC to exit" << std::endl;
-	std::cout << "Playing, on 10x10 board" << std::endl;
-	_game.initLevelOne();
+	std::cout << "Playing, ESC to exit" << std::endl;
+	if (_game.getPlayState() == PlayState::GAME_INIT)
+		_game.initLevelOne();
+	else if (_game.getPlayState() == PlayState::GAME_LOAD) {
+		if (_game.getPlayer().getLevel() == 0)
+			_game.initLevelOne();
+		else if (_game.getPlayer().getLevel() == 1)
+			_game.initLevelTwo();
+		else if (_game.getPlayer().getLevel() == 2)
+			_game.initLevelThree();
+	}
+	_game.setPlayState(PlayState::GAME_PLAY);
 	// Spawn player
 	// Spawn u-box
 	// Spawn box0 - empty
@@ -170,6 +189,18 @@ void			Core::initPlay() {
 	// drop hatch
 	// move player
 	// finish demo
+	while (_game.getGameState() == GameState::PLAY) {
+		glfwPollEvents();
+		updateKeys();
+		if (_game.getKeyPressArr(ESCAPE)){
+			this->_game.setGameState(GameState::MENU);
+			_menu->setMenuState(MenuState::PAUSE);
+		}
+	}
+}
+
+void			Core::resumePlay() {
+	std::cout << "Resuming, ESC to exit" << std::endl;
 	while (_game.getGameState() == GameState::PLAY) {
 		glfwPollEvents();
 		updateKeys();

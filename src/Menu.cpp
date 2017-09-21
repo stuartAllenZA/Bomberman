@@ -1018,7 +1018,7 @@ void			Menu::exitButton() {
 void            Menu::newGameButton() {
 	std::cout << "New Game pressed." << std::endl;
 	this->_game->setGameState(GameState::PLAY);
-	this->_game->setPlayState(PlayState::GAME_PLAY);
+	this->_game->setPlayState(PlayState::GAME_INIT);
 	_menuState = MenuState::NO_MENU;
 }
 
