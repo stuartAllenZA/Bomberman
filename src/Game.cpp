@@ -1,6 +1,6 @@
 #include <Game.hpp>
 
-Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _settings(Settings()), _hasSave(false) {
+Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _settings(Settings()), _hasSave(false), _mapSize(std::make_pair(0, 0)) {
 	//std::cout << "Constructing Game\n";
 	for (int i = 0; i < 7; i++) {
 		this->_keyPressArr[i] = false;
@@ -93,12 +93,44 @@ void					Game::setEnemies(const std::vector<Character*> newEnemies) {
 	this->_enemies = newEnemies;
 }
 
+std::vector<BreakableBox>	Game::getBreakableBs() const {
+	return (this->_breakableBs);
+}
+
+void						Game::setBreakableBs(const std::vector<BreakableBox> newBreakableBs) {
+	this->_breakableBs = newBreakableBs;
+}
+
+std::vector<UnbreakableBox>	Game::getUnbreakableBs() const {
+	return (this->_unbreakableBs);
+}
+
+void						Game::setUnbreakableBs(const std::vector<UnbreakableBox> newUnbreakableBs) {
+	this->_unbreakableBs = newUnbreakableBs;
+}
+
+std::vector<Drop*>			Game::getDrops() const {
+	return (this->_drops);
+}
+
+void					Game::setDrops(const std::vector<Drop*> newDrops) {
+	this->_drops = newDrops;
+}
+
 bool 					Game::getHasSave() const{
 	return (this->_hasSave);
 }
 
 void 					Game::setHasSave(const bool newHasSave){
 	this->_hasSave = newHasSave;
+}
+
+std::pair<int, int>		Game::getMapSize() const {
+	return (this->_mapSize);
+}
+
+void					Game::setMapSize(const std::pair<int, int> newMapSize) {
+	this->_mapSize = newMapSize;
 }
 
 void					Game::savePlayer() {
@@ -316,22 +348,56 @@ void				Game::setDifficulty(const int dif) {
 }
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
-	int num = 0;
+	int num;
 	o << "Dumping Game State" <<
 	"\nGame State: " << static_cast<std::underlying_type<GameState>::type>(rhs.getGameState()) <<
 	"\nPlay State: " << static_cast<std::underlying_type<PlayState>::type>(rhs.getPlayState()) <<
+	"\nMap Size: " << rhs.getMapSize().first << " x " << rhs.getMapSize().second <<
 	"\nHas Save: " << std::boolalpha << rhs.getHasSave() << std::endl;
 	for (int i = 0; i < 7; i++) {
 		o << "keyPressArr[" << i << "]: " << std::boolalpha << rhs.getKeyPressArr(i) << std::endl;
 	}
+
 	if (rhs.getEnemies().size() > 0) {
+		num = 0;
 		for (std::vector<Character*>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it) {
 			num++;
 			o << "Enemy " << num << ": " << *it << std::endl;
 		}
 	}
 	else
-		o << "Enemies: 0";
+		o << "Enemies: 0\n";
+
+	if (rhs.getBreakableBs().size() > 0) {
+		num = 0;
+		for (std::vector<BreakableBox>::iterator it = rhs.getBreakableBs().begin(); it != rhs.getBreakableBs().end(); ++it) {
+			num++;
+			o << "Breakable Box " << num << "\tX: " << it->getXY().first << "\tY: " << it->getXY().second << std::endl;
+		}
+	}
+	else
+		o << "Breakable Box: 0\n";
+
+	if (rhs.getUnbreakableBs().size() > 0) {
+		num = 0;
+		for (std::vector<UnbreakableBox>::iterator it = rhs.getUnbreakableBs().begin(); it != rhs.getUnbreakableBs().end(); ++it) {
+			num++;
+			o << "Unbreakable Box " << num << "\tX: " << it->getXY().first << "\tY: " << it->getXY().second << std::endl;
+		}
+	}
+	else
+		o << "Unbreakable Box: 0\n";
+
+	if (rhs.getDrops().size() > 0) {
+		num = 0;
+		for (std::vector<Drop*>::iterator it = rhs.getDrops().begin(); it != rhs.getDrops().end(); ++it) {
+			num++;
+			o << "Drop " << num << "\tX: " << (*it)->getXY().first << "\tY: " << (*it)->getXY().second << std::endl;
+		}
+	}
+	else
+		o << "Drops: 0\n";
+
 	o << "\nSettings: " << rhs.getSettings() << std::endl << "Player: " << rhs.getPlayer();
 	return o;
 }
@@ -344,12 +410,12 @@ void					Game::unbreakableRing(int x, int y) {
 	for (int i = xStart; i < x; i++) {
 		if (i == xStart || i == x-1) {
 			for (int j = yStart; j < y; j++) {
-				_unbreakableB.push_back(UnbreakableBox(std::make_pair(i, j)));
+				_unbreakableBs.push_back(UnbreakableBox(std::make_pair(i, j)));
 			}
 		}
 		if (i > xStart && i < x-1) {
-			_unbreakableB.push_back(UnbreakableBox(std::make_pair(i, yStart)));
-			_unbreakableB.push_back(UnbreakableBox(std::make_pair(i, y-1)));
+			_unbreakableBs.push_back(UnbreakableBox(std::make_pair(i, yStart)));
+			_unbreakableBs.push_back(UnbreakableBox(std::make_pair(i, y-1)));
 		}
 	}
 }
@@ -362,12 +428,12 @@ void					Game::breakableRing(int x, int y) {
 	for (int i = xStart; i < x; i++) {
 		if (i == xStart || i == x-1) {
 			for (int j = yStart; j < y; j++) {
-				_breakableB.push_back(BreakableBox(std::make_pair(i, j)));
+				_breakableBs.push_back(BreakableBox(std::make_pair(i, j)));
 			}
 		}
 		if (i > xStart && i < x-1) {
-			_breakableB.push_back(BreakableBox(std::make_pair(i, yStart)));
-			_breakableB.push_back(BreakableBox(std::make_pair(i, y-1)));
+			_breakableBs.push_back(BreakableBox(std::make_pair(i, yStart)));
+			_breakableBs.push_back(BreakableBox(std::make_pair(i, y-1)));
 		}
 	}
 }
@@ -383,16 +449,16 @@ void					Game::breakableRing(int x, int y, std::pair<int, int> skip) {
 			for (int j = yStart; j < y; j++) {
 				temp = std::make_pair(i, j);
 				if (temp != skip)
-					_breakableB.push_back(BreakableBox(temp));
+					_breakableBs.push_back(BreakableBox(temp));
 			}
 		}
 		if (i > xStart && i < x-1) {
 			temp = std::make_pair(i, yStart);
 			if (temp != skip)
-				_breakableB.push_back(BreakableBox(temp));
+				_breakableBs.push_back(BreakableBox(temp));
 			temp = std::make_pair(i, y-1);
 			if (temp != skip)
-				_breakableB.push_back(BreakableBox(temp));
+				_breakableBs.push_back(BreakableBox(temp));
 		}
 	}
 }
@@ -404,19 +470,19 @@ void					Game::cornerBox(int x, int y) {
 	int		y2 = y - 1;
 
 	std::cout << "Doing corners\n";
-	_breakableB.push_back(BreakableBox(std::make_pair(x1, y1)));
-	_breakableB.push_back(BreakableBox(std::make_pair(x1, y2)));
-	_breakableB.push_back(BreakableBox(std::make_pair(x2, y1)));
-	_breakableB.push_back(BreakableBox(std::make_pair(x2, y2)));
+	_breakableBs.push_back(BreakableBox(std::make_pair(x1, y1)));
+	_breakableBs.push_back(BreakableBox(std::make_pair(x1, y2)));
+	_breakableBs.push_back(BreakableBox(std::make_pair(x2, y1)));
+	_breakableBs.push_back(BreakableBox(std::make_pair(x2, y2)));
 }
 
 int					Game::dropFreeBoxInd() {
 	int		randomInt;
 
 	while (1) {
-		randomInt = rand() % _breakableB.size();
-		std::cout << "Int = " << randomInt << " size = " << _breakableB.size() << std::endl;
-		if (!_breakableB[randomInt].getDrop())
+		randomInt = rand() % _breakableBs.size();
+		std::cout << "Int = " << randomInt << " size = " << _breakableBs.size() << std::endl;
+		if (!_breakableBs[randomInt].getDrop())
 			return (randomInt);
 	}
 }
@@ -438,17 +504,17 @@ void					Game::initLevelOne() {
 			cornerBox(_mapSize.first - i, _mapSize.second - i);
 	}
 	//Spawn Player
-	_player.setXY(std::make_pair(1, 1));
-	//Randomize one of each drops
+	_player.setXY(std::make_pair(2, 2));
+	//Randomize one of each Drop
 	index = dropFreeBoxInd();
-	_breakableB[index].setDrop(new LevelHatch(_breakableB[index].getXY()));
+	_breakableBs[index].setDrop(new LevelHatch(_breakableBs[index].getXY()));
 	index = dropFreeBoxInd();
-	_breakableB[index].setDrop(new RemoteDetonator(_breakableB[index].getXY()));
+	_breakableBs[index].setDrop(new RemoteDetonator(_breakableBs[index].getXY()));
 	if (_player.getLevel() == 0) {
 		index = dropFreeBoxInd();
-		_breakableB[index].setDrop(new ExtraBomb(_breakableB[index].getXY()));
+		_breakableBs[index].setDrop(new ExtraBomb(_breakableBs[index].getXY()));
 		index = dropFreeBoxInd();
-		_breakableB[index].setDrop(new RangeExtender(_breakableB[index].getXY()));
+		_breakableBs[index].setDrop(new RangeExtender(_breakableBs[index].getXY()));
 	}
 }
 
