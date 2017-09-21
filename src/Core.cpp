@@ -147,12 +147,7 @@ void			Core::initPlay() {
 			_game.initLevelThree();
 	}
 	_game.setPlayState(PlayState::GAME_PLAY);
-	// Spawn player
-	// Spawn u-box
-	// Spawn box0 - empty
-	// Spawn box1 - enemy
-	// Spawn box2 - upgrade
-	// Spawn box3 - hatch
+	std::cout << _game << std::endl;
 	// Move player
 	// Place bomb
 	// move player
