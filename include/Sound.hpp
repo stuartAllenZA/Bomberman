@@ -1,4 +1,4 @@
-#ifndef SOUND_HPP
+	#ifndef SOUND_HPP
 #define SOUND_HPP
 
 #include <unistd.h>
@@ -24,10 +24,16 @@ public:
 	void					updateMusicVol();
 	void					updateFXVol();
 	void					startMenuMusic();
+	void					pauseMenuMusic();
+	void					resumeMenuMusic();
 	void					stopMenuMusic();
 	void					startGameMusic();
+	void					pauseGameMusic();
+	void					resumeGameMusic();
 	void					stopGameMusic();
 	void					startCreditsMusic();
+	void					pauseCreditsMusic();
+	void					resumeCreditsMusic();
 	void					stopCreditsMusic();
 	void					playMenuPass();
 	void					playMenuFail();
@@ -58,10 +64,13 @@ private:
 
 	irrklang::ISoundSource	*_menuMusic;
 	irrklang::ISound		*_menuMusicS;
+	unsigned int			_menuMusicPauseTime;
 	irrklang::ISoundSource	*_gameMusic;
 	irrklang::ISound		*_gameMusicS;
+	unsigned int			_gameMusicPauseTime;
 	irrklang::ISoundSource	*_creditsMusic;
 	irrklang::ISound		*_creditsMusicS;
+	unsigned int			_creditsMusicPauseTime;
 
 	irrklang::ISoundSource	*_menuPass;
 	irrklang::ISoundSource	*_menuFail;

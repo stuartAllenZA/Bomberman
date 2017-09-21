@@ -1,34 +1,34 @@
 #include <Box.hpp>
 
 Box::Box() : _drop(nullptr) {
-	std::cout << "Box Default Constructed\n";
+	// std::cout << "Box Default Constructed\n";
 }
 
 Box::Box(Drop *drop) : _drop(drop) {
-	if (drop)
-		std::cout << "Box with drop Constructed\n";
-	else
-		std::cout << "Box was passed a NULL drop, Constructed\n";
+	// if (drop)
+	// 	std::cout << "Box with drop Constructed\n";
+	// else
+	// 	std::cout << "Box was passed a NULL drop, Constructed\n";
 }
 
 Box::Box(std::pair<int, int> xy) : _xy(xy), _drop(nullptr) {
-	std::cout << "Box at x: " << xy.first << " y: " << xy.second << " Constructed\n";
+	// std::cout << "Box at x: " << xy.first << " y: " << xy.second << " Constructed\n";
 }
 
 Box::Box(std::pair<int, int> xy, Drop *drop) : _xy(xy), _drop(drop) {
-	if (drop)
-		std::cout << "Box with drop at x: " << xy.first << " y: " << xy.second << " Constructed\n";
-	else
-		std::cout << "Box at x: " << xy.first << " y: " << xy.second << " was passed a NULL drop, Constructed\n";
+	// if (drop)
+	// 	std::cout << "Box with drop at x: " << xy.first << " y: " << xy.second << " Constructed\n";
+	// else
+	// 	std::cout << "Box at x: " << xy.first << " y: " << xy.second << " was passed a NULL drop, Constructed\n";
 }
 
 Box::Box(Box const & src) {
-	std::cout << "Box Copy-Constructed\n";
+	// std::cout << "Box Copy-Constructed\n";
 	*this = src;
 }
 
 Box::~Box() {
-	std::cout << "Box De-Constructed\n";
+	// std::cout << "Box De-Constructed\n";
 }
 
 Box &				Box::operator=(Box const & src) {
