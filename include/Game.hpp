@@ -95,6 +95,7 @@ class Game {
 		void						cornerBox(int x, int y);
 		void						initLevelOne();
 		int							dropFreeBoxInd();
+		void 						setDifficulty(const int dif);
 
 	private:
 		GameState					_gameState;

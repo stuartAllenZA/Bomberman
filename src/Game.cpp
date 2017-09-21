@@ -410,3 +410,7 @@ void					Game::initLevelOne() {
 		_breakableB[index].setDrop(new RangeExtender(_breakableB[index].getXY()));
 	}
 }
+
+void				Game::setDifficulty(const int dif) {
+	this->_player.setDifficulty(dif);
+}
