@@ -72,6 +72,7 @@ void			Menu::menu() {
 				pauseMenu();
 				break;
 			case MenuState::DIFFICULTY :
+				difficultyMenu();
 				break;
 			case MenuState::LEVEL_FAIL :
 				break;
@@ -905,6 +906,7 @@ void            Menu::pauseMenu() {
 	static int 			index = 1;
 	bool 				breaker = false;
 
+	nanoguiWindow->setLayout(new nanogui::GroupLayout);
 	nanogui::Button *nanoResumeButton = nanoguiWindow->add<nanogui::Button>("Resume");
 	nanoResumeButton->setCallback([&] {
 		resumeButton();
@@ -982,9 +984,11 @@ void            Menu::pauseMenu() {
 
 void 			Menu::difficultyMenu() {
 	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
-	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "PAUSED");
+	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "Difficulty");
 	static int 			index = 1;
 	bool 				breaker = false;
+
+	nanoguiWindow->setLayout(new nanogui::GroupLayout);
 
 	nanogui::Button *nanoEasyButton = nanoguiWindow->add<nanogui::Button>("Easy");
 	nanoEasyButton->setCallback([&] {
@@ -1014,6 +1018,8 @@ void 			Menu::difficultyMenu() {
 	if (index == 3)
 		nanoHardButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
 
+	new nanogui::Label(nanoguiWindow, "");
+	new nanogui::Label(nanoguiWindow, "");
 	nanogui::Button *nanoExitButton = nanoguiWindow->add<nanogui::Button>("Back");
 	nanoExitButton->setCallback([&] {
 		_menuState = MenuState::MAIN_MENU;
@@ -1025,7 +1031,6 @@ void 			Menu::difficultyMenu() {
 	screen->performLayout();
 	nanoguiWindow->center();
 	resetDelayTimer();
-	std::cout << "START OF DIFFICULTY MENU!" << std::endl;
 	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::DIFFICULTY && !breaker){
 		glfwPollEvents();
 		updateKeys();
@@ -1045,15 +1050,15 @@ void 			Menu::difficultyMenu() {
 				switch (index) {
 					case 1 :
 						this->_game->setDifficulty(1);
-						//newGameButton();
+						newGameButton();
 						break;
 					case 2 :
 						this->_game->setDifficulty(2);
-						//newGameButton();
+						newGameButton();
 						break;
 					case 3 :
 						this->_game->setDifficulty(3);
-						//newGameButton();
+						newGameButton();
 						break;
 					case 4 :
 						_menuState = MenuState::MAIN_MENU;
@@ -1071,6 +1076,155 @@ void 			Menu::difficultyMenu() {
 	nanoguiWindow->dispose();
 }
 
+void			Menu::levelFailMenu() {
+	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
+	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "Failure");
+	static int 			index = 1;
+	bool 				breaker = false;
+
+	nanoguiWindow->setLayout(new nanogui::GroupLayout);
+
+	new nanogui::Label(nanoguiWindow, "You Died.");
+
+	nanogui::Button *nanoExitButton = nanoguiWindow->add<nanogui::Button>("Back");
+	nanoExitButton->setCallback([&] {
+		_game->getSound().playMenuClick();
+		_menuState = MenuState::MAIN_MENU;
+		this->_game->setGameState(GameState::MENU);
+	});
+	if (index == 1)
+		nanoExitButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
+
+	nanogui::Button *nanoTryAgainButton = nanoguiWindow->add<nanogui::Button>("Try Again");
+	nanoTryAgainButton->setCallback([&] {
+		newGameButton();
+	});
+	if (index == 2)
+		nanoTryAgainButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
+
+
+	screen->setVisible(true);
+	screen->performLayout();
+	nanoguiWindow->center();
+	resetDelayTimer();
+	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::LEVEL_FAIL && !breaker){
+		glfwPollEvents();
+		updateKeys();
+		updateMouse();
+		if (getDelayTimer() >= 10) {
+			if (checkMenuSelectionKeys() != 0) {
+				index += checkMenuSelectionKeys();
+				if (index == 1)
+					index = 2;
+				else
+					index = 1;
+				breaker = true;
+				this->_game->getSound().playMenuKeypress();
+			}
+
+			if (glfwGetKey(*_win, GLFW_KEY_ENTER))
+				switch (index) {
+					case 1 :
+						_menuState = MenuState::MAIN_MENU;
+						this->_game->setGameState(GameState::MENU);
+						_game->getSound().playMenuClick();
+						break;
+					case 2 :
+						newGameButton();
+						_game->getSound().playMenuClick();
+						break;
+				}
+			else if (this->_game->getKeyPressArr(ESCAPE)) {
+				_menuState = MenuState::MAIN_MENU;
+				_game->getSound().playMenuClick();
+			}
+		}
+		renderMenu();
+	}
+	if (glfwWindowShouldClose(*_win))
+		exitButton();
+	nanoguiWindow->dispose();
+}
+
+void			Menu::levelPassMenu() {
+	nanogui::FormHelper *gui = new nanogui::FormHelper(screen);
+	nanogui::ref<nanogui::Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(400, 800), "Success");
+	static int 			index = 1;
+	bool 				breaker = false;
+
+	nanoguiWindow->setLayout(new nanogui::GroupLayout);
+
+	new nanogui::Label(nanoguiWindow, "Congratulations!");
+
+	nanogui::Button *nanoExitButton = nanoguiWindow->add<nanogui::Button>("Back to menu");
+	nanoExitButton->setCallback([&] {
+		_game->getSound().playMenuClick();
+		_menuState = MenuState::MAIN_MENU;
+		this->_game->setGameState(GameState::MENU);
+	});
+	if (index == 1)
+		nanoExitButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
+
+	nanogui::Button *nanoTryAgainButton = nanoguiWindow->add<nanogui::Button>("Try Again");
+	nanoTryAgainButton->setCallback([&] {
+		newGameButton();
+	});
+	if (index == 2)
+		nanoTryAgainButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
+
+	nanogui::Button *nanoNextLevelButton = nanoguiWindow->add<nanogui::Button>("Next Level");
+	nanoNextLevelButton->setCallback([&] {
+		//add in a next level thing
+		newGameButton();
+	});
+	if (index == 3)
+		nanoNextLevelButton->setBackgroundColor(Eigen::Vector4i(105, 105, 105, 255));
+
+	screen->setVisible(true);
+	screen->performLayout();
+	nanoguiWindow->center();
+	resetDelayTimer();
+	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::LEVEL_FAIL && !breaker){
+		glfwPollEvents();
+		updateKeys();
+		updateMouse();
+		if (getDelayTimer() >= 10) {
+			if (checkMenuSelectionKeys() != 0) {
+				index += checkMenuSelectionKeys();
+				if (index > 4)
+					index = 1;
+				if (index < 1)
+					index = 4;
+				breaker = true;
+				this->_game->getSound().playMenuKeypress();
+			}
+			if (glfwGetKey(*_win, GLFW_KEY_ENTER))
+				switch (index) {
+					case 1 :
+						_menuState = MenuState::MAIN_MENU;
+						this->_game->setGameState(GameState::MENU);
+						_game->getSound().playMenuClick();
+						break;
+					case 2 :
+						newGameButton();
+						_game->getSound().playMenuClick();
+						break;
+					case 3 :
+						newGameButton();
+						break;
+
+				}
+			else if (this->_game->getKeyPressArr(ESCAPE)) {
+				_menuState = MenuState::MAIN_MENU;
+				_game->getSound().playMenuClick();
+			}
+		}
+		renderMenu();
+	}
+	if (glfwWindowShouldClose(*_win))
+		exitButton();
+	nanoguiWindow->dispose();
+}
 
 void			Menu::updateKeys() {
 	if (glfwGetKey(*_win, this->_game->getSettings().getUpKey()) == GLFW_PRESS)
