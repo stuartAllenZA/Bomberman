@@ -37,7 +37,15 @@ if (NOT IS_DIRECTORY "${TINYGLTF_DIR}")
 endif()
 
 set(SOURCE_FILES
+	src/animation.cpp
+	src/input.cpp
+	src/material.cpp
+	src/Model.cpp
+	src/ModelShader.cpp
+	src/util.cpp
+	src/window.cpp
 	src/Bomb.cpp
+	src/camera.cpp
 	src/Box.cpp
 	src/BreakableBox.cpp
 	src/Character.cpp

@@ -1,4 +1,4 @@
-#include <Shader.hpp>
+#include <ModelShader.hpp>
 
 Shader::Shader(const char *vertPath, const char *fragPath)
 {
@@ -130,6 +130,19 @@ void Shader::setUniform1i(GLchar *name, int value)
 	glUniform1i(getUniformLocation(name), value);
 }
 
+void Shader::setUniform1f(GLchar *name, float value)
+{
+	enable();
+	//std::cout << "uniform " << getUniformLocation(name) << std::endl;
+	glUniform1f(getUniformLocation(name), value);
+}
+
+void Shader::setUniform2f(GLchar *name, glm::vec2 vec)
+{
+	enable();
+	glUniform2f(getUniformLocation(name), vec.x, vec.y);
+}
+
 void Shader::setUniform3f(GLchar *name, glm::vec3 &vec)
 {
 	enable();
@@ -148,9 +161,3 @@ void Shader::setUniformMat4(GLchar *name, glm::mat4 matrix)
 	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
-void Shader::setUniform1f(GLchar *name, float value)
-{
-	enable();
-	//std::cout << "uniform " << getUniformLocation(name) << std::endl;
-	glUniform1f(getUniformLocation(name), value);
-}

@@ -7,9 +7,10 @@
 #include "../gfxUtils/glm/gtc/matrix_transform.hpp"
 
 //#include "Game.hpp"
-#include "Camera.hpp"
+ #include "Camera.hpp"
 //#include "Shader.hpp"
 #include "Shader.hpp"
+#include "ModelShader.hpp"
 //#include "Model.hpp"
 #include "tiny_gltf.h"
 #include "stb_image.h"

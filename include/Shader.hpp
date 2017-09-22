@@ -9,11 +9,11 @@
 #include <sstream>
 #include <iostream>
 
-class Shader
+class Shader2
 {
 	public:
 		unsigned int ID;
-		Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr)
+		Shader2(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr)
 		{
 			std::string vertexCode;
 			std::string fragmentCode;
