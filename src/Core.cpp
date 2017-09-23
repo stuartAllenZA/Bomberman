@@ -121,10 +121,6 @@ void			Core::init() {
 		getchar();
 		glfwTerminate();
 	}
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	_gfx = new GraphicsEngine(&_game, &_win);
 	_gfx->init();
 
@@ -181,8 +177,11 @@ void			Core::fatalError(std::string errorString) {
 
 void			Core::initPlay() {
 	std::cout << "playing, ESC to exit" << std::endl;
-	bool exitStatus = false;
 	glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	while (!_game.getKeyPressArr(ESCAPE)) {
 		updateKeys();
 		_gfx->processInput();
