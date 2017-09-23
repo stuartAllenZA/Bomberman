@@ -84,24 +84,24 @@ void			Core::gameLoop() {
 		gs = this->_game.getGameState();
 		switch (gs) {
 			case GameState::MENU :
-			if (_menu->getMenuState() == MenuState::PLAYER_SELECT)
-				_game.startMenuMusic();
-			else if (_menu->getMenuState() == MenuState::PAUSE)
-				_game.resumeMenuMusic();
-			_menu->menu();
-			_game.pauseMenuMusic();
-			break;
+				if (_menu->getMenuState() == MenuState::PLAYER_SELECT)
+					_game.startMenuMusic();
+				else if (_menu->getMenuState() == MenuState::PAUSE)
+					_game.resumeMenuMusic();
+				_menu->menu();
+				_game.pauseMenuMusic();
+				break;
 			case GameState::PLAY :
-			if (_game.getPlayState() == PlayState::GAME_INIT)
-				_game.startGameMusic();
-			else if (_game.getPlayState() == PlayState::GAME_PLAY)
-				_game.resumeGameMusic();
-			play();
-			_game.pauseGameMusic();
-			break;
+				if (_game.getPlayState() == PlayState::GAME_INIT)
+					_game.startGameMusic();
+				else if (_game.getPlayState() == PlayState::GAME_PLAY)
+					_game.resumeGameMusic();
+				play();
+				_game.pauseGameMusic();
+				break;
 			case GameState::EXIT :
-			loop = false;
-			break;
+				loop = false;
+				break;
 		}
 		std::cout << "Main gameLoop looping." << std::endl;
 	}
@@ -181,7 +181,16 @@ void			Core::play() {
 	// drop hatch
 	// move player
 	// finish demo
-	while (_game.getGameState() == GameState::PLAY) {
+	std::cout << "this is the gamestate ";
+	if (_game.getGameState() == GameState::PLAY)
+		std::cout << "PLAY" << std::endl;
+	if (_game.getGameState() == GameState::MENU)
+		std::cout << "MENU" << std::endl;
+	if (_game.getGameState() == GameState::EXIT)
+		std::cout << "MENU" << std::endl;
+
+	while (!glfwWindowShouldClose(_win) && _game.getGameState() == GameState::PLAY) {
+		std::cout << "check for keys loop" << std::endl;
 		glfwPollEvents();
 		updateKeys();
 		if (_game.getKeyPressArr(ESCAPE)){
@@ -189,6 +198,7 @@ void			Core::play() {
 			_menu->setMenuState(MenuState::PAUSE);
 		}
 		if (glfwGetKey(_win, GLFW_KEY_P) == GLFW_PRESS) {
+			std::cout << "P PRESSED" << std::endl;
 			_menu->setMenuState(MenuState::LEVEL_PASS);
 			_game.setGameState(GameState::MENU);
 		}

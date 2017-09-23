@@ -75,8 +75,10 @@ void			Menu::menu() {
 				difficultyMenu();
 				break;
 			case MenuState::LEVEL_FAIL :
+				levelFailMenu();
 				break;
 			case MenuState::LEVEL_PASS :
+				levelPassMenu();
 				break;
 			case MenuState::NO_MENU :
 				break;
@@ -773,16 +775,19 @@ int		Menu::checkMenuSelectionKeys() {
 }
 
 int		Menu::checkForKeySymbol(int keyPressed) {
-	if (keyPressed == GLFW_KEY_UP)
-		return (ENTYPO_ICON_ARROW_UP);
-	else if (keyPressed == GLFW_KEY_DOWN)
-		return (ENTYPO_ICON_ARROW_DOWN);
-	else if (keyPressed == GLFW_KEY_LEFT)
-		return (ENTYPO_ICON_ARROW_LEFT);
-	else if (keyPressed == GLFW_KEY_RIGHT)
-		return (ENTYPO_ICON_ARROW_RIGHT);
-	else
+//	if (keyPressed == GLFW_KEY_UP)
+//		return (ENTYPO_ICON_ARROW_UP);
+//	else if (keyPressed == GLFW_KEY_DOWN)
+//		return (ENTYPO_ICON_ARROW_DOWN);
+//	else if (keyPressed == GLFW_KEY_LEFT)
+//		return (ENTYPO_ICON_ARROW_LEFT);
+//	else if (keyPressed == GLFW_KEY_RIGHT)
+//		return (ENTYPO_ICON_ARROW_RIGHT);
+//	else
+	if (keyPressed != 1000)
 		return (0);
+	else
+		return (1);
 }
 
 int		Menu::findKeyForBinding() {
@@ -1002,7 +1007,7 @@ void 			Menu::difficultyMenu() {
 
 	nanogui::Button *nanoMediumButton = nanoguiWindow->add<nanogui::Button>("Medium");
 	nanoMediumButton->setCallback([&] {
-		this->_game->setDifficulty(1);
+		this->_game->setDifficulty(2);
 		this->_game->getSound().playMenuClick();
 		newGameButton();
 	});
@@ -1011,7 +1016,7 @@ void 			Menu::difficultyMenu() {
 
 	nanogui::Button *nanoHardButton = nanoguiWindow->add<nanogui::Button>("Hard");
 	nanoHardButton->setCallback([&] {
-		this->_game->setDifficulty(1);
+		this->_game->setDifficulty(3);
 		this->_game->getSound().playMenuClick();
 		newGameButton();
 	});
@@ -1114,9 +1119,9 @@ void			Menu::levelFailMenu() {
 		if (getDelayTimer() >= 10) {
 			if (checkMenuSelectionKeys() != 0) {
 				index += checkMenuSelectionKeys();
-				if (index == 1)
+				if (index < 1)
 					index = 2;
-				else
+				if (index > 2)
 					index = 1;
 				breaker = true;
 				this->_game->getSound().playMenuKeypress();
@@ -1184,7 +1189,7 @@ void			Menu::levelPassMenu() {
 	screen->performLayout();
 	nanoguiWindow->center();
 	resetDelayTimer();
-	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::LEVEL_FAIL && !breaker){
+	while (!glfwWindowShouldClose(*_win) && _menuState == MenuState::LEVEL_PASS && !breaker){
 		glfwPollEvents();
 		updateKeys();
 		updateMouse();
