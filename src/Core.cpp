@@ -91,11 +91,12 @@ void			Core::init() {
 	std::cout << "creating glfw window" << std::endl;
 	glfwInit();
 	glfwSetTime(0);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_SAMPLES, 0);
+	glfwWindowHint(GLFW_SAMPLES, 8);
+	/*
 	glfwWindowHint(GLFW_RED_BITS, 8);
 	glfwWindowHint(GLFW_GREEN_BITS, 8);
 	glfwWindowHint(GLFW_BLUE_BITS, 8);
@@ -103,6 +104,7 @@ void			Core::init() {
 	glfwWindowHint(GLFW_STENCIL_BITS, 8);
 	glfwWindowHint(GLFW_DEPTH_BITS, 24);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	*/
 	_win = glfwCreateWindow(_width, _height, "Bomberman", nullptr, nullptr);
 	if (_win == nullptr)
 		fatalError("GLFW context is shot");
@@ -120,8 +122,11 @@ void			Core::init() {
 		glfwTerminate();
 	}
 	glEnable(GL_DEPTH_TEST);
-	//_gfx = new GraphicsEngine(&_game, &_win);
-	//_gfx->init();
+	glDepthFunc(GL_LESS);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	_gfx = new GraphicsEngine(&_game, &_win);
+	_gfx->init();
 
 	std::cout << "glfw window created" << std::endl;
 }
@@ -176,16 +181,14 @@ void			Core::fatalError(std::string errorString) {
 
 void			Core::initPlay() {
 	std::cout << "playing, ESC to exit" << std::endl;
-/*	bool exitStatus = false;
+	bool exitStatus = false;
 	glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	//while (!_game.getKeyPressArr(ESCAPE)) {
-	while (!exitStatus) {
-		//updateKeys();
-		exitStatus = _gfx->processInput();
+	while (!_game.getKeyPressArr(ESCAPE)) {
+		updateKeys();
+		_gfx->processInput();
 		_gfx->render();	
 	}
 	glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-	*/
 	this->_game.setGameState(GameState::MENU);
 	_menu->setMenuState(MenuState::PAUSE);
 }

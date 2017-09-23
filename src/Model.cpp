@@ -1,7 +1,7 @@
 #define TINYGLTF_IMPLEMENTATION
 #include <Model.hpp>
 
-Model::Model(const char *modelPath, Shader *shader) : _shader("gfxUtils/shaders/basic.vert", "gfxUtils/shaders/basic.frag") {
+Model::Model(const char *modelPath, Shader *shader) : _shader("gfxUtils/shaders/anime.vert", "gfxUtils/shaders/basic.frag") {
 	std::cout << "model constructed\n";
 	Camera camera(glm::vec3(10.0f, 12.0f, 6.0f), -45.0f, -90.0f);
 //	_shader = *shader;
@@ -19,6 +19,12 @@ Model::~Model() {
 
 Model::Model() : _shader("gfxUtils/shaders/basic.vert", "gfxUtils/shaders/basic.frag") {
 	std::cout << "model constructed\n";
+}
+Model::Model(Model const & src) { *this = src; }
+
+Model	&Model::operator=(Model const & src) {
+	*this = src;
+	return *this;
 }
 
 glm::mat4	Model::makeMat() {

@@ -37,16 +37,12 @@ if (NOT IS_DIRECTORY "${TINYGLTF_DIR}")
 endif()
 
 set(SOURCE_FILES
-	src/animation.cpp
-	src/input.cpp
-	src/material.cpp
-	src/Model.cpp
-	src/ModelShader.cpp
-	src/util.cpp
-	src/window.cpp
+	src/Animation.cpp
+	src/Util.cpp
 	src/Bomb.cpp
 	src/camera.cpp
 	src/Box.cpp
+	src/Bomberman.cpp
 	src/BreakableBox.cpp
 	src/Character.cpp
 	src/Core.cpp
@@ -58,7 +54,10 @@ set(SOURCE_FILES
 	src/Game.cpp
 	src/GraphicsEngine.cpp
 	src/LevelHatch.cpp
+	src/Material.cpp
 	src/Menu.cpp
+	src/Model.cpp
+	src/ModelShader.cpp
 	src/Player.cpp
 	src/RangeExtender.cpp
 	src/RemoteDetonator.cpp

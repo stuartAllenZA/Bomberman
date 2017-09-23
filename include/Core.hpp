@@ -50,7 +50,7 @@ private:
 	Game			_game;
     Menu            *_menu;
     GLFWwindow		*_win;
-//	GraphicsEngine	*_gfx;
+	GraphicsEngine	*_gfx;
 };
 
 #endif

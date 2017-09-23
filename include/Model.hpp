@@ -1,9 +1,9 @@
 #pragma once
-#include "util.h"
+#include "Util.hpp"
 #include "ModelShader.hpp"
 #include "Camera.hpp"
-#include "material.hpp"
-#include "animation.hpp"
+#include "Material.hpp"
+#include "Animation.hpp"
 #include <map>
 #include <GL/glew.h>
 #include "../gfxUtils/glm/glm.hpp"
@@ -24,54 +24,56 @@ struct Joint
 
 class Model {
 	private:
-		GLuint				_vao;
-		std::vector<GLuint>	_vbos;
-		GLuint				 _ibo;
-		GLuint				_texture1;
-		GLuint				_texture2;
-		tinygltf::Model		_model;
-		Shader				_shader;
-		std::vector<int>    _nodes;
-		std::string         _path;
-		std::vector<GLfloat>  _joints;
-		std::vector<GLfloat>      _weights;
-		std::vector<Joint *>    _bones;
+		GLuint						_vao;
+		std::vector<GLuint>			_vbos;
+		GLuint						 _ibo;
+		GLuint						_texture1;
+		GLuint						_texture2;
+		tinygltf::Model				_model;
+		Shader						_shader;
+		std::vector<int>    		_nodes;
+		std::string        			_path;
+		std::vector<GLfloat> 		_joints;
+		std::vector<GLfloat>     	_weights;
+		std::vector<Joint *>    	_bones;
 		std::vector<Animation *>    _animations;
-		int                     _boneCount = 0;
-		std::vector<GLushort>   _indices;
-		std::vector<float>      _vertex;
-		std::vector<float>      _matIndexs;
-		std::vector<float>      _normals;
-		std::vector<float>      _uvs;
-		std::map<int, Material> _materials;
-		bool                    _loaded = false;
-		bool                    _hasJoint = false;
-		glm::mat4               _locMat;
-		GLushort                _indicesCount;
-		std::map<int, glm::mat4>   _animeMatrice;
-		std::vector<GLfloat>     _targetPosition;
-		std::vector<GLfloat>     _targetNormal;
-		std::vector<GLfloat>     _targetPosition1;
-		std::vector<GLfloat>     _targetNormal1;
+		int                    		_boneCount = 0;
+		std::vector<GLushort>  		_indices;
+		std::vector<float>      	_vertex;
+		std::vector<float>      	_matIndexs;
+		std::vector<float>      	_normals;
+		std::vector<float>     		_uvs;
+		std::map<int, Material> 	_materials;
+		bool                    	_loaded = false;
+		bool                    	_hasJoint = false;
+		glm::mat4               	_locMat;
+		GLushort                	_indicesCount;
+		std::map<int, glm::mat4>   	_animeMatrice;
+		std::vector<GLfloat>     	_targetPosition;
+		std::vector<GLfloat>     	_targetNormal;
+		std::vector<GLfloat>     	_targetPosition1;
+		std::vector<GLfloat>     	_targetNormal1;
 
 	public:
 		glm::mat4 mat;
 		glm::mat4	makeMat();
 		Model();
+		Model(Model const & src);
+		Model	&operator=(Model const & src);
 		Model(const char *modelFile, Shader *shader);
 		~Model();
 
-		bool    _processModel();
-		void    _processModelMesh(tinygltf::Mesh& mesh, int node);
-		void    _processNode(int index);
-		void    _processSkin(tinygltf::Skin& skin);
-		Joint   *_processSkinJoints(int id, std::vector<glm::mat4> mats, int start, int skeleton);
-		void    _loadDataToGpu();
-		void    _loadMaterials();
-		void    _clearVectors();
-		bool    _calcAnimation(tinygltf::Animation& anime, float time);
+		bool   		 _processModel();
+		void    	_processModelMesh(tinygltf::Mesh& mesh, int node);
+		void    	_processNode(int index);
+		void   		_processSkin(tinygltf::Skin& skin);
+		Joint 		*_processSkinJoints(int id, std::vector<glm::mat4> mats, int start, int skeleton);
+		void    	_loadDataToGpu();
+		void    	_loadMaterials();
+		void    	_clearVectors();
+		bool    	_calcAnimation(tinygltf::Animation& anime, float time);
 		glm::mat4   _processChanel(std::string& type, tinygltf::AnimationSampler& samp, float time);
-		void    _loadMatrices(Joint *bone, glm::mat4 parentTransform);
+		void    	_loadMatrices(Joint *bone, glm::mat4 parentTransform);
 
 		bool        loadFromFile(Shader& shader, const char *path);
 		void        render(glm::mat4 matrix);
