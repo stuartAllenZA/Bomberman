@@ -4,6 +4,8 @@ project(Bomberman)
 include(ExternalProject)
 set(BOMBERMAN_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(NANOGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.nanogui)
+set(GLM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.glm)
+set(TINYGLTF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.tinyGltf)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -g3")
@@ -26,32 +28,44 @@ if (NOT IS_DIRECTORY "${NANOGUI_DIR}")
 	execute_process(COMMAND sh .compile.sh)
 endif()
 
+if (NOT IS_DIRECTORY "${TINYGLTF_DIR}")
+	execute_process(COMMAND git clone https://github.com/syoyo/tinygltf.git .tinyGltf)
+endif()
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     message(STATUS "GCC detected, adding compile flags")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -Wextra")
 endif()
 
 set(SOURCE_FILES
-		src/Bomb.cpp
-		src/Bomberman.cpp
-		src/Box.cpp
-		src/BreakableBox.cpp
-		src/Character.cpp
-		src/Core.cpp
-		src/Drop.cpp
-		src/Enemy.cpp
-		src/EnemyDrop.cpp
-		src/Exceptions.cpp
-		src/ExtraBomb.cpp
-		src/Game.cpp
-		src/LevelHatch.cpp
-		src/Menu.cpp
-		src/Player.cpp
-		src/RangeExtender.cpp
-		src/RemoteDetonator.cpp
-		src/Settings.cpp
-		src/Sound.cpp
-		src/UnbreakableBox.cpp)
+	src/Animation.cpp
+	src/Util.cpp
+	src/Bomb.cpp
+	src/camera.cpp
+	src/Box.cpp
+	src/Bomberman.cpp
+	src/BreakableBox.cpp
+	src/Character.cpp
+	src/Core.cpp
+	src/Drop.cpp
+	src/Enemy.cpp
+	src/EnemyDrop.cpp
+	src/Exceptions.cpp
+	src/ExtraBomb.cpp
+	src/Game.cpp
+	src/GraphicsEngine.cpp
+	src/LevelHatch.cpp
+	src/Material.cpp
+	src/Menu.cpp
+	src/Model.cpp
+	src/ModelShader.cpp
+	src/Player.cpp
+	src/RangeExtender.cpp
+	src/RemoteDetonator.cpp
+	src/Settings.cpp
+	src/Sound.cpp
+	src/stb_image.cpp
+	src/UnbreakableBox.cpp)
 
 include_directories(
 		${PROJECT_SOURCE_DIR}/include
@@ -60,6 +74,7 @@ include_directories(
 		SYSTEM ${NANOGUI_DIR}/include
 		SYSTEM ${NANOGUI_DIR}/ext/eigen
 		SYSTEM ${NANOGUI_DIR}/ext/nanovg/src
+		SYSTEM ${TINYGLTF_DIR}
 		SYSTEM $ENV{HOME}/.brew/Cellar/glew/2.1.0/include
 		SYSTEM /System/Library/Frameworks/AGL.framework/Versions/A/Headers
 )

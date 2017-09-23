@@ -1,8 +1,8 @@
 #ifndef BOMBERMAN_HPP
 #define BOMBERMAN_HPP
 
-#include <Exceptions.hpp>
-#include <Core.hpp>
+#include "Exceptions.hpp"
+#include "Core.hpp"
 #include <cstdlib>
 #include <iostream>
 #include <ctime>
