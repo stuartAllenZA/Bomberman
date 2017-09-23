@@ -3,17 +3,21 @@
 
 #pragma once
 
+#ifdef __APPLE__
+# define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED
+#endif
+
 #include <GL/glew.h>
 #include <nanogui/nanogui.h>
 #include <nanogui/screen.h>
 #include <nanogui/widget.h>
 #include <GLFW/glfw3.h>
-#include "Character.hpp"
-#include "Game.hpp"
-#include "Player.hpp"
-#include "Settings.hpp"
-#include "Menu.hpp"
-#include "GraphicsEngine.hpp"
+#include <Character.hpp>
+#include <Game.hpp>
+#include <Player.hpp>
+#include <Settings.hpp>
+#include <Menu.hpp>
+#include <GraphicsEngine.hpp>
 
 class Core {
 public:
@@ -37,7 +41,7 @@ public:
 	void			gameLoop();
 	void			drawGame();
 	void			newPlayer(const std::string playerName);
-	void			initPlay();
+	void			play();
 	void			exit();
 	void			setExit();
 	void			fatalError(std::string errorString);

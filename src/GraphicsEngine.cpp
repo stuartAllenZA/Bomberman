@@ -102,7 +102,6 @@ void GraphicsEngine::init() {
 }
 
 void GraphicsEngine::render() {
-	glm::mat4 projection = glm::perspective(glm::radians(70.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
 	float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
@@ -118,7 +117,6 @@ void GraphicsEngine::render() {
  *	}
  */
 	_wallShader->enable();
-	glm::mat4 view = _camera->getViewMatrix();
 	for (float i = 0.0f; i < 20.0f; i += 1.0f) {
 		_matrices.find("wall")->second = glm::translate(glm::mat4(), glm::vec3(i, 0.0f, 0.0f)); 
 		_models.find("wall")->second->render(_matrices.find("wall")->second);

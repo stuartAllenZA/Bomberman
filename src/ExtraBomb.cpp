@@ -1,6 +1,6 @@
 #include <ExtraBomb.hpp>
 
-ExtraBomb::ExtraBomb(std::pair<int, int> xy) : Drop(xy) {
+ExtraBomb::ExtraBomb(std::pair<float, float> xy) : Drop(xy) {
 	std::cout << "ExtraBomb at x: " << xy.first << " y: " << xy.second << " Constructed\n";
 }
 

@@ -1,48 +1,72 @@
 #include <Sound.hpp>
 
-Sound::Sound() : _musicVol(1.0f), _FXVol(1.0f) {
-	std::cout << "Sound Constructed\n";
+Sound::Sound() : _musicVol(1.0), _FXVol(1.0), _verbose(false) {
+	if (this->_verbose)
+		std::cout << "Sound Constructed\n";
 }
 
-Sound::Sound(int musicVol, int FXVol) : _musicVol(musicVol / 100), _FXVol(FXVol / 100) {
-	std::cout << "Sound Constructed\n";
+Sound::Sound(float musicVol, float FXVol) : _musicVol(musicVol), _FXVol(FXVol), _verbose(false) {
+	if (this->_verbose)
+		std::cout << "Sound Constructed\n";
+}
+
+Sound::Sound(float musicVol, float FXVol, bool verbose) : _musicVol(musicVol), _FXVol(FXVol), _verbose(verbose) {
+	if (this->_verbose)
+		std::cout << "Sound Constructed\n";
 }
 
 Sound::Sound(Sound const & src) {
-	std::cout << "Sound Copy-Constructed\n";
+	if (this->_verbose)
+		std::cout << "Sound Copy-Constructed\n";
 	*this = src;
 }
 
 Sound::~Sound() {
 	this->_engine->drop();
-	std::cout << "Sound De-Constructed\n";
+	if (this->_verbose)
+		std::cout << "Sound De-Constructed\n";
 }
 
 Sound &					Sound::operator=(Sound const & src) {
 	this->_musicVol = src.getMusicVol();
 	this->_FXVol = src.getFXVol();
+	this->_verbose = src.getVerbose();
 	return (*this);
 }
 
-int 					Sound::getMusicVol() const {
+float 					Sound::getMusicVol() const {
 	return (this->_musicVol);
 }
 
-void					Sound::setMusicVol(const int newVol) {
-	this->_musicVol = newVol;
-	this->updateMusicVol();
+void					Sound::setMusicVol(const float newVol) {
+	if (newVol < 0.1)
+		this->_musicVol = 0.0;
+	else
+		this->_musicVol = newVol;
 }
 
-int 					Sound::getFXVol() const {
+float 					Sound::getFXVol() const {
 	return (this->_FXVol);
 }
 
-void					Sound::setFXVol(const int newVol) {
+void					Sound::setFXVol(const float newVol) {
+	if (newVol < 0.1)
+		this->_FXVol = 0.0;
+	else
 	this->_FXVol = newVol;
-	this->updateFXVol();
+}
+
+bool					Sound::getVerbose() const {
+	return (this->_verbose);
+}
+
+void					Sound::setVerbose(const bool newV) {
+	this->_verbose = newV;
 }
 
 void					Sound::init() {
+	if (this->_verbose)
+		std::cout << "Initializing Sound." << std::endl;
 	chdir(".irrKlang/");
 	this->_engine = irrklang::createIrrKlangDevice();
 	chdir("..");
@@ -50,141 +74,395 @@ void					Sound::init() {
 		throw (Exceptions::SoundDeviceInitError());
 	else {
 		this->_menuMusic = _engine->addSoundSourceFromFile("resources/sounds/menuMusic.wav");
-		this->_gameMusic = _engine->addSoundSourceFromFile("resources/sounds/gameMusic.mp3");
+		this->_gameMusic = _engine->addSoundSourceFromFile("resources/sounds/gameMusic.wav");
+		this->_creditsMusic = _engine->addSoundSourceFromFile("resources/sounds/creditsMusic.mp3");
+		
 		this->_menuPass = _engine->addSoundSourceFromFile("resources/sounds/menuPass.mp3");
 		this->_menuFail = _engine->addSoundSourceFromFile("resources/sounds/menuFail.wav");
 		this->_menuHover = _engine->addSoundSourceFromFile("resources/sounds/menuHover.wav");
 		this->_menuClick = _engine->addSoundSourceFromFile("resources/sounds/menuClick.mp3");
+		this->_menuKeypress = _engine->addSoundSourceFromFile("resources/sounds/menuKeypress.wav");
 		this->_menuLimit = _engine->addSoundSourceFromFile("resources/sounds/menuLimit.wav");
 		this->_gameSaved = _engine->addSoundSourceFromFile("resources/sounds/gameSaved.wav");
 		this->_playerSpawn = _engine->addSoundSourceFromFile("resources/sounds/playerSpawn");
 		this->_playerWalk = _engine->addSoundSourceFromFile("resources/sounds/playerWalk.wav");
 		this->_enemySpawn = _engine->addSoundSourceFromFile("resources/sounds/enemySpawn");
 		this->_enemyWalk = _engine->addSoundSourceFromFile("resources/sounds/enemyWalk");
+		this->_enemyHit = _engine->addSoundSourceFromFile("resources/sounds/enemyHit.wav");
 		this->_plantBomb = _engine->addSoundSourceFromFile("resources/sounds/plantBomb");
-		this->_detonateBomb = _engine->addSoundSourceFromFile("resources/sounds/detonateBomb");
-		this->_dropDrop = _engine->addSoundSourceFromFile("resources/sounds/dropDrop.wav");
-		this->_pickupDrop = _engine->addSoundSourceFromFile("resources/sounds/pickupDrop.wav");
+		this->_detonateBomb = _engine->addSoundSourceFromFile("resources/sounds/detonateBomb.wav");
+		this->_boxDrop = _engine->addSoundSourceFromFile("resources/sounds/boxDrop.wav");
+		this->_pickupExtraBomb = _engine->addSoundSourceFromFile("resources/sounds/pickupExtraBomb.wav");
+		this->_pickupRangeExtend = _engine->addSoundSourceFromFile("resources/sounds/pickupRangeExtend.wav");
+		this->_pickupRemoteDet = _engine->addSoundSourceFromFile("resources/sounds/pickupRemoteDet.wav");
+		this->_levelComplete = _engine->addSoundSourceFromFile("resources/sounds/levelComplete.wav");
 		this->updateMusicVol();
 		this->updateFXVol();
-		this->startMenuMusic();
+		if (this->_verbose)
+			std::cout << "Sound Sucsesfully Initialized." << std::endl;
 	}
 }
 
 void					Sound::updateMusicVol() {
-	this->_menuMusic->setDefaultVolume(this->_musicVol);
-	this->_gameMusic->setDefaultVolume(this->_musicVol);
+	if (this->_menuMusic) {
+		if (this->_verbose)
+			std::cout << "Updating musicMenu Default Vol" << std::endl;
+		this->_menuMusic->setDefaultVolume(this->_musicVol);
+	}
+	if (this->_gameMusic) {
+		if (this->_verbose)
+			std::cout << "Updating gameMenu Default Vol" << std::endl;
+		this->_gameMusic->setDefaultVolume(this->_musicVol);
+	}
+	if (this->_creditsMusic) {
+		if (this->_verbose)
+			std::cout << "Updating creditsMenu Default Vol" << std::endl;
+		this->_creditsMusic->setDefaultVolume(this->_musicVol);
+	}
+
+	if (this->_menuMusicS) {
+		if (this->_verbose)
+			std::cout << "Updating musicMenu Vol to: " << this->_musicVol << std::endl;
+		this->_menuMusicS->setVolume(this->_musicVol);
+	}
+	if (this->_gameMusicS) {
+		if (this->_verbose)
+			std::cout << "Updating gameMenu Vol to: " << this->_musicVol << std::endl;
+		this->_gameMusicS->setVolume(this->_musicVol);
+	}
+	if (this->_creditsMusicS) {
+		if (this->_verbose)
+			std::cout << "Updating creditsMenu Vol to: " << this->_musicVol << std::endl;
+		this->_creditsMusicS->setVolume(this->_musicVol);
+	}
 }
 
 void					Sound::updateFXVol() {
-	this->_menuPass->setDefaultVolume(this->_FXVol);
-	this->_menuFail->setDefaultVolume(this->_FXVol);
-	this->_menuHover->setDefaultVolume(this->_FXVol);
-	this->_menuClick->setDefaultVolume(this->_FXVol);
-	this->_playerSpawn->setDefaultVolume(this->_FXVol);
-	this->_playerWalk->setDefaultVolume(this->_FXVol);
-	this->_enemySpawn->setDefaultVolume(this->_FXVol);
-	this->_enemyWalk->setDefaultVolume(this->_FXVol);
-	this->_plantBomb->setDefaultVolume(this->_FXVol);
-	this->_detonateBomb->setDefaultVolume(this->_FXVol);
-	this->_dropDrop->setDefaultVolume(this->_FXVol);
-	this->_pickupDrop->setDefaultVolume(this->_FXVol);
+	if (this->_menuPass)
+		this->_menuPass->setDefaultVolume(this->_FXVol);
+	if (this->_menuFail)
+		this->_menuFail->setDefaultVolume(this->_FXVol);
+	if (this->_menuHover)
+		this->_menuHover->setDefaultVolume(this->_FXVol);
+	if (this->_menuClick)
+		this->_menuClick->setDefaultVolume(this->_FXVol);
+	if (this->_menuKeypress)
+		this->_menuKeypress->setDefaultVolume(this->_FXVol);
+	if (this->_playerSpawn)
+		this->_playerSpawn->setDefaultVolume(this->_FXVol);
+	if (this->_playerWalk)
+		this->_playerWalk->setDefaultVolume(this->_FXVol);
+	if (this->_enemySpawn)
+		this->_enemySpawn->setDefaultVolume(this->_FXVol);
+	if (this->_enemyWalk)
+		this->_enemyWalk->setDefaultVolume(this->_FXVol);
+	if (this->_plantBomb)
+		this->_plantBomb->setDefaultVolume(this->_FXVol);
+	if (this->_detonateBomb)
+		this->_detonateBomb->setDefaultVolume(this->_FXVol);
+	if (this->_boxDrop)
+		this->_boxDrop->setDefaultVolume(this->_FXVol);
+	if (this->_pickupExtraBomb)
+		this->_pickupExtraBomb->setDefaultVolume(this->_FXVol);
+	if (this->_pickupRangeExtend)
+		this->_pickupRangeExtend->setDefaultVolume(this->_FXVol);
+	if (this->_pickupRemoteDet)
+		this->_pickupRemoteDet->setDefaultVolume(this->_FXVol);
+	if (this->_levelComplete)
+		this->_levelComplete->setDefaultVolume(this->_FXVol);
+
+	// if (this->_menuPassS)
+	// 	this->_menuPassS->setVolume(this->_FXVol);
+	// if (this->_menuFailS)
+	// 	this->_menuFailS->setVolume(this->_FXVol);
+	// if (this->_menuHoverS)
+	// 	this->_menuHoverS->setVolume(this->_FXVol);
+	// if (this->_menuClickS)
+	// 	this->_menuClickS->setVolume(this->_FXVol);
+	// if (this->_playerSpawnS)
+	// 	this->_playerSpawnS->setVolume(this->_FXVol);
+	// if (this->_playerWalkS)
+	// 	this->_playerWalkS->setVolume(this->_FXVol);
+	// if (this->_enemySpawnS)
+	// 	this->_enemySpawnS->setVolume(this->_FXVol);
+	// if (this->_enemyWalkS)
+	// 	this->_enemyWalkS->setVolume(this->_FXVol);
+	// if (this->_plantBombS)
+	// 	this->_plantBombS->setVolume(this->_FXVol);
+	// if (this->_detonateBombS)
+	// 	this->_detonateBombS->setVolume(this->_FXVol);
+	// if (this->_boxDropS)
+	// 	this->_boxDropS->setVolume(this->_FXVol);
+	// if (this->_pickupDropS)
+	// 	this->_pickupDropS->setVolume(this->_FXVol);
 }
 
 void					Sound::startMenuMusic() {
-	std::cout << "Starting Menu Music\n";
-	this->_engine->play2D(this->_menuMusic, true);
-	std::cout << "Menu Music playing.\n";
+	if (this->_verbose)
+		std::cout << "Starting Menu Music\n";
+	this->_menuMusicS = this->_engine->play2D(this->_menuMusic, true, false, true);
+	if (this->_verbose)
+		std::cout << "Menu Music playing.\n";
+}
+
+void					Sound::pauseMenuMusic() {
+	if (this->_verbose)
+		std::cout << "Pausing Menu Music\n";
+	if (this->_engine && this->_menuMusicS) {
+		if ((_menuMusicPauseTime = this->_menuMusicS->getPlayPosition()) > 0) {
+			if (this->_verbose)
+				std::cout << "Menu Music paused.\n";
+		}
+		else {
+			if (this->_verbose)
+				std::cout << "Unable to pause Menu Music.\n";
+		}
+		stopMenuMusic();
+	}
+}
+
+void					Sound::resumeMenuMusic() {
+	if (this->_verbose)
+		std::cout << "Resuming Menu Music\n";
+	if (this->_engine && this->_menuMusicS && _menuMusicPauseTime > 0 && _menuMusic->getIsSeekingSupported()) {
+		if (this->_menuMusicS->setPlayPosition(_menuMusicPauseTime)) {
+			if (this->_verbose)
+				std::cout << "Menu Music resumed.\n";
+		}
+		else {
+			if (this->_verbose)
+				std::cout << "Unable to resume Menu Music.\n";
+		}
+		startMenuMusic();
+	}
 }
 
 void					Sound::stopMenuMusic() {
-	std::cout << "Stopping Menu Music\n";
-	if (this->_engine && this->_menuMusic) {
-		this->_engine->removeSoundSource(this->_menuMusic);
-		std::cout << "Menu Music stopped.\n";
+	if (this->_verbose)
+		std::cout << "Stopping Menu Music\n";
+	if (this->_engine && this->_menuMusicS) {
+		this->_menuMusicS->stop();
+		if (this->_verbose)
+			std::cout << "Menu Music stopped.\n";
 	}
 }
 
 void					Sound::startGameMusic() {
-	std::cout << "Starting Game Music\n";
-	this->_engine->play2D(this->_gameMusic, true);
-	std::cout << "Game Music playing.\n";
+	if (this->_verbose)
+		std::cout << "Starting Game Music\n";
+	this->_gameMusicS = this->_engine->play2D(this->_gameMusic, true, false, true);
+	if (this->_verbose)
+		std::cout << "Game Music playing.\n";
+}
+
+void					Sound::pauseGameMusic() {
+	if (this->_verbose)
+		std::cout << "Pausing Game Music\n";
+	if (this->_engine && this->_gameMusicS) {
+		if ((_gameMusicPauseTime = this->_gameMusicS->getPlayPosition()) > 0) {
+			if (this->_verbose)
+				std::cout << "Game Music paused.\n";
+		}
+		else {
+			if (this->_verbose)
+				std::cout << "Unable to pause Game Music.\n";
+		}
+		stopGameMusic();
+	}
+}
+
+void					Sound::resumeGameMusic() {
+	if (this->_verbose)
+		std::cout << "Resuming Game Music\n";
+	if (this->_engine && this->_gameMusicS && _gameMusicPauseTime > 0 && _gameMusic->getIsSeekingSupported()) {
+		if (this->_gameMusicS->setPlayPosition(_gameMusicPauseTime)) {
+			if (this->_verbose)
+				std::cout << "Game Music resumed.\n";
+		}
+		else {
+			if (this->_verbose)
+				std::cout << "Unable to resume Game Music.\n";
+		}
+		startGameMusic();
+	}
 }
 
 void					Sound::stopGameMusic() {
-	std::cout << "Stopping Game Music\n";
-	if (this->_engine && this->_gameMusic) {
-		this->_engine->removeSoundSource(this->_gameMusic);
-		std::cout << "Game Music stopped.\n";
+	if (this->_verbose)
+		std::cout << "Stopping Game Music\n";
+	if (this->_engine && this->_gameMusicS) {
+		this->_gameMusicS->stop();
+		if (this->_verbose)
+			std::cout << "Game Music stopped.\n";
+	}
+}
+
+void					Sound::startCreditsMusic() {
+	if (this->_verbose)
+		std::cout << "Starting Credits Music\n";
+	this->_creditsMusicS = this->_engine->play2D(this->_creditsMusic, true, false, true);
+	if (this->_verbose)
+		std::cout << "Credits Music playing.\n";
+}
+
+void					Sound::pauseCreditsMusic() {
+	if (this->_verbose)
+		std::cout << "Pausing Credits Music\n";
+	if (this->_engine && this->_creditsMusicS) {
+		if ((_creditsMusicPauseTime = this->_creditsMusicS->getPlayPosition()) > 0) {
+			if (this->_verbose)
+				std::cout << "Credits Music paused.\n";
+		}
+		else {
+			if (this->_verbose)
+				std::cout << "Unable to pause Credits Music.\n";
+		}
+		stopCreditsMusic();
+	}
+}
+
+void					Sound::resumeCreditsMusic() {
+	if (this->_verbose)
+		std::cout << "Resuming Credits Music\n";
+	if (this->_engine && this->_creditsMusicS && _creditsMusicPauseTime > 0 && _creditsMusic->getIsSeekingSupported()) {
+		if (this->_creditsMusicS->setPlayPosition(_creditsMusicPauseTime)) {
+			if (this->_verbose)
+				std::cout << "Credits Music resumed.\n";
+		}
+		else {
+			if (this->_verbose)
+				std::cout << "Unable to resume Credits Music.\n";
+		}
+		startCreditsMusic();
+	}
+}
+
+void					Sound::stopCreditsMusic() {
+	if (this->_verbose)
+		std::cout << "Stopping Credits Music\n";
+	if (this->_engine && this->_creditsMusicS) {
+		this->_creditsMusicS->stop();
+		if (this->_verbose)
+			std::cout << "Credits Music stopped.\n";
 	}
 }
 
 void					Sound::playMenuPass() {
-	std::cout << "Playing Menu Pass\n";
+	if (this->_verbose)
+		std::cout << "Playing Menu Pass\n";
 	this->_engine->play2D(this->_menuPass, false);
 }
 
 void					Sound::playMenuFail() {
-	std::cout << "Playing Menu Fail\n";
+	if (this->_verbose)
+		std::cout << "Playing Menu Fail\n";
 	this->_engine->play2D(this->_menuFail, false);
 }
 
 void					Sound::playMenuHover() {
-	std::cout << "Playing Menu Hover\n";
+	if (this->_verbose)
+		std::cout << "Playing Menu Hover\n";
 	this->_engine->play2D(this->_menuHover, false);
 }
 
 void					Sound::playMenuClick() {
-	std::cout << "Playing Menu Click\n";
+	if (this->_verbose)
+		std::cout << "Playing Menu Click\n";
 	this->_engine->play2D(this->_menuClick, false);
 }
 
+void					Sound::playMenuKeypress() {
+	if (this->_verbose)
+		std::cout << "Playing Menu Keypress\n";
+	this->_engine->play2D(this->_menuKeypress, false);
+}
+
 void					Sound::playMenuLimit() {
-	std::cout << "Playing Menu Limit\n";
+	if (this->_verbose)
+		std::cout << "Playing Menu Limit\n";
 	this->_engine->play2D(this->_menuLimit, false);
 }
 
 void					Sound::playGameSaved() {
-	std::cout << "Playing Game Saved\n";
+	if (this->_verbose)
+		std::cout << "Playing Game Saved\n";
 	this->_engine->play2D(this->_gameSaved, false);
 }
 
 void					Sound::playPlayerSpawn() {
-	std::cout << "Playing Player Spawn\n";
+	if (this->_verbose)
+		std::cout << "Playing Player Spawn\n";
 	this->_engine->play2D(this->_playerSpawn, false);
 }
 
 void					Sound::playPlayerWalk() {
-	std::cout << "Playing Player Walk\n";
+	if (this->_verbose)
+		std::cout << "Playing Player Walk\n";
 	this->_engine->play2D(this->_playerWalk, false);
 }
 
+void					Sound::playPlayerHit() {
+	if (this->_verbose)
+		std::cout << "Playing Player Hit\n";
+	this->_engine->play2D(this->_playerHit, false);
+}
+
 void					Sound::playEnemySpawn() {
-	std::cout << "Playing Enemy Spawn\n";
+	if (this->_verbose)
+		std::cout << "Playing Enemy Spawn\n";
 	this->_engine->play2D(this->_enemySpawn, false);
 }
 
 void					Sound::playEnemyWalk() {
-	std::cout << "Playing Enemy Walk\n";
+	if (this->_verbose)
+		std::cout << "Playing Enemy Walk\n";
 	this->_engine->play2D(this->_enemyWalk, false);
 }
 
+void					Sound::playEnemyHit() {
+	if (this->_verbose)
+		std::cout << "Playing Enemy Hit\n";
+	this->_engine->play2D(this->_enemyHit, false);
+}
+
 void					Sound::playPlantBomb() {
-	std::cout << "Playing Plant Bomb\n";
+	if (this->_verbose)
+		std::cout << "Playing Plant Bomb\n";
 	this->_engine->play2D(this->_plantBomb, false);
 }
 
 void					Sound::playDetonateBomb() {
-	std::cout << "Playing Detonate Bomb\n";
+	if (this->_verbose)
+		std::cout << "Playing Detonate Bomb\n";
 	this->_engine->play2D(this->_detonateBomb, false);
 }
 
-void					Sound::playDropDrop() {
-	std::cout << "Playing Drop Drop\n";
-	this->_engine->play2D(this->_dropDrop, false);
+void					Sound::playBoxDrop() {
+	if (this->_verbose)
+		std::cout << "Playing Drop Drop\n";
+	this->_engine->play2D(this->_boxDrop, false);
 }
 
-void					Sound::playPickupDrop() {
-	std::cout << "Playing Pickup Drop\n";
-	this->_engine->play2D(this->_pickupDrop, false);
+void					Sound::playPickupExtraBomb() {
+	if (this->_verbose)
+		std::cout << "Playing Pickup Drop\n";
+	this->_engine->play2D(this->_pickupExtraBomb, false);
+}
+
+void					Sound::playPickupRangeExtend() {
+	if (this->_verbose)
+		std::cout << "Playing Pickup Drop\n";
+	this->_engine->play2D(this->_pickupRangeExtend, false);
+}
+
+void					Sound::playPickupRemoteDet() {
+	if (this->_verbose)
+		std::cout << "Playing Pickup Drop\n";
+	this->_engine->play2D(this->_pickupRemoteDet, false);
+}
+
+void					Sound::playLevelComplete() {
+	if (this->_verbose)
+		std::cout << "Playing Pickup Drop\n";
+	this->_engine->play2D(this->_levelComplete, false);
 }

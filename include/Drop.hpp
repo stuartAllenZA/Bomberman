@@ -6,15 +6,15 @@
 class Drop {
 public:
 	Drop();
-	Drop(std::pair<int, int> xy);
+	Drop(std::pair<float, float> xy);
 	virtual ~Drop()=0;
 	Drop(Drop const & src);
 	Drop	&			operator=(Drop const &src);
-	std::pair<int, int>	getXY() const;
-	void				setXY(const std::pair<int, int> xy);
+	std::pair<float, float>	getXY() const;
+	void				setXY(const std::pair<float, float> xy);
 
 protected:
-	std::pair<int, int>		_xy;
+	std::pair<float, float>		_xy;
 };
 
 #endif

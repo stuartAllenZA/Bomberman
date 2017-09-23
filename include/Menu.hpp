@@ -3,15 +3,19 @@
 
 #pragma once
 
+#ifdef __APPLE__
+# define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED
+#endif
+
 #include <GL/glew.h>
 #include <nanogui/nanogui.h>
 #include <nanogui/screen.h>
 #include <nanogui/widget.h>
 #include <GLFW/glfw3.h>
 #include <utility>
-#include "Settings.hpp"
-#include "Game.hpp"
-#include "Sound.hpp"
+#include <Settings.hpp>
+#include <Game.hpp>
+#include <Sound.hpp>
 #include <sstream>
 
 enum class MenuState {
@@ -21,8 +25,21 @@ enum class MenuState {
     SETTINGS,
     KEYBINDING,
     PAUSE,
-    NO_MENU,
-    BK2_PLAYER_SELECT
+	DIFFICULTY,
+	LEVEL_PASS,
+	LEVEL_FAIL,
+    NO_MENU
+};
+
+enum class BindingButtonState {
+	UP_BINDING,
+	DOWN_BINDING,
+	LEFT_BINDING,
+	RIGHT_BINDING,
+	ACTION_BINDING,
+	ACCEPT_BINDING,
+	ESCAPE_BINDING,
+	NONE
 };
 
 class Menu {
@@ -53,14 +70,20 @@ public:
 
     void			updateKeys();
     void			updateMouse();
-    void			menu();
+	void			menu();
     void            playerSelectMenu();
     void            mainMenu();
     void			settingsMenu();
     void            keyBindingMenu();
     void            pauseMenu();
+	void 			difficultyMenu();
+	void			levelPassMenu();
+	void			levelFailMenu();
+	int				checkMenuSelectionKeys();
     bool            checkPlayerNameAvailability(std::string playerNameInputVar);
     void            createButton(std::string playerNameInputVar);
+	void			selectButton(std::vector<std::string> playerNames, int nameIndex);
+	void			deleteButton(std::vector<std::string> playerNames, int nameIndex);
     void            exitButton();
     void            logoutButton();
     void            newGameButton();
@@ -68,13 +91,16 @@ public:
     void            playerSelectButton();
     void            settingsButton();
     void            keyBindingButton();
+	void 			applyButton(int selectedIndex, Settings *tempSettings);
 	int				findKeyForBinding();
 	int				checkForKeySymbol(int keyPressed);
+	std::string		findNameForBinding(int keyPressed);
+	void			bindKeysWithoutConflicts(BindingButtonState bindingButtonState, Settings *tempSettings);
     void            resumeButton();
     void            quitToMenuButton();
     void			renderMenu();
 	bool			iequals(const std::string& a, const std::string& b);
-	void			errorPopup(nanogui::FormHelper *parent, const std::string & title, const std::string & message, const std::string & btnText);
+	void			errorPopup(const std::string & title, const std::string & message, const std::string & btnText);
 
 private:
 

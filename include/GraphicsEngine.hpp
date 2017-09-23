@@ -9,7 +9,6 @@
 
 #include "Game.hpp"
 #include "Camera.hpp"
-#include "Shader.hpp"
 #include "ModelShader.hpp"
 #include "Model.hpp"
 #include "tiny_gltf.h"

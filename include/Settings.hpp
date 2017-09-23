@@ -43,10 +43,10 @@ public:
 	void				setAcceptKey(const int newKey);
 	int					getEscapeKey() const;
 	void				setEscapeKey(const int newKey);
-	int					getMusicVol() const;
-	void				setMusicVol(const int newVol);
-	int					getFXVol() const;
-	void				setFXVol(const int newVol);
+	float				getMusicVol() const;
+	void				setMusicVol(const float newVol);
+	float				getFXVol() const;
+	void				setFXVol(const float newVol);
 
 	int					getResolutionX() const;
 	int					getResolutionY() const;
@@ -64,8 +64,8 @@ private:
 	int					_actionKey;
 	int					_acceptKey;
 	int					_escapeKey;
-	int					_musicVol;
-	int					_FXVol;
+	float				_musicVol;
+	float				_FXVol;
 };
 
 std::ostream &					operator<<(std::ostream & o, Settings const & rhs);

@@ -1,14 +1,13 @@
 #define TINYGLTF_IMPLEMENTATION
 #include <Model.hpp>
 
-Model::Model(const char *modelPath, Shader *shader) : _shader("gfxUtils/shaders/anime.vert", "gfxUtils/shaders/basic.frag") {
+Model::Model(const char *modelPath, Shader *shader) {
 	std::cout << "model constructed\n";
 	Camera camera(glm::vec3(10.0f, 12.0f, 6.0f), -45.0f, -90.0f);
-//	_shader = *shader;
+	_shader = *shader;
 	glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
 	glm::mat4 view = camera.getViewMatrix();
 	_shader.setUniformMat4((GLchar *)"view_matrix", view);
-//	_shader = Shader("gfxUtils/shaders/anime.vert", "gfxUtils/shaders/basic.frag");
 	_shader.setUniformMat4((GLchar *)"proj_matrix", projection);
 	loadFromFile(_shader, modelPath);
 }
@@ -23,12 +22,17 @@ Model::Model() : _shader("gfxUtils/shaders/basic.vert", "gfxUtils/shaders/basic.
 Model::Model(Model const & src) { *this = src; }
 
 Model	&Model::operator=(Model const & src) {
-	*this = src;
+	this->_shader = src.getShader();
 	return *this;
+}
+
+Shader		Model::getShader () const {
+	return this->_shader;
 }
 
 glm::mat4	Model::makeMat() {
 	mat = glm::translate(glm::mat4(), glm::vec3(1.0, 0.0, -5.0));
+	return mat;
 }
 
 bool Model::loadFromFile(Shader &shader, const char *path)
@@ -56,9 +60,9 @@ bool Model::loadFromFile(Shader &shader, const char *path)
 bool Model::_processModel()
 {
 	std::cout << "processing model\n";
-	std::vector<tinygltf::Accessor>& acc = _model.accessors;
-	std::vector<tinygltf::BufferView>&  bufViews = _model.bufferViews;
-	std::vector<tinygltf::Buffer>& bufs = _model.buffers;
+//	std::vector<tinygltf::Accessor>& acc = _model.accessors;
+	//std::vector<tinygltf::BufferView>&  bufViews = _model.bufferViews;
+	//std::vector<tinygltf::Buffer>& bufs = _model.buffers;
 
 	for (tinygltf::Scene& scene : _model.scenes)
 	{
@@ -297,7 +301,7 @@ void Model::_processModelMesh(tinygltf::Mesh& mesh, int node)
 		bufView = bufViews[Acc.bufferView];
 		auto indicesData = (GLushort*)(bufs[bufView.buffer].data.data() + bufView.byteOffset);
 		//std::cout << "Indices ";
-		for (int i = 0; i < Acc.count; i++)
+		for (unsigned long i = 0; i < Acc.count; i++)
 		{
 			//std::cout << indicesData[i] << " ";
 			_indices.push_back((GLushort)(indicesData[i] + currVecSize));
@@ -313,9 +317,9 @@ void Model::_loadDataToGpu()
 	GLuint  vbo[11];
 	GLint position = _shader.getAttribLocation((char *)"position");
 	GLint targetPosition = _shader.getAttribLocation((char *)"targetPosition");
-	GLint targetNormal = _shader.getAttribLocation((char *)"targetNormal");
+	//GLint targetNormal = _shader.getAttribLocation((char *)"targetNormal");
 	GLint targetPosition1 = _shader.getAttribLocation((char *)"targetPosition1");
-	GLint targetNormal1 = _shader.getAttribLocation((char *)"targetNormal1");
+	//GLint targetNormal1 = _shader.getAttribLocation((char *)"targetNormal1");
 	GLint matIndex = _shader.getAttribLocation((char *)"matIndex");
 	GLint normal = _shader.getAttribLocation((char *)"normal");
 	GLint joint = _shader.getAttribLocation((char *)"joint");
@@ -466,7 +470,7 @@ void Model::_loadMatrices(Joint *bone, glm::mat4 parentTransform)
 	std::cout << "loading matrices\n";
 	std::string str = std::string("jointMat[") + std::to_string(bone->id) + std::string("]");
 
-	glm::mat4 currentLocalTransform = _animations[0]->getJointAnimationMatrix(bone->index);
+//	glm::mat4 currentLocalTransform = _animations[0]->getJointAnimationMatrix(bone->index);
 	glm::mat4 currentTransform = parentTransform * _animations[0]->getJointTranslationMatrix(bone->index)
 		* _animations[0]->getJointRotationMatrix(bone->index);
 
@@ -479,7 +483,7 @@ void Model::_loadMatrices(Joint *bone, glm::mat4 parentTransform)
 bool Model::loadAnimationMatrix(int animeType, float time)
 {
 	std::cout << "loading animation matrix\n";
-	if (animeType >= _animations.size())
+	if ((unsigned long)animeType >= _animations.size())
 		return false;
 	_animations[animeType]->setCurrentAnimationTime(time);
 	_animations[animeType]->update();

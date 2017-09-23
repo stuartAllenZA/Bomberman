@@ -28,12 +28,13 @@ if (NOT IS_DIRECTORY "${NANOGUI_DIR}")
 	execute_process(COMMAND sh .compile.sh)
 endif()
 
-#if (NOT IS_DIRECTORY "${GLM_DIR}")
-#	execute_process(COMMAND git clone https://github.com/g-truc/glm.git .glm)
-#endif()
-
 if (NOT IS_DIRECTORY "${TINYGLTF_DIR}")
 	execute_process(COMMAND git clone https://github.com/syoyo/tinygltf.git .tinyGltf)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    message(STATUS "GCC detected, adding compile flags")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -Wextra")
 endif()
 
 set(SOURCE_FILES
@@ -75,6 +76,7 @@ include_directories(
 		${NANOGUI_DIR}/ext/nanovg/src
 		${TINYGLTF_DIR}
 		$ENV{HOME}/.brew/Cellar/glew/2.1.0/include
+		SYSTEM /System/Library/Frameworks/AGL.framework/Versions/A/Headers
 )
 
 link_directories(

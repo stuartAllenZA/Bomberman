@@ -1,7 +1,7 @@
 #include <Game.hpp>
 
-Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _settings(Settings()), _hasSave(false) {
-	std::cout << "Constructing Game\n";
+Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _settings(Settings()), _hasSave(false), _mapSize(std::make_pair(0, 0)) {
+	//std::cout << "Constructing Game\n";
 	for (int i = 0; i < 7; i++) {
 		this->_keyPressArr[i] = false;
 	}
@@ -12,14 +12,14 @@ Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT)
 
 Game::Game(Game const & src) {
 	*this = src;
-	std::cout << "Game Copy-Constructed\n";
+	//std::cout << "Game Copy-Constructed\n";
 }
 
 Game::~Game() {
-	std::cout << "De-Constructing Game\n";
+	//std::cout << "De-Constructing Game\n";
 	if (this->_player.getName().size() > 0)
 		savePlayer();
-	std::cout << "Game De-Constructed\n";
+	//std::cout << "Game De-Constructed\n";
 }
 
 Game &					Game::operator=(Game const & src) {
@@ -65,6 +65,7 @@ Settings				Game::getSettings() const {
 
 void					Game::setSettings(const Settings newSettings) {
 	this->_settings = newSettings;
+	updateSound();
 }
 
 Player					Game::getPlayer() const {
@@ -84,12 +85,36 @@ void					Game::setSound(Sound newSound) {
 	this->_sound = newSound;
 }
 
-std::vector<Character*>	Game::getEnemies() const {
+std::vector<Enemy>	Game::getEnemies() const {
 	return (this->_enemies);
 }
 
-void					Game::setEnemies(const std::vector<Character*> newEnemies) {
+void					Game::setEnemies(const std::vector<Enemy> newEnemies) {
 	this->_enemies = newEnemies;
+}
+
+std::vector<BreakableBox>	Game::getBreakableBs() const {
+	return (this->_breakableBs);
+}
+
+void						Game::setBreakableBs(const std::vector<BreakableBox> newBreakableBs) {
+	this->_breakableBs = newBreakableBs;
+}
+
+std::vector<UnbreakableBox>	Game::getUnbreakableBs() const {
+	return (this->_unbreakableBs);
+}
+
+void						Game::setUnbreakableBs(const std::vector<UnbreakableBox> newUnbreakableBs) {
+	this->_unbreakableBs = newUnbreakableBs;
+}
+
+std::vector<Drop*>			Game::getDrops() const {
+	return (this->_drops);
+}
+
+void					Game::setDrops(const std::vector<Drop*> newDrops) {
+	this->_drops = newDrops;
 }
 
 bool 					Game::getHasSave() const{
@@ -98,6 +123,14 @@ bool 					Game::getHasSave() const{
 
 void 					Game::setHasSave(const bool newHasSave){
 	this->_hasSave = newHasSave;
+}
+
+std::pair<int, int>		Game::getMapSize() const {
+	return (this->_mapSize);
+}
+
+void					Game::setMapSize(const std::pair<int, int> newMapSize) {
+	this->_mapSize = newMapSize;
 }
 
 void					Game::savePlayer() {
@@ -111,6 +144,7 @@ void					Game::savePlayer() {
 	profileFileOut << "level:" + (std::to_string(this->_player.getLevel()))+"\n";
 	profileFileOut << "experience:" + (std::to_string(this->_player.getExperience()))+"\n";
 	profileFileOut << "noOfBombs:" + (std::to_string(this->_player.getNumberOfBombs()))+"\n";
+	profileFileOut << "difficulty:" + (std::to_string(this->_player.getDifficulty()))+"\n";
 	profileFileOut << "resolutionX:" + (std::to_string(this->_settings.getResolutionX()))+"\n";
 	profileFileOut << "resolutionY:" + (std::to_string(this->_settings.getResolutionY()))+"\n";
 	if (this->_settings.getWindowed())
@@ -137,7 +171,7 @@ std::vector<std::string>		Game::checkPlayers() const {
 	char						*temp;
 	int							len;
 
-	std::cout << "Checking for old players.\n";
+	//std::cout << "Checking for old players.\n";
 	if ((dir = opendir ("resources/profiles/")) != NULL) {
 		while ((ent = readdir(dir)) != NULL) {
 			if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
@@ -145,7 +179,7 @@ std::vector<std::string>		Game::checkPlayers() const {
 				if (temp) {
 					len = temp - ent->d_name;
 					std::string push(ent->d_name, len);
-					std::cout << "Adding: " << push << std::endl;
+					//std::cout << "Adding: " << push << std::endl;
 					arr.push_back(push);
 				}
 			}
@@ -178,6 +212,7 @@ void					Game::loadPlayer(const std::string playerName) {
 						this->_player.setLevel(std::stoi(lexFile(fileName, "level")));
 						this->_player.setExperience(std::stoi(lexFile(fileName, "experience")));
 						this->_player.setNumberOfBombs(std::stoi(lexFile(fileName, "noOfBombs")));
+						this->_player.setDifficulty(std::stoi(lexFile(fileName, "difficulty")));
 						int resX = std::stoi(lexFile(fileName, "resolutionX"));
 						int resY = std::stoi(lexFile(fileName, "resolutionY"));
 						std::pair<int, int> resolution = std::make_pair(resX, resY);
@@ -199,6 +234,7 @@ void					Game::loadPlayer(const std::string playerName) {
 						this->_settings.setMusicVol(std::stoi(lexFile(fileName, "musicVol")));
 						this->_settings.setFXVol(std::stoi(lexFile(fileName, "FXVol")));
 						std::cout << "Post loading player profile!\n" << this->_settings << std::endl;
+						this->updateSound();
 					}
 				}
 			}
@@ -233,17 +269,34 @@ std::string				Game::lexFile(const std::string fileName, const std::string find)
 }
 
 void					Game::setWindowPos(const int xPos, const int yPos) {
-	std::cout << "Setting Xpos: " << xPos << " yPos: " << yPos << std::endl;
+	//std::cout << "Setting Xpos: " << xPos << " yPos: " << yPos << std::endl;
 	this->_settings.setXPos(xPos);
 	this->_settings.setYPos(yPos);
 }
 
 void					Game::initSound() {
 	this->_sound.init();
+	this->_sound.setVerbose(false);
+}
+
+void					Game::updateSound() {
+	std::cout << "Update sound called in Game" << std::endl;
+	this->_sound.setMusicVol(this->_settings.getMusicVol());
+	this->_sound.setFXVol(this->_settings.getFXVol());
+	this->_sound.updateMusicVol();
+	this->_sound.updateFXVol();
 }
 
 void					Game::startMenuMusic() {
 	this->_sound.startMenuMusic();
+}
+
+void					Game::pauseMenuMusic() {
+	this->_sound.pauseMenuMusic();
+}
+
+void					Game::resumeMenuMusic() {
+	this->_sound.resumeMenuMusic();
 }
 
 void					Game::stopMenuMusic() {
@@ -254,66 +307,263 @@ void					Game::startGameMusic() {
 	this->_sound.startGameMusic();
 }
 
+void					Game::pauseGameMusic() {
+	this->_sound.pauseGameMusic();
+}
+
+void					Game::resumeGameMusic() {
+	this->_sound.resumeGameMusic();
+}
+
 void					Game::stopGameMusic() {
 	this->_sound.stopGameMusic();
 }
 
+void					Game::startCreditsMusic() {
+	this->_sound.startCreditsMusic();
+}
+
+void					Game::pauseCreditsMusic() {
+	this->_sound.pauseCreditsMusic();
+}
+
+void					Game::resumeCreditsMusic() {
+	this->_sound.resumeCreditsMusic();
+}
+
+void					Game::stopCreditsMusic() {
+	this->_sound.stopCreditsMusic();
+}
+
+void					Game::setPlayerLevel(const int level) {
+	_player.setLevel(level);
+}
+
+int						Game::getPlayerLevel() {
+	return (_player.getLevel());
+}
+
+void					Game::setDifficulty(const int dif) {
+	this->_player.setDifficulty(dif);
+}
+
+void					Game::processEnemies() {
+	std::pair<float, float> curPos;
+	std::vector<char>		unable;
+
+	for (std::vector<Enemy>::iterator it = _enemies.begin(); it != _enemies.end(); ++it) {
+		unable.clear();
+		curPos = it->getXY();
+		for (int i = 0; i < 4; i++) {
+			if (curPos != it->getXY())
+				break ;
+			it->determineNewCoOrds(_player.getXY(), unable);
+			if (it->getNewCoOrd() != it->getXY() && checkCoOrd(it->getNewCoOrd()))
+				it->setXY(it->getNewCoOrd());
+			else if (it->getNewCoOrd() == it->getXY())
+				it->attack();
+			else
+				unable.push_back(it->getOri());
+		}
+	}
+}
+
+bool					Game::checkCoOrd(std::pair<float, float> xy) {
+	bool	ret = true;
+
+	for (std::vector<Enemy>::iterator it = _enemies.begin(); it != _enemies.end(); ++it) {
+		if (it->getXY() == xy)
+			ret = false;
+	}
+	for (std::vector<BreakableBox>::iterator it = _breakableBs.begin(); it != _breakableBs.end(); ++it) {
+		if (it->getXY() == xy)
+			ret = false;
+	}
+	for (std::vector<UnbreakableBox>::iterator it = _unbreakableBs.begin(); it != _unbreakableBs.end(); ++it) {
+		if (it->getXY() == xy)
+			ret = false;
+	}
+	for (std::vector<Drop*>::iterator it = _drops.begin(); it != _drops.end(); ++it) {
+		if ((*it)->getXY() == xy)
+			ret = false;
+	}
+	return (ret);
+}
+
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
-	int num = 0;
+	int num;
 	o << "Dumping Game State" <<
 	"\nGame State: " << static_cast<std::underlying_type<GameState>::type>(rhs.getGameState()) <<
 	"\nPlay State: " << static_cast<std::underlying_type<PlayState>::type>(rhs.getPlayState()) <<
-	"\nHas Save: " << std::boolalpha << rhs.getHasSave();
+	"\nMap Size: " << rhs.getMapSize().first << " x " << rhs.getMapSize().second <<
+	"\nHas Save: " << std::boolalpha << rhs.getHasSave() << std::endl;
 	for (int i = 0; i < 7; i++) {
 		o << "keyPressArr[" << i << "]: " << std::boolalpha << rhs.getKeyPressArr(i) << std::endl;
 	}
-	if (rhs.getEnemies().size() > 0) {
-		for (std::vector<Character*>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it) {
+
+	if (!rhs.getEnemies().empty()) {
+		num = 0;
+		for (std::vector<Enemy>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it) {
 			num++;
 			o << "Enemy " << num << ": " << *it << std::endl;
 		}
 	}
 	else
 		o << "Enemies: 0\n";
-	o << "\nSettings: " << rhs.getSettings() << std::endl << "\nPlayer: " << rhs.getPlayer();
+
+	if (!rhs.getBreakableBs().empty()) {
+		num = 0;
+		for (std::vector<BreakableBox>::iterator it = rhs.getBreakableBs().begin(); it != rhs.getBreakableBs().end(); ++it) {
+			num++;
+			o << "Breakable Box " << num << "\tX: " << it->getXY().first << "\tY: " << it->getXY().second << std::endl;
+		}
+	}
+	else
+		o << "Breakable Box: 0\n";
+
+	if (!rhs.getUnbreakableBs().empty()) {
+		num = 0;
+		for (std::vector<UnbreakableBox>::iterator it = rhs.getUnbreakableBs().begin(); it != rhs.getUnbreakableBs().end(); ++it) {
+			num++;
+			o << "Unbreakable Box " << num << "\tX: " << it->getXY().first << "\tY: " << it->getXY().second << std::endl;
+		}
+	}
+	else
+		o << "Unbreakable Box: 0\n";
+
+	if (!rhs.getDrops().empty()) {
+		num = 0;
+		for (std::vector<Drop*>::iterator it = rhs.getDrops().begin(); it != rhs.getDrops().end(); ++it) {
+			num++;
+			o << "Drop " << num << "\tX: " << (*it)->getXY().first << "\tY: " << (*it)->getXY().second << std::endl;
+		}
+	}
+	else
+		o << "Drops: 0\n";
+
+	o << "\nSettings: " << rhs.getSettings() << std::endl << "Player: " << rhs.getPlayer();
 	return o;
 }
 
-/*
-void				Game::up() {
-	// update coords x++;
-}
+void					Game::unbreakableRing(int x, int y) {
+	int		xStart = (_mapSize.first - x);
+	int		yStart = (_mapSize.second - y);
+	std::cout << "Passed x: " << x << " Passed y: " << y << " xStart: " << xStart << " yStart: " << yStart << std::endl;
 
-void				Game::updateGameData() {
-	switch (_gameInput) {
-		case UP:
-		case DOWN:
-		case LEFT:
-		case RIGHT:
-		case SPACE:
-		case ESC:
-	}
-	// detectCollisions
-	// AIBehaveUpdate
-	// detectCollisions
-}
-
-// map has to have an odd number of x's and y's
-// i.e. maxX and maxY must be even numbers (starting at 0)
-void				Game::mapGenerator(int xMax, int yMax) {
-	for (int xmin = 0; xmin < xmax; xmin++) {
-		for (int ymin = 0; ymin < ymax; ymin++) {
-			if (xmin != 0 && ymin != 0 && xmin != xmax && ymin != ymax) {
-				if (xmin % 2 == 0 && ymin % 2 == 0) {
-					unbreakableWallTemp	unbreakableWall(xmin, ymin);
-					_unbreakableWalls.push_back(*unbreakableWall);
-				}
+	for (int i = xStart; i < x; i++) {
+		if (i == xStart || i == x-1) {
+			for (int j = yStart; j < y; j++) {
+				_unbreakableBs.push_back(UnbreakableBox(std::make_pair(i, j)));
 			}
-			else if (xmin == 0 || xmin == xmax || ymin == 0 || ymin == ymax) {
-				unbreakableWallTemp	unbreakableWall(xmin, ymin);
-				_unbreakableWalls.push_back(*unbreakableWall);
-			}
+		}
+		if (i > xStart && i < x-1) {
+			_unbreakableBs.push_back(UnbreakableBox(std::make_pair(i, yStart)));
+			_unbreakableBs.push_back(UnbreakableBox(std::make_pair(i, y-1)));
 		}
 	}
 }
-*/
+
+void					Game::breakableRing(int x, int y) {
+	int		xStart = (_mapSize.first - x);
+	int		yStart = (_mapSize.second - y);
+	std::cout << "Passed x: " << x << " Passed y: " << y << " xStart: " << xStart << " yStart: " << yStart << std::endl;
+
+	for (int i = xStart; i < x; i++) {
+		if (i == xStart || i == x-1) {
+			for (int j = yStart; j < y; j++) {
+				_breakableBs.push_back(BreakableBox(std::make_pair(i, j)));
+			}
+		}
+		if (i > xStart && i < x-1) {
+			_breakableBs.push_back(BreakableBox(std::make_pair(i, yStart)));
+			_breakableBs.push_back(BreakableBox(std::make_pair(i, y-1)));
+		}
+	}
+}
+
+void					Game::breakableRing(int x, int y, std::pair<int, int> skip) {
+	int		xStart = (_mapSize.first - x);
+	int		yStart = (_mapSize.second - y);
+	std::pair<int, int>	temp;
+	std::cout << "Passed x: " << x << " Passed y: " << y << " xStart: " << xStart << " yStart: " << yStart << std::endl;
+
+	for (int i = xStart; i < x; i++) {
+		if (i == xStart || i == x-1) {
+			for (int j = yStart; j < y; j++) {
+				temp = std::make_pair(i, j);
+				if (temp != skip)
+					_breakableBs.push_back(BreakableBox(temp));
+			}
+		}
+		if (i > xStart && i < x-1) {
+			temp = std::make_pair(i, yStart);
+			if (temp != skip)
+				_breakableBs.push_back(BreakableBox(temp));
+			temp = std::make_pair(i, y-1);
+			if (temp != skip)
+				_breakableBs.push_back(BreakableBox(temp));
+		}
+	}
+}
+
+void					Game::cornerBox(int x, int y) {
+	int		x1 = (_mapSize.first - x);
+	int		x2 = x - 1;
+	int		y1 = (_mapSize.second - y);
+	int		y2 = y - 1;
+
+	std::cout << "Doing corners\n";
+	_breakableBs.push_back(BreakableBox(std::make_pair(x1, y1)));
+	_breakableBs.push_back(BreakableBox(std::make_pair(x1, y2)));
+	_breakableBs.push_back(BreakableBox(std::make_pair(x2, y1)));
+	_breakableBs.push_back(BreakableBox(std::make_pair(x2, y2)));
+}
+
+int					Game::dropFreeBoxInd() {
+	int		randomInt;
+
+	while (1) {
+		randomInt = rand() % _breakableBs.size();
+		std::cout << "Random Int = " << randomInt << " size = " << _breakableBs.size() << std::endl;
+		if (!_breakableBs[randomInt].getDrop())
+			return (randomInt);
+	}
+}
+
+void					Game::initLevelOne() {
+	int		index;
+	//determine _mapSize
+	_mapSize = std::make_pair(_player.getDifficulty() * 10, _player.getDifficulty() * 10);
+	//Spawn Boxes
+	unbreakableRing(_mapSize.first, _mapSize.second);
+	for (int i = 1; i < (_mapSize.first / 2); i++) {
+		if (i % 2 == 0) {
+			if (i == 2)
+				breakableRing(_mapSize.first - i, _mapSize.second - i, std::make_pair(2, 2));
+			else
+				breakableRing(_mapSize.first - i, _mapSize.second - i);
+		}
+		else
+			cornerBox(_mapSize.first - i, _mapSize.second - i);
+	}
+	//Spawn Player
+	_player.setXY(std::make_pair(2, 2));
+	//Randomize one of each Drop
+	index = dropFreeBoxInd();
+	_breakableBs[index].setDrop(new LevelHatch(_breakableBs[index].getXY()));
+	index = dropFreeBoxInd();
+	_breakableBs[index].setDrop(new RemoteDetonator(_breakableBs[index].getXY()));
+	if (_player.getLevel() == 0) {
+		index = dropFreeBoxInd();
+		_breakableBs[index].setDrop(new ExtraBomb(_breakableBs[index].getXY()));
+		index = dropFreeBoxInd();
+		_breakableBs[index].setDrop(new RangeExtender(_breakableBs[index].getXY()));
+	}
+}
+
+void					Game::initLevelTwo() {
+
+}
+
+void					Game::initLevelThree() {
+}

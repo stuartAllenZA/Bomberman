@@ -62,6 +62,7 @@ class Model {
 		Model	&operator=(Model const & src);
 		Model(const char *modelFile, Shader *shader);
 		~Model();
+		Shader		getShader() const;
 
 		bool   		 _processModel();
 		void    	_processModelMesh(tinygltf::Mesh& mesh, int node);

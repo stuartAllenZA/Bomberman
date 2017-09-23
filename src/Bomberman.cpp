@@ -8,12 +8,14 @@ int main(int argc, char **argv) {
 			std::cout << "Please run Bomberman without any arguments as all configs are done in game.\n";
 	}
 
+	srand (time(NULL));
+
 	try {
-		std::cout << "initializing core" << std::endl;
+		//std::cout << "initializing core" << std::endl;
 		Core core;
-        std::cout << "running" << std::endl;
+        //std::cout << "running" << std::endl;
         core.run();
-		std::cout << "end of try" << std::endl;
+		std::cout << "End of try statement in main()." << std::endl;
 	}
 
 	//Catch Fatal Exceptions

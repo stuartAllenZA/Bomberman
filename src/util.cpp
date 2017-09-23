@@ -3,7 +3,7 @@
 char        *readFile(const char *filePath)
 {
 	FILE    *file;
-	long    size;
+	unsigned long    size;
 	char    *data;
 
 	if ((file = fopen(filePath, "rt")) == nullptr)

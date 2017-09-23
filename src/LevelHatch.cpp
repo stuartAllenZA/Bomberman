@@ -1,6 +1,6 @@
 #include <LevelHatch.hpp>
 
-LevelHatch::LevelHatch(std::pair<int, int> xy) : Drop(xy) {
+LevelHatch::LevelHatch(std::pair<float, float> xy) : Drop(xy) {
 	std::cout << "LevelHatch at x: " << xy.first << " y: " << xy.second << " Constructed\n";
 }
 

@@ -1,6 +1,6 @@
 #include <RangeExtender.hpp>
 
-RangeExtender::RangeExtender(std::pair<int, int> xy) : Drop(xy) {
+RangeExtender::RangeExtender(std::pair<float, float> xy) : Drop(xy) {
 	std::cout << "RangeExtender at x: " << xy.first << " y: " << xy.second << " Constructed\n";
 }
 

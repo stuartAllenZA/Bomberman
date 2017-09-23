@@ -1,6 +1,6 @@
 #include <Settings.hpp>
 
-Settings::Settings() : _resolution(std::make_pair(800, 600)), _windowed(true), _xPos(560), _yPos(240), _upKey(GLFW_KEY_W), _downKey(GLFW_KEY_S), _leftKey(GLFW_KEY_A), _rightKey(GLFW_KEY_D), _actionKey(GLFW_KEY_SPACE), _acceptKey(GLFW_KEY_ENTER), _escapeKey(GLFW_KEY_ESCAPE), _musicVol(100), _FXVol(100) {
+Settings::Settings() : _resolution(std::make_pair(800, 600)), _windowed(true), _xPos(560), _yPos(240), _upKey(GLFW_KEY_W), _downKey(GLFW_KEY_S), _leftKey(GLFW_KEY_A), _rightKey(GLFW_KEY_D), _actionKey(GLFW_KEY_SPACE), _acceptKey(GLFW_KEY_ENTER), _escapeKey(GLFW_KEY_ESCAPE), _musicVol(1.0), _FXVol(1.0) {
 	//std::cout << "Settings Default Constructed\n";
 }
 
@@ -65,7 +65,7 @@ int					Settings::getXPos() const {
 
 void				Settings::setXPos(const int newXPos) {
 	this->_xPos = newXPos;
-	std::cout << "_xPos set to: " << newXPos << " Check: " << this->_xPos << std::endl;
+	//std::cout << "_xPos set to: " << newXPos << " Check: " << this->_xPos << std::endl;
 }
 
 int					Settings::getYPos() const {
@@ -74,7 +74,7 @@ int					Settings::getYPos() const {
 
 void				Settings::setYPos(const int newYPos) {
 	this->_yPos = newYPos;
-	std::cout << "_yPos set to: " << newYPos << " Check: " << this->_yPos << std::endl;
+	//std::cout << "_yPos set to: " << newYPos << " Check: " << this->_yPos << std::endl;
 }
 
 int 				Settings::getUpKey() const {
@@ -133,19 +133,19 @@ void				Settings::setEscapeKey(const int newKey) {
 	this->_escapeKey = newKey;
 }
 
-int 				Settings::getMusicVol() const {
+float 				Settings::getMusicVol() const {
 	return (this->_musicVol);
 }
 
-void				Settings::setMusicVol(const int newVol) {
+void				Settings::setMusicVol(const float newVol) {
 	this->_musicVol = newVol;
 }
 
-int 				Settings::getFXVol() const {
+float 				Settings::getFXVol() const {
 	return (this->_FXVol);
 }
 
-void				Settings::setFXVol(const int newVol) {
+void				Settings::setFXVol(const float newVol) {
 	this->_FXVol = newVol;
 }
 
@@ -158,7 +158,7 @@ int					Settings::getResolutionY() const {
 }
 
 std::ostream & 			operator<<(std::ostream & o, Settings const & rhs) {
-	o << "\n\nDumping Current Settings\nResolution: " << rhs.getResolutionX() << "x" << rhs.getResolutionY() <<
+	o << "\nResolution: " << rhs.getResolutionX() << "x" << rhs.getResolutionY() <<
 	"\nLast Player: " << rhs.getLastPlayer() <<
 	"\nWindowed: " << std::boolalpha << rhs.getWindowed() <<
 	"\nX Pos: " << rhs.getXPos() <<
