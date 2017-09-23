@@ -1,6 +1,7 @@
 level:1
 experience:0
 noOfBombs:0
+difficulty:1
 resolutionX:800
 resolutionY:600
 windowed:true
@@ -11,5 +12,5 @@ rightKey:68
 actionKey:32
 acceptKey:257
 escapeKey:256
-musicVol:100
-FXVol:100
+musicVol:1.000000
+FXVol:1.000000

@@ -69,13 +69,13 @@ set(SOURCE_FILES
 
 include_directories(
 		${PROJECT_SOURCE_DIR}/include
-		${PROJECT_SOURCE_DIR}/.irrKlang/include
-		${NANOGUI_DIR}/ext/glfw/include
-		${NANOGUI_DIR}/include
-		${NANOGUI_DIR}/ext/eigen
-		${NANOGUI_DIR}/ext/nanovg/src
-		${TINYGLTF_DIR}
-		$ENV{HOME}/.brew/Cellar/glew/2.1.0/include
+		SYSTEM ${PROJECT_SOURCE_DIR}/.irrKlang/include
+		SYSTEM ${NANOGUI_DIR}/ext/glfw/include
+		SYSTEM ${NANOGUI_DIR}/include
+		SYSTEM ${NANOGUI_DIR}/ext/eigen
+		SYSTEM ${NANOGUI_DIR}/ext/nanovg/src
+		SYSTEM ${TINYGLTF_DIR}
+		SYSTEM $ENV{HOME}/.brew/Cellar/glew/2.1.0/include
 		SYSTEM /System/Library/Frameworks/AGL.framework/Versions/A/Headers
 )
 
