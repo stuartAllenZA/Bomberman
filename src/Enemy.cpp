@@ -38,17 +38,17 @@ Enemy &	Enemy::operator=(Enemy const & src) {
 	return (*this);
 }
 
-std::pair<float, float>	getNewCoOrd() const {
+std::pair<float, float>	Enemy::getNewCoOrd() const {
 	return (this->_newCoOrd);
 }
 
-void					setNewCoOrd(const std::pair<float, float> newCoOrd) {
+void					Enemy::setNewCoOrd(const std::pair<float, float> newCoOrd) {
 	this->_newCoOrd = newCoOrd;
 }
 
-void	Enemy::determineNewCoOrds(std::pair<float, float> playerPos, std::vector<char> unable) {
+void					Enemy::determineNewCoOrds(std::pair<float, float> playerPos, std::vector<char> unable) {
 	//Set to current XY
-	_newCoOrd = _xy;
+	_newCoOrd = this->_xy;
 	//Determine correct ori
 	if (playerPos.first > _xy.first && checkUnable(unable, 'E') == false) {
 		_ori = 'E';
@@ -64,18 +64,18 @@ void	Enemy::determineNewCoOrds(std::pair<float, float> playerPos, std::vector<ch
 	}
 	//Determine new co-ords
 	if (_ori == 'N')
-		newCoOrd.first = static_cast<int>(newCoOrd.first + (_speed * (0.5 * _size)));
+		_newCoOrd.first = static_cast<int>(_newCoOrd.first + (_speed * (0.5 * _size)));
 	else if (_ori == 'S')
-		newCoOrd.first = static_cast<int>(newCoOrd.first - (_speed * (0.5 * _size)));
+		_newCoOrd.first = static_cast<int>(_newCoOrd.first - (_speed * (0.5 * _size)));
 	else if (_ori == 'E')
-		newCoOrd.second = static_cast<int>(newCoOrd.second + (_speed * (0.5 * _size)));
+		_newCoOrd.second = static_cast<int>(_newCoOrd.second + (_speed * (0.5 * _size)));
 	else if (_ori == 'W')
-		newCoOrd.second = static_cast<int>(newCoOrd.second - (_speed * (0.5 * _size)));
+		_newCoOrd.second = static_cast<int>(_newCoOrd.second - (_speed * (0.5 * _size)));
 	if (_newCoOrd == playerPos)
 		_newCoOrd = _xy;
 }
 
-bool	Enemy::checkUnable(std::vector<char> unable, char dir) const {
+bool					Enemy::checkUnable(std::vector<char> unable, char dir) const {
 	bool flag = false;
 	for (std::vector<char>::iterator it = unable.begin(); it != unable.end(); ++it) {
 		if (*it == dir)
@@ -84,7 +84,7 @@ bool	Enemy::checkUnable(std::vector<char> unable, char dir) const {
 	return (flag);
 }
 
-void	Enemy::attack() {
+void					Enemy::attack() {
 }
 
 std::ostream & 			operator<<(std::ostream & o, Enemy const & rhs) {

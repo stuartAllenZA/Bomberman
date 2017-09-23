@@ -92,21 +92,6 @@ void		Player::setDifficulty(const int newDifficulty) {
 	this->_difficulty = newDifficulty;
 }
 
-void		Player::processKeys(const bool keyPressArr[7]) {
-	if (keyPressArr[UP]) {
-
-	}
-	else if (keyPressArr[DOWN]) {
-		
-	}
-	else if (keyPressArr[LEFT]) {
-
-	}
-	else if (keyPressArr[RIGHT]) {
-		
-	}
-}
-
 std::ostream & 			operator<<(std::ostream & o, Player const & rhs) {
 	o << "X: " << rhs.getXY().first <<"\tY: " << rhs.getXY().second <<
 	"\nSpeed: " << rhs.getSpeed() <<

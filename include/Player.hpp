@@ -9,14 +9,6 @@
 //	3. Game::loadPlayer
 //	4. Game::savePlayer
 
-#define UP		0
-#define DOWN	1
-#define LEFT	2
-#define RIGHT	3
-#define ACTION	4
-#define ACCEPT	5
-#define ESCAPE	6
-
 class Player : public Character
 {
 public:

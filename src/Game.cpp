@@ -276,7 +276,7 @@ void					Game::setWindowPos(const int xPos, const int yPos) {
 
 void					Game::initSound() {
 	this->_sound.init();
-	this->_sound.setVerbose(true);
+	this->_sound.setVerbose(false);
 }
 
 void					Game::updateSound() {
@@ -401,7 +401,7 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 		o << "keyPressArr[" << i << "]: " << std::boolalpha << rhs.getKeyPressArr(i) << std::endl;
 	}
 
-	if (rhs.getEnemies().size() > 0) {
+	if (!rhs.getEnemies().empty()) {
 		num = 0;
 		for (std::vector<Enemy>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it) {
 			num++;
@@ -411,7 +411,7 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	else
 		o << "Enemies: 0\n";
 
-	if (rhs.getBreakableBs().size() > 0) {
+	if (!rhs.getBreakableBs().empty()) {
 		num = 0;
 		for (std::vector<BreakableBox>::iterator it = rhs.getBreakableBs().begin(); it != rhs.getBreakableBs().end(); ++it) {
 			num++;
@@ -421,7 +421,7 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	else
 		o << "Breakable Box: 0\n";
 
-	if (rhs.getUnbreakableBs().size() > 0) {
+	if (!rhs.getUnbreakableBs().empty()) {
 		num = 0;
 		for (std::vector<UnbreakableBox>::iterator it = rhs.getUnbreakableBs().begin(); it != rhs.getUnbreakableBs().end(); ++it) {
 			num++;
@@ -431,7 +431,7 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	else
 		o << "Unbreakable Box: 0\n";
 
-	if (rhs.getDrops().size() > 0) {
+	if (!rhs.getDrops().empty()) {
 		num = 0;
 		for (std::vector<Drop*>::iterator it = rhs.getDrops().begin(); it != rhs.getDrops().end(); ++it) {
 			num++;
@@ -524,7 +524,7 @@ int					Game::dropFreeBoxInd() {
 
 	while (1) {
 		randomInt = rand() % _breakableBs.size();
-		std::cout << "Int = " << randomInt << " size = " << _breakableBs.size() << std::endl;
+		std::cout << "Random Int = " << randomInt << " size = " << _breakableBs.size() << std::endl;
 		if (!_breakableBs[randomInt].getDrop())
 			return (randomInt);
 	}

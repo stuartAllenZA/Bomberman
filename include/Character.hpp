@@ -32,7 +32,7 @@ public:
 	float					getSize() const;
 	void					setSize(const float newSize);
 	
-private:
+protected:
 	std::pair<float, float>	_xy;
 	int						_speed;
 	int						_health;
