@@ -85,11 +85,11 @@ void					Game::setSound(Sound newSound) {
 	this->_sound = newSound;
 }
 
-std::vector<Character*>	Game::getEnemies() const {
+std::vector<Enemy>	Game::getEnemies() const {
 	return (this->_enemies);
 }
 
-void					Game::setEnemies(const std::vector<Character*> newEnemies) {
+void					Game::setEnemies(const std::vector<Enemy> newEnemies) {
 	this->_enemies = newEnemies;
 }
 
@@ -276,7 +276,7 @@ void					Game::setWindowPos(const int xPos, const int yPos) {
 
 void					Game::initSound() {
 	this->_sound.init();
-	this->_sound.setVerbose(true);
+	this->_sound.setVerbose(false);
 }
 
 void					Game::updateSound() {
@@ -343,8 +343,51 @@ int						Game::getPlayerLevel() {
 	return (_player.getLevel());
 }
 
-void				Game::setDifficulty(const int dif) {
+void					Game::setDifficulty(const int dif) {
 	this->_player.setDifficulty(dif);
+}
+
+void					Game::processEnemies() {
+	std::pair<float, float> curPos;
+	std::vector<char>		unable;
+
+	for (std::vector<Enemy>::iterator it = _enemies.begin(); it != _enemies.end(); ++it) {
+		unable.clear();
+		curPos = it->getXY();
+		for (int i = 0; i < 4; i++) {
+			if (curPos != it->getXY())
+				break ;
+			it->determineNewCoOrds(_player.getXY(), unable);
+			if (it->getNewCoOrd() != it->getXY() && checkCoOrd(it->getNewCoOrd()))
+				it->setXY(it->getNewCoOrd());
+			else if (it->getNewCoOrd() == it->getXY())
+				it->attack();
+			else
+				unable.push_back(it->getOri());
+		}
+	}
+}
+
+bool					Game::checkCoOrd(std::pair<float, float> xy) {
+	bool	ret = true;
+
+	for (std::vector<Enemy>::iterator it = _enemies.begin(); it != _enemies.end(); ++it) {
+		if (it->getXY() == xy)
+			ret = false;
+	}
+	for (std::vector<BreakableBox>::iterator it = _breakableBs.begin(); it != _breakableBs.end(); ++it) {
+		if (it->getXY() == xy)
+			ret = false;
+	}
+	for (std::vector<UnbreakableBox>::iterator it = _unbreakableBs.begin(); it != _unbreakableBs.end(); ++it) {
+		if (it->getXY() == xy)
+			ret = false;
+	}
+	for (std::vector<Drop*>::iterator it = _drops.begin(); it != _drops.end(); ++it) {
+		if ((*it)->getXY() == xy)
+			ret = false;
+	}
+	return (ret);
 }
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
@@ -358,9 +401,9 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 		o << "keyPressArr[" << i << "]: " << std::boolalpha << rhs.getKeyPressArr(i) << std::endl;
 	}
 
-	if (rhs.getEnemies().size() > 0) {
+	if (!rhs.getEnemies().empty()) {
 		num = 0;
-		for (std::vector<Character*>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it) {
+		for (std::vector<Enemy>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it) {
 			num++;
 			o << "Enemy " << num << ": " << *it << std::endl;
 		}
@@ -368,7 +411,7 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	else
 		o << "Enemies: 0\n";
 
-	if (rhs.getBreakableBs().size() > 0) {
+	if (!rhs.getBreakableBs().empty()) {
 		num = 0;
 		for (std::vector<BreakableBox>::iterator it = rhs.getBreakableBs().begin(); it != rhs.getBreakableBs().end(); ++it) {
 			num++;
@@ -378,7 +421,7 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	else
 		o << "Breakable Box: 0\n";
 
-	if (rhs.getUnbreakableBs().size() > 0) {
+	if (!rhs.getUnbreakableBs().empty()) {
 		num = 0;
 		for (std::vector<UnbreakableBox>::iterator it = rhs.getUnbreakableBs().begin(); it != rhs.getUnbreakableBs().end(); ++it) {
 			num++;
@@ -388,7 +431,7 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	else
 		o << "Unbreakable Box: 0\n";
 
-	if (rhs.getDrops().size() > 0) {
+	if (!rhs.getDrops().empty()) {
 		num = 0;
 		for (std::vector<Drop*>::iterator it = rhs.getDrops().begin(); it != rhs.getDrops().end(); ++it) {
 			num++;
@@ -481,7 +524,7 @@ int					Game::dropFreeBoxInd() {
 
 	while (1) {
 		randomInt = rand() % _breakableBs.size();
-		std::cout << "Int = " << randomInt << " size = " << _breakableBs.size() << std::endl;
+		std::cout << "Random Int = " << randomInt << " size = " << _breakableBs.size() << std::endl;
 		if (!_breakableBs[randomInt].getDrop())
 			return (randomInt);
 	}

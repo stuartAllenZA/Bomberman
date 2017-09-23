@@ -40,8 +40,7 @@ public:
 	void			gameLoop();
 	void			drawGame();
 	void			newPlayer(const std::string playerName);
-	void			initPlay();
-	void			resumePlay();
+	void			play();
 	void			exit();
 	void			setExit();
 	void			fatalError(std::string errorString);

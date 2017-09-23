@@ -1,6 +1,6 @@
 #include <RemoteDetonator.hpp>
 
-RemoteDetonator::RemoteDetonator(std::pair<int, int> xy) : Drop(xy) {
+RemoteDetonator::RemoteDetonator(std::pair<float, float> xy) : Drop(xy) {
 	std::cout << "RemoteDetonator at x: " << xy.first << " y: " << xy.second << " Constructed\n";
 }
 

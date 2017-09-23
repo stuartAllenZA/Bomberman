@@ -774,13 +774,13 @@ int		Menu::checkMenuSelectionKeys() {
 
 int		Menu::checkForKeySymbol(int keyPressed) {
 	if (keyPressed == GLFW_KEY_UP)
-		return (ENTYPO_ICON_UP);
+		return (ENTYPO_ICON_ARROW_UP);
 	else if (keyPressed == GLFW_KEY_DOWN)
-		return (ENTYPO_ICON_DOWN);
+		return (ENTYPO_ICON_ARROW_DOWN);
 	else if (keyPressed == GLFW_KEY_LEFT)
-		return (ENTYPO_ICON_LEFT);
+		return (ENTYPO_ICON_ARROW_LEFT);
 	else if (keyPressed == GLFW_KEY_RIGHT)
-		return (ENTYPO_ICON_RIGHT);
+		return (ENTYPO_ICON_ARROW_RIGHT);
 	else
 		return (0);
 }

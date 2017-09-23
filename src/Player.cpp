@@ -1,10 +1,10 @@
 #include <Player.hpp>
 
-Player::Player(std::pair<int, int> xy, int lives, std::string name) : Character(xy, lives), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(0), _experience(0), _numberOfBombs(0), _difficulty(1) {
+Player::Player(std::pair<float, float> xy, int lives, std::string name) : Character(xy, lives), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(0), _experience(0), _numberOfBombs(0), _difficulty(1) {
 	//std::cout << "Player with name " << this->_name << ", XY & Lives Constructed\n";
 }
 
-Player::Player(std::pair<int, int> xy, std::string name) : Character(xy), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(0), _experience(0), _numberOfBombs(0), _difficulty(1) {
+Player::Player(std::pair<float, float> xy, std::string name) : Character(xy), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(0), _experience(0), _numberOfBombs(0), _difficulty(1) {
 	//std::cout << "Player with name " << this->_name << "& XY Constructed\n";
 }
 
@@ -93,8 +93,7 @@ void		Player::setDifficulty(const int newDifficulty) {
 }
 
 std::ostream & 			operator<<(std::ostream & o, Player const & rhs) {
-	std::pair<int, int>	xy = rhs.getXY();
-	o << "X: " << xy.first <<"\tY: " << xy.second <<
+	o << "X: " << rhs.getXY().first <<"\tY: " << rhs.getXY().second <<
 	"\nSpeed: " << rhs.getSpeed() <<
 	"\nHealth: " << rhs.getHealth() <<
 	"\nLives: " << rhs.getLives() <<

@@ -5,12 +5,12 @@
 
 class Bomb {
 public:
-	Bomb(std::pair<int, int> xy, int blastRange, int timeToDetonate, bool canBeRemoteDetonated);
+	Bomb(std::pair<float, float> xy, int blastRange, int timeToDetonate, bool canBeRemoteDetonated);
 	~Bomb();
 	Bomb(Bomb const & src);
 	Bomb &				operator=(Bomb const &src);
-	std::pair<int, int>	getXY() const;
-	void				setXY(const std::pair<int, int> xy);
+	std::pair<float, float>	getXY() const;
+	void				setXY(const std::pair<float, float> xy);
 	int					getBlastRange() const;
 	void				setBlastRange(const int newBlastRange);
 	int					getTimeToDetonate() const;
@@ -19,7 +19,7 @@ public:
 	void				setCanBeRemoteDetonated(const bool newCBRD);
 
 private:
-	std::pair<int, int>		_xy;
+	std::pair<float, float>	_xy;
 	int						_blastRange;
 	int						_timeToDetonate;
 	bool					_canBeRemoteDetonated;

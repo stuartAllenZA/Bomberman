@@ -1,6 +1,6 @@
 #include <Bomb.hpp>
 
-Bomb::Bomb(std::pair<int, int> xy, int blastRange, int timeToDetonate, bool canBeRemoteDetonated) : _xy(xy), _blastRange(blastRange), _timeToDetonate(timeToDetonate), _canBeRemoteDetonated(canBeRemoteDetonated) {
+Bomb::Bomb(std::pair<float, float> xy, int blastRange, int timeToDetonate, bool canBeRemoteDetonated) : _xy(xy), _blastRange(blastRange), _timeToDetonate(timeToDetonate), _canBeRemoteDetonated(canBeRemoteDetonated) {
 	std::cout << "Bomb at x: " << xy.first << " y: " << xy.second << " Constructed\n";
 }
 
@@ -21,11 +21,11 @@ Bomb &			Bomb::operator=(Bomb const & src) {
 	return (*this);
 }
 
-std::pair<int, int>	Bomb::getXY() const {
+std::pair<float, float>	Bomb::getXY() const {
 	return (this->_xy);
 }
 
-void				Bomb::setXY(const std::pair<int, int> xy) {
+void				Bomb::setXY(const std::pair<float, float> xy) {
 	this->_xy = xy;
 }
 
