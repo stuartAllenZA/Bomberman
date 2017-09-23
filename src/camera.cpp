@@ -1,4 +1,4 @@
-#include <camera.hpp>
+#include <Camera.hpp>
 
 	Camera::Camera(glm::vec3 position, float pitch, float yaw)
 	{

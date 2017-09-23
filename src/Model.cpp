@@ -1,9 +1,9 @@
 #define TINYGLTF_IMPLEMENTATION
 #include <Model.hpp>
 
-Model::Model(const char *modelPath, Shader *shader) : _shader("gfxUtils/shaders/anime.vert", "gfxUtils/shaders/basic.frag") {
+Model::Model(const char *modelPath, Shader *shader) : _shader("gfxUtils/shaders/basic.vert", "gfxUtils/shaders/basic.frag") {
 	std::cout << "model constructed\n";
-	Camera camera(glm::vec3(0.0f, 0.0f, 3.0f), 0, -90.0f);
+	Camera camera(glm::vec3(10.0f, 12.0f, 6.0f), -45.0f, -90.0f);
 //	_shader = *shader;
 	glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
 	glm::mat4 view = camera.getViewMatrix();
@@ -34,8 +34,8 @@ bool Model::loadFromFile(Shader &shader, const char *path)
 
 	_shader = shader;
 	_path = std::string(path);
-	ret = loader.LoadBinaryFromFile(&_model, &err, path);
-	//ret = loader.LoadASCIIFromFile(&_model, &err, path);
+//	ret = loader.LoadBinaryFromFile(&_model, &err, path);
+	ret = loader.LoadASCIIFromFile(&_model, &err, path);
 	if (!err.empty())
 		std::cerr << "glTF parse error: " << err << std::endl;
 	if (!ret)
