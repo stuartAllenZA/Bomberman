@@ -148,6 +148,7 @@ void			Core::initPlay() {
 	}
 	_game.setPlayState(PlayState::GAME_PLAY);
 	std::cout << _game << std::endl;
+	
 	// Move player
 	// Place bomb
 	// move player

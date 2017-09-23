@@ -8,40 +8,37 @@
 class Character
 {
 public:
-	Character(std::pair<int, int> xy, int speed, int health, int lives);
-	Character(std::pair<int, int> xy, int speed, int health);
-	Character(std::pair<int, int> xy, int lives);
-	Character(std::pair<int, int> xy);
+	Character(std::pair<float, float> xy, int speed, int health, int lives, char ori);
+	Character(std::pair<float, float> xy, int speed, int health, int lives);
+	Character(std::pair<float, float> xy, int speed, int health, char ori);
+	Character(std::pair<float, float> xy, int speed, int health);
+	Character(std::pair<float, float> xy, int lives);
+	Character(std::pair<float, float> xy);
 	Character(int lives);
 	Character();
 	Character(Character const & src);
 	virtual ~Character() =0;
-	Character &			operator=(Character const & src);
-	std::pair<int, int>	getXY() const;
-	void				setXY(const std::pair<int, int> xy);
-	int					getSpeed() const;
-	void				setSpeed(const int newSpeed);
-	int					getHealth() const;
-	void				setHealth(const int newHealth);
-	int					getLives() const;
-	void				setLives(const int newLives);
-	// virtual std::string	getFileLocation() const = 0;
-	// virtual void		setFileLocation(const std::string newLocation) = 0;
-	// virtual std::string	getName() const = 0;
-	// virtual void		setName(const std::string newName) = 0;
-	// virtual int			getLevel() const = 0;
-	// virtual void		setLevel(const int newLevel) = 0;
-	// virtual int			getExperience() const = 0;
-	// virtual void		setExperience(const int newExp) = 0;
-	// virtual int			getNumberOfBombs() const = 0;
-	// virtual void		setNumberOfBombs(const int bombs) = 0;
-
-private:
-	std::pair<int, int>	_xy;
-	int					_speed;
-	int					_health;
-	int					_lives;
+	Character &				operator=(Character const & src);
+	std::pair<float, float>	getXY() const;
+	void					setXY(const std::pair<float, float> xy);
+	int						getSpeed() const;
+	void					setSpeed(const int newSpeed);
+	int						getHealth() const;
+	void					setHealth(const int newHealth);
+	int						getLives() const;
+	void					setLives(const int newLives);
+	char					getOri() const;
+	void					setOri(const char newOri);
+	float					getSize() const;
+	void					setSize(const float newSize);
 	
+private:
+	std::pair<float, float>	_xy;
+	int						_speed;
+	int						_health;
+	int						_lives;
+	char					_ori;
+	float					_size;
 };
 
 #endif

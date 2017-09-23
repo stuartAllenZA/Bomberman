@@ -1,6 +1,6 @@
 #include <EnemyDrop.hpp>
 
-EnemyDrop::EnemyDrop(std::pair<int, int> xy) : Drop(xy) {
+EnemyDrop::EnemyDrop(std::pair<float, float> xy) : Drop(xy) {
 	std::cout << "EnemyDrop at x: " << xy.first << " y: " << xy.second << " Constructed\n";
 }
 

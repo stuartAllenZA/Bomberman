@@ -9,11 +9,19 @@
 //	3. Game::loadPlayer
 //	4. Game::savePlayer
 
+#define UP		0
+#define DOWN	1
+#define LEFT	2
+#define RIGHT	3
+#define ACTION	4
+#define ACCEPT	5
+#define ESCAPE	6
+
 class Player : public Character
 {
 public:
-	Player(std::pair<int, int> xy, int lives, std::string name);
-	Player(std::pair<int, int> xy, std::string name);
+	Player(std::pair<float, float> xy, int lives, std::string name);
+	Player(std::pair<float, float> xy, std::string name);
 	Player(int lives, std::string name);
 	Player(std::string name);
 	Player();

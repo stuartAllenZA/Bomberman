@@ -11,11 +11,11 @@ BreakableBox::BreakableBox(Drop *drop) : Box(drop) {
 	// 	std::cout << "BreakableBox was passed a NULL drop, Constructed\n";
 }
 
-BreakableBox::BreakableBox(std::pair<int, int> xy) : Box(xy) {
+BreakableBox::BreakableBox(std::pair<float, float> xy) : Box(xy) {
 	std::cout << "BreakableBox at x: " << xy.first << " y: " << xy.second << " Constructed\n";
 }
 
-BreakableBox::BreakableBox(std::pair<int, int> xy, Drop *drop) : Box(xy, drop) {
+BreakableBox::BreakableBox(std::pair<float, float> xy, Drop *drop) : Box(xy, drop) {
 	// if (drop)
 	// 	std::cout << "BreakableBox with drop at x: " << xy.first << " y: " << xy.second << " Constructed\n";
 	// else
