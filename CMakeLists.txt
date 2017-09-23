@@ -39,6 +39,7 @@ set(SOURCE_FILES
 		src/Character.cpp
 		src/Core.cpp
 		src/Drop.cpp
+		src/Enemy.cpp
 		src/EnemyDrop.cpp
 		src/Exceptions.cpp
 		src/ExtraBomb.cpp

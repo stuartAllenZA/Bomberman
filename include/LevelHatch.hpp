@@ -5,7 +5,7 @@
 
 class LevelHatch : public Drop {
 	public:
-		LevelHatch(std::pair<int, int> xy);
+		LevelHatch(std::pair<float, float> xy);
 		~LevelHatch();
 		LevelHatch(LevelHatch const & src);
 		LevelHatch	&operator=(LevelHatch const &src);

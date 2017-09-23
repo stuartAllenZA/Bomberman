@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <Exceptions.hpp>
-#include <Character.hpp>
+#include <Enemy.hpp>
 #include <Settings.hpp>
 #include <Player.hpp>
 #include <Sound.hpp>
@@ -72,8 +72,8 @@ public:
 	void						setPlayer(const Player newPlayer);
 	Sound				&		getSound();
 	void						setSound(const Sound newSound);
-	std::vector<Character*>		getEnemies() const;
-	void						setEnemies(const std::vector<Character*> newEnemies);
+	std::vector<Enemy>			getEnemies() const;
+	void						setEnemies(const std::vector<Enemy> newEnemies);
 	std::vector<BreakableBox>	getBreakableBs() const;
 	void						setBreakableBs(const std::vector<BreakableBox> newBreakableBs);
 	std::vector<UnbreakableBox>	getUnbreakableBs() const;
@@ -106,6 +106,8 @@ public:
 	void						stopCreditsMusic();
 	void						setPlayerLevel(const int level);
 	int							getPlayerLevel();
+	void						processEnemies();
+	bool						checkCoOrd(std::pair<float, float> xy);
 	void						unbreakableRing(int x, int y);
 	void						breakableRing(int x, int y);
 	void						breakableRing(int x, int y, std::pair<int, int> skip);
@@ -123,7 +125,7 @@ private:
 	Settings					_settings;
 	Player						_player;
 	Sound						_sound;
-	std::vector<Character*>		_enemies;
+	std::vector<Enemy>			_enemies;
 	std::vector<BreakableBox>	_breakableBs;
 	std::vector<UnbreakableBox>	_unbreakableBs;
 	std::vector<Drop*>			_drops;

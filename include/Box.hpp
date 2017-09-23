@@ -8,20 +8,20 @@ class Box {
 public:
 	Box();
 	Box(Drop *drop);
-	Box(std::pair<int, int> xy);
-	Box(std::pair<int, int> xy, Drop *drop);
+	Box(std::pair<float, float> xy);
+	Box(std::pair<float, float> xy, Drop *drop);
 	virtual ~Box()=0;
 	Box(Box const & src);
-	Box	&				operator=(Box const &src);
-	std::pair<int, int>	getXY() const;
-	void				setXY(const std::pair<int, int> xy);
-	Drop				*getDrop() const;
-	void				setDrop(Drop *newDrop);
+	Box	&					operator=(Box const &src);
+	std::pair<float, float>	getXY() const;
+	void					setXY(const std::pair<float, float> xy);
+	Drop					*getDrop() const;
+	void					setDrop(Drop *newDrop);
 
-	void				placeRandomly();
+	void					placeRandomly();
 
 protected:
-	std::pair<int, int>		_xy;
+	std::pair<float, float>	_xy;
 	Drop					*_drop;
 };
 

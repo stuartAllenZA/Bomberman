@@ -12,8 +12,8 @@
 class Player : public Character
 {
 public:
-	Player(std::pair<int, int> xy, int lives, std::string name);
-	Player(std::pair<int, int> xy, std::string name);
+	Player(std::pair<float, float> xy, int lives, std::string name);
+	Player(std::pair<float, float> xy, std::string name);
 	Player(int lives, std::string name);
 	Player(std::string name);
 	Player();

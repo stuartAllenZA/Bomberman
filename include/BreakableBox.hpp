@@ -8,8 +8,8 @@ class BreakableBox : public Box {
 public:
 	BreakableBox();
 	BreakableBox(Drop *drop);
-	BreakableBox(std::pair<int, int> xy);
-	BreakableBox(std::pair<int, int> xy, Drop *drop);
+	BreakableBox(std::pair<float, float> xy);
+	BreakableBox(std::pair<float, float> xy, Drop *drop);
 	~BreakableBox();
 	BreakableBox(BreakableBox const &src);
 	BreakableBox		&operator=(BreakableBox const &src);

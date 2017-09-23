@@ -80,6 +80,7 @@ void			Core::gameLoop() {
 	glfwSetWindowPos(_win, this->_game.getSettings().getXPos(), this->_game.getSettings().getYPos());
 	while (loop == true && !glfwWindowShouldClose(_win)) {
 		input();
+		std::cout << "post input\n";
 		gs = this->_game.getGameState();
 		switch (gs) {
 			case GameState::MENU :
@@ -91,24 +92,17 @@ void			Core::gameLoop() {
 				_game.pauseMenuMusic();
 				break;
 			case GameState::PLAY :
-				if (_game.getPlayState() == PlayState::GAME_INIT) {
+				if (_game.getPlayState() == PlayState::GAME_INIT)
 					_game.startGameMusic();
-					std::cout << "Before init play" << std::endl;
-					initPlay();
-					std::cout << "After init play" << std::endl;
-					_game.pauseGameMusic();// THESE BROUGHT UP "COULD NOT PAUSE MUSIC" INSIDE TERMINAL (NOT AN STD::ERROR)
-				}
-				else if (_game.getPlayState() == PlayState::GAME_PLAY) {
+				else if (_game.getPlayState() == PlayState::GAME_PLAY)
 					_game.resumeGameMusic();
-					resumePlay();
-					_game.pauseGameMusic();
-				}
+				play();
+				_game.pauseGameMusic();
 				break;
 			case GameState::EXIT :
 				loop = false;
 				break;
 		}
-		drawGame();
 		std::cout << "Main gameLoop looping." << std::endl;
 	}
 }
@@ -136,7 +130,7 @@ void			Core::fatalError(std::string errorString) {
 	std::exit(1);
 }
 
-void			Core::initPlay() {
+void			Core::play() {
 	std::cout << "Playing, ESC to exit" << std::endl;
 	if (_game.getPlayState() == PlayState::GAME_INIT)
 		_game.initLevelOne();
@@ -150,6 +144,7 @@ void			Core::initPlay() {
 	}
 	_game.setPlayState(PlayState::GAME_PLAY);
 	std::cout << _game << std::endl;
+	
 	// Move player
 	// Place bomb
 	// move player
@@ -194,7 +189,7 @@ void			Core::initPlay() {
 	if (_game.getGameState() == GameState::EXIT)
 		std::cout << "MENU" << std::endl;
 
-	while (_game.getGameState() == GameState::PLAY) {
+	while (!glfwWindowShouldClose(_win) && _game.getGameState() == GameState::PLAY) {
 		std::cout << "check for keys loop" << std::endl;
 		glfwPollEvents();
 		updateKeys();
@@ -210,18 +205,6 @@ void			Core::initPlay() {
 		if (glfwGetKey(_win, GLFW_KEY_F) == GLFW_PRESS) {
 			_menu->setMenuState(MenuState::LEVEL_FAIL);
 			_game.setGameState(GameState::MENU);
-		}
-	}
-}
-
-void			Core::resumePlay() {
-	std::cout << "Resuming, ESC to exit" << std::endl;
-	while (_game.getGameState() == GameState::PLAY) {
-		glfwPollEvents();
-		updateKeys();
-		if (_game.getKeyPressArr(ESCAPE)){
-			this->_game.setGameState(GameState::MENU);
-			_menu->setMenuState(MenuState::PAUSE);
 		}
 	}
 }

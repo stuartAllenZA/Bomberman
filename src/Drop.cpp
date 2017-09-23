@@ -4,7 +4,7 @@ Drop::Drop() {
 	std::cout << "Drop Default Constructed\n";
 }
 
-Drop::Drop(std::pair<int, int> xy) : _xy(xy) {
+Drop::Drop(std::pair<float, float> xy) : _xy(xy) {
 	std::cout << "Drop at x: " << xy.first << " y: " << xy.second << " Constructed\n";
 }
 
@@ -22,10 +22,10 @@ Drop &				Drop::operator=(Drop const & src) {
 	return (*this);
 }
 
-std::pair<int, int>	Drop::getXY() const {
+std::pair<float, float>	Drop::getXY() const {
 	return (this->_xy);
 }
 
-void				Drop::setXY(const std::pair<int, int> xy) {
+void				Drop::setXY(const std::pair<float, float> xy) {
 	this->_xy = xy;
 }
