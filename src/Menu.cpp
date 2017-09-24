@@ -113,6 +113,7 @@ void			Menu::errorPopup(const std::string & title, const std::string & message, 
 	}
 	if (glfwWindowShouldClose(*_win))
 		exitButton();
+	delete gui;
 	nanoguiWindow->dispose();
 }
 
@@ -239,6 +240,9 @@ void			Menu::playerSelectMenu() {
 	if (glfwWindowShouldClose(*_win))
 		this->_game->setGameState(GameState::EXIT);
 	playerCobo->setVisible(false);
+	delete CreatePlayerBtn;
+	delete playerCobo;
+	delete exitGameButton;
 	nanoguiWindow->dispose();
 }
 
@@ -343,6 +347,7 @@ void            Menu::mainMenu() {
 	}
 	if (glfwWindowShouldClose(*_win))
 		exitButton();
+	delete b;
 	nanoguiWindow->dispose();
 }
 
@@ -516,6 +521,14 @@ void			Menu::settingsMenu() {
 	}
 	if (glfwWindowShouldClose(*_win))
 		exitButton();
+	delete b;
+	delete cb;
+	delete cobo;
+	delete textBoxMusic;
+	delete sliderMusic;
+	delete sliderSfx;
+	delete textBoxSfx;
+
 	nanoguiWindow->dispose();
 }
 
@@ -757,6 +770,16 @@ void            Menu::keyBindingMenu() {
 	}
 	if (glfwWindowShouldClose(*_win))
 		exitButton();
+
+	delete upKeyButton;
+	delete downKeyButton;
+	delete leftKeyButton;
+	delete rightKeyButton;
+	delete actionKeyButton;
+	delete acceptKeyButton;
+	delete escapeKeyButton;
+	delete exitKeyBindingButton;
+	delete layout;
 	nanoguiWindow->dispose();
 }
 
@@ -775,19 +798,16 @@ int		Menu::checkMenuSelectionKeys() {
 }
 
 int		Menu::checkForKeySymbol(int keyPressed) {
-//	if (keyPressed == GLFW_KEY_UP)
-//		return (ENTYPO_ICON_ARROW_UP);
-//	else if (keyPressed == GLFW_KEY_DOWN)
-//		return (ENTYPO_ICON_ARROW_DOWN);
-//	else if (keyPressed == GLFW_KEY_LEFT)
-//		return (ENTYPO_ICON_ARROW_LEFT);
-//	else if (keyPressed == GLFW_KEY_RIGHT)
-//		return (ENTYPO_ICON_ARROW_RIGHT);
-//	else
-	if (keyPressed != 1000)
-		return (0);
+	if (keyPressed == GLFW_KEY_UP)
+		return (ENTYPO_ICON_ARROW_UP);
+	else if (keyPressed == GLFW_KEY_DOWN)
+		return (ENTYPO_ICON_ARROW_DOWN);
+	else if (keyPressed == GLFW_KEY_LEFT)
+		return (ENTYPO_ICON_ARROW_LEFT);
+	else if (keyPressed == GLFW_KEY_RIGHT)
+		return (ENTYPO_ICON_ARROW_RIGHT);
 	else
-		return (1);
+		return (0);
 }
 
 int		Menu::findKeyForBinding() {
