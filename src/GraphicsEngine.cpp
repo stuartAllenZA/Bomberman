@@ -116,7 +116,26 @@ void GraphicsEngine::render() {
  *		render(_models.find(gameobjectname)->second);
  *	}
  */
+	std::pair<float, float> coords;
 	_wallShader->enable();
+	std::vector<UnbreakableBox> tempUB = _game->getUnbreakableBs();
+	int vecSize = _game->getUnbreakableBs().size();
+	for (int i = 0; i < vecSize; i++) {
+		coords = tempUB[i].getXY();
+		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		_matrices.find("wall")->second = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
+		_models.find("wall")->second->render(_matrices.find("wall")->second);
+	}
+
+	/*
+	for (std::vector<UnbreakableBox>::iterator it = _game->getUnbreakableBs().begin(); it != _game->getUnbreakableBs().end(); ++it) {
+		coords = it->getXY();
+		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		_matrices.find("wall")->second = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
+		_models.find("wall")->second->render(_matrices.find("wall")->second);
+	}
+	*/
+		/*
 	for (float i = 0.0f; i < 20.0f; i += 1.0f) {
 		_matrices.find("wall")->second = glm::translate(glm::mat4(), glm::vec3(i, 0.0f, 0.0f)); 
 		_models.find("wall")->second->render(_matrices.find("wall")->second);
@@ -133,8 +152,8 @@ void GraphicsEngine::render() {
 		_matrices.find("wall")->second = glm::translate(glm::mat4(), glm::vec3(20.0f, 0.0f, -i)); 
 		_models.find("wall")->second->render(_matrices.find("wall")->second);
 	}
-
-	_playerModel->render(model);
+	*/
+	//_playerModel->render(model);
 
 	glfwSwapBuffers(_window);
 	glfwPollEvents();

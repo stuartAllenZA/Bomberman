@@ -78,6 +78,7 @@ void			Core::init() {
 	}
 	_gfx = new GraphicsEngine(&_game, &_win);
 	_gfx->init();
+	std::cout << "GRAPHICS init called\n";
 
 	std::cout << "GLFW Window Created." << std::endl;
 }
@@ -154,43 +155,6 @@ void			Core::play() {
 	}
 	_game.setPlayState(PlayState::GAME_PLAY);
 	std::cout << _game << std::endl;
-	
-	// Move player
-	// Place bomb
-	// move player
-	// detonate bomb
-	// destroy box
-	// Move player
-	// Place bomb
-	// move player
-	// explode bomb
-	// destroy box
-	// drop enemy
-	// move player
-	// move enemy
-	// place bomb
-	// move player
-	// move enemy
-	// detonate bomb
-	// kill enemy
-	// xp up player
-	// move player
-	// place bomb
-	// move player
-	// detonate bomb
-	// destroy box
-	// drop upgrade
-	// move player
-	// collect upgrade
-	// activate upgrade on player
-	// move player
-	// place bomb
-	// move player
-	// detonate bomb
-	// destroy box
-	// drop hatch
-	// move player
-	// finish demo
 	glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -203,7 +167,6 @@ void			Core::play() {
 		std::cout << "MENU" << std::endl;
 	if (_game.getGameState() == GameState::EXIT)
 		std::cout << "MENU" << std::endl;
-
 	while (!glfwWindowShouldClose(_win) && _game.getGameState() == GameState::PLAY) {
 		std::cout << "check for keys loop" << std::endl;
 		glfwPollEvents();
@@ -214,15 +177,15 @@ void			Core::play() {
 			this->_game.setGameState(GameState::MENU);
 			_menu->setMenuState(MenuState::PAUSE);
 		}
-		if (glfwGetKey(_win, GLFW_KEY_P) == GLFW_PRESS) {
-			std::cout << "P PRESSED" << std::endl;
-			_menu->setMenuState(MenuState::LEVEL_PASS);
-			_game.setGameState(GameState::MENU);
-		}
-		if (glfwGetKey(_win, GLFW_KEY_F) == GLFW_PRESS) {
-			_menu->setMenuState(MenuState::LEVEL_FAIL);
-			_game.setGameState(GameState::MENU);
-		}
+	}
+	if (glfwGetKey(_win, GLFW_KEY_P) == GLFW_PRESS) {
+		std::cout << "P PRESSED" << std::endl;
+		_menu->setMenuState(MenuState::LEVEL_PASS);
+		_game.setGameState(GameState::MENU);
+	}
+	if (glfwGetKey(_win, GLFW_KEY_F) == GLFW_PRESS) {
+		_menu->setMenuState(MenuState::LEVEL_FAIL);
+		_game.setGameState(GameState::MENU);
 	}
 	glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	this->_game.setGameState(GameState::MENU);
