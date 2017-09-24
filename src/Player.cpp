@@ -1,22 +1,22 @@
 #include <Player.hpp>
 
-Player::Player(std::pair<float, float> xy, int lives, std::string name) : Character(xy, lives), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(0), _experience(0), _numberOfBombs(0), _difficulty(1) {
+Player::Player(std::pair<float, float> xy, int lives, std::string name) : Character(xy, lives), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(0), _experience(0), _numberOfBombs(0), _difficulty(1), _blocksPerSec(1), _playerWidth(0.1) {
 	//std::cout << "Player with name " << this->_name << ", XY & Lives Constructed\n";
 }
 
-Player::Player(std::pair<float, float> xy, std::string name) : Character(xy), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(0), _experience(0), _numberOfBombs(0), _difficulty(1) {
+Player::Player(std::pair<float, float> xy, std::string name) : Character(xy), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(0), _experience(0), _numberOfBombs(0), _difficulty(1), _blocksPerSec(1), _playerWidth(0.1) {
 	//std::cout << "Player with name " << this->_name << "& XY Constructed\n";
 }
 
-Player::Player(int lives, std::string name) : Character(lives), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(0), _experience(0), _numberOfBombs(0), _difficulty(1) {
+Player::Player(int lives, std::string name) : Character(lives), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(0), _experience(0), _numberOfBombs(0), _difficulty(1), _blocksPerSec(1), _playerWidth(0.1) {
 	//std::cout << "Player with name " << this->_name << " & Lives Constructed\n";
 }
 
-Player::Player(std::string name) : Character(), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(0), _experience(0), _numberOfBombs(0), _difficulty(1) {
+Player::Player(std::string name) : Character(), _fileLocation("resources/profiles/" + name + ".profile"), _name(name), _level(0), _experience(0), _numberOfBombs(0), _difficulty(1), _blocksPerSec(1), _playerWidth(0.1) {
 	//std::cout << "Player with name " << this->_name << " Constructed\n";
 }
 
-Player::Player() : Character(), _level(0), _experience(0), _numberOfBombs(0), _difficulty(1) {
+Player::Player() : Character(), _level(0), _experience(0), _numberOfBombs(0), _difficulty(1), _blocksPerSec(1), _playerWidth(0.1) {
 	//std::cout << "Player with no name Default Constructed\n";
 }
 
@@ -90,6 +90,22 @@ int			Player::getDifficulty() const {
 
 void		Player::setDifficulty(const int newDifficulty) {
 	this->_difficulty = newDifficulty;
+}
+
+float 		Player::getBlocksPerSec() const {
+	return (this->_blocksPerSec);
+}
+
+void		Player::setBlocksPerSec(const float newBlocksPerSec){
+	this->_blocksPerSec = newBlocksPerSec;
+}
+
+float 		Player::getPlayerWidth() const {
+	return (this->_playerWidth);
+}
+
+void		Player::setPlayerWidth(const float newPlayerWidth) {
+	this->_playerWidth = newPlayerWidth;
 }
 
 std::ostream & 			operator<<(std::ostream & o, Player const & rhs) {

@@ -157,7 +157,7 @@ void			Core::play() {
 			_game.initLevelThree();
 	}
 //	_game.setPlayState(PlayState::GAME_PLAY);
-	std::cout << _game << std::endl;
+	//std::cout << _game << std::endl;
 	glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -174,7 +174,8 @@ void			Core::play() {
 		std::cout << "check for keys loop" << std::endl;
 		glfwPollEvents();
 		updateKeys();
-		_gfx->processInput();
+		_game.controller();
+//		_gfx->processInput();
 		_gfx->render();	
 		if (_game.getKeyPressArr(ESCAPE)){
 			this->_game.setGameState(GameState::MENU);

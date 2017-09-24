@@ -9,6 +9,7 @@
 #include <Player.hpp>
 #include <Sound.hpp>
 #include <Box.hpp>
+#include <Bomb.hpp>
 #include <BreakableBox.hpp>
 #include <UnbreakableBox.hpp>
 #include <LevelHatch.hpp>
@@ -84,6 +85,8 @@ public:
 	void 						setHasSave(const bool newHasSave);
 	std::pair<int, int>			getMapSize() const;
 	void						setMapSize(const std::pair<int, int> newMapSize);
+	int							getRange() const;
+	void 						setRange(const int newRange);
 
 	void						initSound();
 	void						savePlayer();
@@ -108,6 +111,13 @@ public:
 	int							getPlayerLevel();
 	void						processEnemies();
 	bool						checkCoOrd(std::pair<float, float> xy);
+	bool 						checkCoOrd(std::pair<float, float> xy, char *type);
+	void 						controller();
+	void 						moveUp();
+	void 						moveDown();
+	void 						moveLeft();
+	void 						moveRight();
+	void 						dropBomb(int	*delayTimer);
 	void						unbreakableRing(int x, int y);
 	void						breakableRing(int x, int y);
 	void						breakableRing(int x, int y, std::pair<int, int> skip);
@@ -130,8 +140,10 @@ private:
 	std::vector<BreakableBox>	_breakableBs;
 	std::vector<UnbreakableBox>	_unbreakableBs;
 	std::vector<Drop*>			_drops;
+	std::vector<Bomb>			_bombs;
 	bool						_hasSave;
 	std::pair<int, int>			_mapSize;
+	int							_range;
 };
 
 std::ostream &					operator<<(std::ostream & o, Game const & rhs);
