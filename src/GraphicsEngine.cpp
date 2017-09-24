@@ -87,12 +87,12 @@ void GraphicsEngine::initSystems() {
 
 void GraphicsEngine::init() {
 	_camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f), 0, -90.0f);
-	_playerShader = new Shader("gfxUtils/shaders/anime.vert", "gfxUtils/shaders/basic.frag");
-	_wallShader = new Shader("gfxUtils/shaders/basic.vert", "gfxUtils/shaders/basic.frag");
-	_boxShader = new Shader("gfxUtils/shaders/basic.vert", "gfxUtils/shaders/basic.frag");
-//	_enemyShader = new Shader("gfxUtils/shaders/anime.vert", "gfxUtils/shaders/basic.frag");
+	_playerShader = new Shader("shaders/anime.vert", "shaders/basic.frag");
+	_wallShader = new Shader("shaders/basic.vert", "shaders/basic.frag");
+	_boxShader = new Shader("shaders/basic.vert", "shaders/basic.frag");
+//	_enemyShader = new Shader("shaders/anime.vert", "gfxUtils/shaders/basic.frag");
 
-	_models["player"] = new Model("resources/models/bomberman.gltf", _playerShader);
+	_models["player"] = new Model("resources/models/BMrun.gltf", _playerShader);
 	_models["wall"] = new Model("resources/models/Cube.gltf", _wallShader);
 	_models["box"] = new Model("resources/models/block1.gltf", _boxShader);
 //	_models["enemy"] = new Model("resources/models/bomberman.gltf", _enemyShader);
@@ -103,9 +103,6 @@ void GraphicsEngine::init() {
 	_matrices["box"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 //	_matrices["enemy"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 
-//	_playerShader = new Shader("gfxUtils/shaders/anime.vert", "gfxUtils/shaders/basic.frag");
-//	_playerShader->enable();
-//	_playerModel = new Model("resources/models/boneBox.gltf", _playerShader);
 }
 
 void GraphicsEngine::render() {

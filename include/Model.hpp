@@ -6,12 +6,12 @@
 #include "Animation.hpp"
 #include <map>
 #include <GL/glew.h>
-#include "../gfxUtils/glm/glm.hpp"
-#include "../gfxUtils/glm/common.hpp"
-#include "../gfxUtils/glm/gtc/matrix_transform.hpp"
-#include "../gfxUtils/glm/gtx/quaternion.hpp"
-#include "../gfxUtils/glm/gtc/matrix_transform.hpp"
-#include "../gfxUtils/glm/gtc/type_ptr.hpp"
+#include <glm.hpp>
+#include <common.hpp>
+#include <matrix_transform.hpp>
+#include <quaternion.hpp>
+#include <matrix_transform.hpp>
+#include <type_ptr.hpp>
 
 struct Joint
 {

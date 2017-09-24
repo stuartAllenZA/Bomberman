@@ -3,9 +3,11 @@ project(Bomberman)
 
 include(ExternalProject)
 set(BOMBERMAN_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(NANOGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.nanogui)
-set(GLM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.glm)
-set(TINYGLTF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.tinyGltf)
+set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.libraries)
+set(NANOGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.libraries/nanogui)
+set(TINYGLTF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.libraries/tinygltf)
+set(IRRKLANG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.libraries/irrklang)
+set(GLM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.libraries/glm)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -g3")
@@ -18,18 +20,17 @@ if (NOT IS_DIRECTORY "$ENV{HOME}/.brew/Cellar/glew")
 	execute_process(COMMAND brew install glew)
 endif()
 
-if (NOT IS_DIRECTORY "${PROJECT_SOURCE_DIR}/.irrKlang/include/")
-	execute_process(COMMAND rm -rf .irrKlang)
-	execute_process(COMMAND git clone https://github.com/Trismaske/irrKlang_cmake.git .irrKlang)
+if (NOT IS_DIRECTORY "${LIB_DIR}")
+	execute_process(COMMAND git clone https://github.com/stuartAllenZA/BombermanLibraries.git .libraries)
 endif()
 
-if (NOT IS_DIRECTORY "${NANOGUI_DIR}")
-	execute_process(COMMAND git clone https://github.com/wjakob/nanogui.git --recursive .nanogui)
+if (NOT IS_DIRECTORY "${LIB_DIR}/${NANOGUI_DIR}")
+	execute_process(COMMAND git clone https://github.com/wjakob/nanogui.git --recursive .libraries/nanogui)
 	execute_process(COMMAND sh .compile.sh)
 endif()
 
-if (NOT IS_DIRECTORY "${TINYGLTF_DIR}")
-	execute_process(COMMAND git clone https://github.com/syoyo/tinygltf.git .tinyGltf)
+if (NOT IS_DIRECTORY "${LIB_DIR}/${TINYGLTF_DIR}")
+	execute_process(COMMAND git clone https://github.com/syoyo/tinygltf.git .libraries/tinygltf)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -69,18 +70,21 @@ set(SOURCE_FILES
 
 include_directories(
 		${PROJECT_SOURCE_DIR}/include
-		SYSTEM ${PROJECT_SOURCE_DIR}/.irrKlang/include
+		SYSTEM ${IRRKLANG_DIR}/include
 		SYSTEM ${NANOGUI_DIR}/ext/glfw/include
 		SYSTEM ${NANOGUI_DIR}/include
 		SYSTEM ${NANOGUI_DIR}/ext/eigen
 		SYSTEM ${NANOGUI_DIR}/ext/nanovg/src
 		SYSTEM ${TINYGLTF_DIR}
+		SYSTEM ${LIB_DIR}/misc
 		SYSTEM $ENV{HOME}/.brew/Cellar/glew/2.1.0/include
-		SYSTEM /System/Library/Frameworks/AGL.framework/Versions/A/Headers
+		SYSTEM ${GLM_DIR}
+		SYSTEM ${GLM_DIR}/gtx
+		SYSTEM ${GLM_DIR}/gtc
 )
 
 link_directories(
-		.irrKlang
+		${IRRKLANG_DIR}
 		${NANOGUI_DIR}
 		${NANOGUI_DIR}/ext/eigen
 		${NANOGUI_DIR}/ext/nanovg/src
@@ -91,8 +95,8 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 add_custom_command(TARGET ${PROJECT_NAME}
 		PRE_BUILD
-		COMMAND install_name_tool -id "${PROJECT_SOURCE_DIR}/.irrKlang/libirrklang.dylib"
-			${PROJECT_SOURCE_DIR}/.irrKlang/libirrklang.dylib
+		COMMAND install_name_tool -id "${IRRKLANG_DIR}/libirrklang.dylib"
+		${IRRKLANG_DIR}/libirrklang.dylib
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -103,5 +107,5 @@ target_link_libraries(${PROJECT_NAME}
 
 if (APPLE)
 	target_link_libraries(${PROJECT_NAME}
-			"-framework OpenGL -framework OpenAL")
+			"-framework OpenGL")
 endif()
