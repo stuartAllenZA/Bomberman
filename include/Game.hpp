@@ -127,6 +127,7 @@ public:
 	void						initLevelThree();
 	int							dropFreeBoxInd();
 	void 						setDifficulty(const int dif);
+	void						reset();
 
 private:
 	GameState					_gameState;
