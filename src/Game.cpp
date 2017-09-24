@@ -391,7 +391,7 @@ bool					Game::checkCoOrd(std::pair<float, float> xy) {
 }
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
-	int num;
+	int size;
 	o << "Dumping Game State" <<
 	"\nGame State: " << static_cast<std::underlying_type<GameState>::type>(rhs.getGameState()) <<
 	"\nPlay State: " << static_cast<std::underlying_type<PlayState>::type>(rhs.getPlayState()) <<
@@ -401,46 +401,38 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 		o << "keyPressArr[" << i << "]: " << std::boolalpha << rhs.getKeyPressArr(i) << std::endl;
 	}
 
-	if (!rhs.getEnemies().empty()) {
-		num = 0;
-		for (std::vector<Enemy>::iterator it = rhs.getEnemies().begin(); it != rhs.getEnemies().end(); ++it) {
-			num++;
-			o << "Enemy " << num << ": " << *it << std::endl;
-		}
+	if ((size = rhs.getEnemies().size()) > 0) {
+		std::vector<Enemy> tempEnemy = rhs.getEnemies();
+		for (int i = 0; i < size; i++)
+			o << "Enemy " << i << "\tX: " << tempEnemy[i].getXY().first << "\tY: " << tempEnemy[i].getXY().second << std::endl;
 	}
 	else
 		o << "Enemies: 0\n";
 
-	if (!rhs.getBreakableBs().empty()) {
-		num = 0;
-		for (std::vector<BreakableBox>::iterator it = rhs.getBreakableBs().begin(); it != rhs.getBreakableBs().end(); ++it) {
-			num++;
-			o << "Breakable Box " << num << "\tX: " << it->getXY().first << "\tY: " << it->getXY().second << std::endl;
-		}
+	if ((size = rhs.getBreakableBs().size()) > 0) {
+		std::vector<BreakableBox> tempBB = rhs.getBreakableBs();
+		for (int i = 0; i < size; i++)
+			o << "Breakable Box " << i << "\tX: " << tempBB[i].getXY().first << "\tY: " << tempBB[i].getXY().second << std::endl;
 	}
 	else
 		o << "Breakable Box: 0\n";
 
-	if (!rhs.getUnbreakableBs().empty()) {
-		num = 0;
-		for (std::vector<UnbreakableBox>::iterator it = rhs.getUnbreakableBs().begin(); it != rhs.getUnbreakableBs().end(); ++it) {
-			num++;
-			o << "Unbreakable Box " << num << "\tX: " << it->getXY().first << "\tY: " << it->getXY().second << std::endl;
-		}
+	if ((size = rhs.getUnbreakableBs().size()) > 0) {
+		std::vector<UnbreakableBox> tempUB = rhs.getUnbreakableBs();
+		for (int i = 0; i < size; i++)
+			o << "Unbreakable Box " << i << "\tX: " << tempUB[i].getXY().first << "\tY: " << tempUB[i].getXY().second << std::endl;
 	}
 	else
 		o << "Unbreakable Box: 0\n";
 
-	if (!rhs.getDrops().empty()) {
-		num = 0;
-		for (std::vector<Drop*>::iterator it = rhs.getDrops().begin(); it != rhs.getDrops().end(); ++it) {
-			num++;
-			o << "Drop " << num << "\tX: " << (*it)->getXY().first << "\tY: " << (*it)->getXY().second << std::endl;
-		}
+	if ((size = rhs.getDrops().size()) > 0) {
+		std::vector<Drop*> tempDrp = rhs.getDrops();
+		for (int i = 0; i < size; i++)
+			o << "Drop " << i << "\tX: " << tempDrp[i]->getXY().first << "\tY: " << tempDrp[i]->getXY().second << std::endl;
 	}
 	else
 		o << "Drops: 0\n";
-
+	
 	o << "\nSettings: " << rhs.getSettings() << std::endl << "Player: " << rhs.getPlayer();
 	return o;
 }
@@ -562,8 +554,22 @@ void					Game::initLevelOne() {
 }
 
 void					Game::initLevelTwo() {
-
+	//int		index;
+	//determine _mapSize
+	_mapSize = std::make_pair(_player.getDifficulty() * 10, _player.getDifficulty() * 10);
+	//Spawn Boxes
+	unbreakableRing(_mapSize.first, _mapSize.second);
+	for (int i = 1; i < (_mapSize.first / 2); i++) {
+		//cornerBox(_mapSize.first - i, _mapSize.second - i);
+	}
 }
 
 void					Game::initLevelThree() {
+}
+
+void					Game::reset() {
+	_enemies.clear();
+	_breakableBs.clear();
+	_unbreakableBs.clear();
+	_drops.clear();
 }
