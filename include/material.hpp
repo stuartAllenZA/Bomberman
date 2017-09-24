@@ -2,7 +2,7 @@
 
 #include "stb_image.h"
 #include <iostream>
-#include "../gfxUtils/glm/glm.hpp"
+#include <glm.hpp>
 #include "ModelShader.hpp"
 #include <vector>
 

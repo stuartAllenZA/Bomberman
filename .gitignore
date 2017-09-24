@@ -9,8 +9,7 @@ CMakeCache.txt
 .idea/
 CMakeFiles
 Makefile
-.nanogui
-.irrKlang
+.libraries
 cmake_install.cmake
 resources/bomberman.config
 resources/maps.config

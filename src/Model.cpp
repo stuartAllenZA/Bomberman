@@ -16,7 +16,7 @@ Model::~Model() {
 	std::cout << "model destructed\n";
 }
 
-Model::Model() : _shader("gfxUtils/shaders/basic.vert", "gfxUtils/shaders/basic.frag") {
+Model::Model() : _shader("shaders/basic.vert", "shaders/basic.frag") {
 	std::cout << "model constructed\n";
 }
 Model::Model(Model const & src) { *this = src; }
@@ -511,6 +511,7 @@ void Model::render(glm::mat4 matrix)
 	std::cout << "rendering model\n";
 	_shader.enable();
 	_shader.setUniformMat4((GLchar *)"model_matrix", matrix);
+	/*
 	if (!_animations.empty())
 	{
 		_shader.setUniform1i((GLchar *)"hasAnime", (int)true);
@@ -520,6 +521,7 @@ void Model::render(glm::mat4 matrix)
 		// edit animation frame time
 		_animations[0]->increaseCurrentTimeStamp(0.02f);
 	}
+	*/
 	for (std::pair<int, Material> material : _materials)
 		Material::sendMaterialToShader(_shader, material.second, material.first);
 	glBindVertexArray(_vao);

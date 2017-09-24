@@ -3,9 +3,9 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "../gfxUtils/glm/glm.hpp"
-#include "../gfxUtils/glm/gtc/type_ptr.hpp"
-#include "../gfxUtils/glm/gtc/matrix_transform.hpp"
+#include <glm.hpp>
+#include <type_ptr.hpp>
+#include <matrix_transform.hpp>
 
 #include "Game.hpp"
 #include "Camera.hpp"
