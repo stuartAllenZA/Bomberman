@@ -67,9 +67,9 @@ void					Sound::setVerbose(const bool newV) {
 void					Sound::init() {
 	if (this->_verbose)
 		std::cout << "Initializing Sound." << std::endl;
-	chdir(".irrKlang/");
+	chdir(".libraries/irrklang/");
 	this->_engine = irrklang::createIrrKlangDevice();
-	chdir("..");
+	chdir("../..");
 	if (!this->_engine)
 		throw (Exceptions::SoundDeviceInitError());
 	else {

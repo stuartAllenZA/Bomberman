@@ -16,7 +16,7 @@ Model::~Model() {
 	std::cout << "model destructed\n";
 }
 
-Model::Model() : _shader("shaders/basic.vert", "shaders/basic.frag") {
+Model::Model() : _shader("resources/shaders/basic.vert", "resources/shaders/basic.frag") {
 	std::cout << "model constructed\n";
 }
 Model::Model(Model const & src) { *this = src; }

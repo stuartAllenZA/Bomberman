@@ -518,7 +518,6 @@ void				Game::dropBomb(int *delayTimer) {
 
 	bombXY = std::make_pair((int)(_player.getXY().first + 0.5), (int)(_player.getXY().second + 0.5));
 	if (*delayTimer >= 60) {
-		this->_bombs.push_back(Bomb(bombXY, _range, 1, false));
 		*delayTimer = 0;
 	}
 }

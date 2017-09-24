@@ -24,12 +24,12 @@ if (NOT IS_DIRECTORY "${LIB_DIR}")
 	execute_process(COMMAND git clone https://github.com/stuartAllenZA/BombermanLibraries.git .libraries)
 endif()
 
-if (NOT IS_DIRECTORY "${LIB_DIR}/${NANOGUI_DIR}")
+if (NOT IS_DIRECTORY "${NANOGUI_DIR}")
 	execute_process(COMMAND git clone https://github.com/wjakob/nanogui.git --recursive .libraries/nanogui)
 	execute_process(COMMAND sh .compile.sh)
 endif()
 
-if (NOT IS_DIRECTORY "${LIB_DIR}/${TINYGLTF_DIR}")
+if (NOT IS_DIRECTORY "${TINYGLTF_DIR}")
 	execute_process(COMMAND git clone https://github.com/syoyo/tinygltf.git .libraries/tinygltf)
 endif()
 
@@ -40,12 +40,11 @@ endif()
 
 set(SOURCE_FILES
 	src/Animation.cpp
-	src/Util.cpp
 	src/Bomb.cpp
-	src/camera.cpp
-	src/Box.cpp
 	src/Bomberman.cpp
+	src/Box.cpp
 	src/BreakableBox.cpp
+	src/Camera.cpp
 	src/Character.cpp
 	src/Core.cpp
 	src/Drop.cpp
@@ -66,7 +65,8 @@ set(SOURCE_FILES
 	src/Settings.cpp
 	src/Sound.cpp
 	src/stb_image.cpp
-	src/UnbreakableBox.cpp)
+	src/UnbreakableBox.cpp
+	src/Util.cpp)
 
 include_directories(
 		${PROJECT_SOURCE_DIR}/include

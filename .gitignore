@@ -1,15 +1,11 @@
 *.sw*
 *._*
 *.DS*
-*.so
 Bomberman
-tasks
 cmake-build-debug/
 CMakeCache.txt
-.idea/
 CMakeFiles
 Makefile
 .libraries
 cmake_install.cmake
-resources/bomberman.config
-resources/maps.config
+
