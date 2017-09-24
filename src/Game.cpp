@@ -7,6 +7,7 @@ Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT)
 	}
 	if (this->checkPlayers().size() > 0)
 		this->_hasSave = true;
+	this->_player.setBlocksPerSec(0.1f);
 	std::cout << "Game Constructed\n";
 }
 
@@ -131,6 +132,14 @@ std::pair<int, int>		Game::getMapSize() const {
 
 void					Game::setMapSize(const std::pair<int, int> newMapSize) {
 	this->_mapSize = newMapSize;
+}
+
+int						Game::getRange() const {
+	return (this->_range);
+}
+
+void					Game::setRange(const int newRange) {
+	this->_range = newRange;
 }
 
 void					Game::savePlayer() {
@@ -388,6 +397,129 @@ bool					Game::checkCoOrd(std::pair<float, float> xy) {
 			ret = false;
 	}
 	return (ret);
+}
+
+bool 					Game::checkCoOrd(std::pair<float, float> xy, char *type) {
+	bool	ret = true;
+
+	*type = 'n';
+	for (std::vector<Enemy>::iterator it = _enemies.begin(); it != _enemies.end(); ++it) {
+		if (it->getXY() == xy) {
+			ret = false;
+			*type = 'e';
+		}
+	}
+	for (std::vector<BreakableBox>::iterator it = _breakableBs.begin(); it != _breakableBs.end(); ++it) {
+		if (it->getXY() == xy) {
+			ret = false;
+			*type = 'b';
+		}
+	}
+	for (std::vector<UnbreakableBox>::iterator it = _unbreakableBs.begin(); it != _unbreakableBs.end(); ++it) {
+		if (it->getXY() == xy) {
+			ret = false;
+			*type = 'u';
+		}
+	}
+	for (std::vector<Drop*>::iterator it = _drops.begin(); it != _drops.end(); ++it) {
+		if ((*it)->getXY() == xy) {
+			ret = false;
+			*type = 'd';
+		}
+	}
+	return (ret);
+}
+
+void				Game::controller() {
+	static int 		dropBombDelayTimer = 60;
+	if (_keyPressArr[UP])
+		moveUp();
+	if (_keyPressArr[DOWN])
+		moveDown();
+	if (_keyPressArr[LEFT])
+		moveLeft();
+	if (_keyPressArr[RIGHT])
+		moveRight();
+	if (_keyPressArr[ACTION])
+		dropBomb(&dropBombDelayTimer);
+	dropBombDelayTimer++;
+}
+
+void				Game::moveUp() {
+	float 						dist = _player.getBlocksPerSec() / 60;
+	float 						widthOffset = (_player.getPlayerWidth() / 2);
+	std::pair<float, float> 	tempXY = _player.getXY();
+	std::pair<int, int>			castTempXY;
+	char 						collisionType = 'n';
+
+	tempXY.first = tempXY.first + 0.5f;
+	tempXY.second = tempXY.second + dist + widthOffset + 0.5f;
+	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
+	checkCoOrd(castTempXY, &collisionType);
+	tempXY.first = tempXY.first - 0.5f;
+	tempXY.second = tempXY.second - 0.5f;
+	if (collisionType != 'b' && collisionType != 'u')
+		_player.setXY(tempXY);
+}
+
+void				Game::moveDown() {
+	float 						dist = _player.getBlocksPerSec() / 60;
+	float 						widthOffset = (_player.getPlayerWidth() / 2);
+	std::pair<float, float> 	tempXY = _player.getXY();
+	std::pair<int, int>			castTempXY;
+	char 						collisionType = 'n';
+
+	tempXY.first = tempXY.first + 0.5f;
+	tempXY.second = tempXY.second - dist - widthOffset + 0.5f;
+	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
+	checkCoOrd(castTempXY, &collisionType);
+	tempXY.first = tempXY.first - 0.5f;
+	tempXY.second = tempXY.second - 0.5f;
+	if (collisionType != 'b' && collisionType != 'u')
+		_player.setXY(tempXY);
+}
+
+void				Game::moveLeft() {
+	float 						dist = _player.getBlocksPerSec() / 60;
+	float 						widthOffset = (_player.getPlayerWidth() / 2);
+	std::pair<float, float> 	tempXY = _player.getXY();
+	std::pair<int, int>			castTempXY;
+	char 						collisionType = 'n';
+
+	tempXY.first = tempXY.first - dist - widthOffset + 0.5f;
+	tempXY.second = tempXY.second + 0.5f;
+	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
+	checkCoOrd(castTempXY, &collisionType);
+	tempXY.first = tempXY.first - 0.5f;
+	tempXY.second = tempXY.second - 0.5f;
+	if (collisionType != 'b' && collisionType != 'u')
+		_player.setXY(tempXY);
+}
+
+void				Game::moveRight() {
+	float 						dist = _player.getBlocksPerSec() / 60;
+	float 						widthOffset = (_player.getPlayerWidth() / 2);
+	std::pair<float, float> 	tempXY = _player.getXY();
+	std::pair<int, int>			castTempXY;
+	char 						collisionType = 'n';
+
+	tempXY.first = tempXY.first + dist + widthOffset + 0.5f;
+	tempXY.second = tempXY.second + 0.5f;
+	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
+	checkCoOrd(castTempXY, &collisionType);
+	tempXY.first = tempXY.first - 0.5f;
+	tempXY.second = tempXY.second - 0.5f;
+	if (collisionType != 'b' && collisionType != 'u')
+		_player.setXY(tempXY);
+}
+
+void				Game::dropBomb(int *delayTimer) {
+	std::pair<float, float>		bombXY;
+
+	bombXY = std::make_pair((int)(_player.getXY().first + 0.5), (int)(_player.getXY().second + 0.5));
+	if (*delayTimer >= 60) {
+		*delayTimer = 0;
+	}
 }
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
