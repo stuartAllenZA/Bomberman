@@ -87,9 +87,9 @@ void GraphicsEngine::initSystems() {
 
 void GraphicsEngine::init() {
 	_camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f), 0, -90.0f);
-	_playerShader = new Shader("shaders/anime.vert", "shaders/basic.frag");
-	_wallShader = new Shader("shaders/basic.vert", "shaders/basic.frag");
-	_boxShader = new Shader("shaders/basic.vert", "shaders/basic.frag");
+	_playerShader = new Shader("resources/shaders/anime.vert", "resources/shaders/basic.frag");
+	_wallShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
+	_boxShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 //	_enemyShader = new Shader("shaders/anime.vert", "gfxUtils/shaders/basic.frag");
 
 	_models["player"] = new Model("resources/models/BMrun.gltf", _playerShader);
