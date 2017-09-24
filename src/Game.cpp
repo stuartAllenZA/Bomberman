@@ -134,6 +134,14 @@ void					Game::setMapSize(const std::pair<int, int> newMapSize) {
 	this->_mapSize = newMapSize;
 }
 
+int						Game::getRange() const {
+	return (this->_range);
+}
+
+void					Game::setRange(const int newRange) {
+	this->_range = newRange;
+}
+
 void					Game::savePlayer() {
 	DIR							*dir;
 
@@ -423,6 +431,7 @@ bool 					Game::checkCoOrd(std::pair<float, float> xy, char *type) {
 }
 
 void				Game::controller() {
+	static int 		dropBombDelayTimer = 60;
 	if (_keyPressArr[UP])
 		moveUp();
 	if (_keyPressArr[DOWN])
@@ -431,6 +440,9 @@ void				Game::controller() {
 		moveLeft();
 	if (_keyPressArr[RIGHT])
 		moveRight();
+	if (_keyPressArr[ACTION])
+		dropBomb(&dropBombDelayTimer);
+	dropBombDelayTimer++;
 }
 
 void				Game::moveUp() {
@@ -499,6 +511,16 @@ void				Game::moveRight() {
 	tempXY.second = tempXY.second - 0.5f;
 	if (collisionType != 'b' && collisionType != 'u')
 		_player.setXY(tempXY);
+}
+
+void				Game::dropBomb(int *delayTimer) {
+	std::pair<float, float>		bombXY;
+
+	bombXY = std::make_pair((int)(_player.getXY().first + 0.5), (int)(_player.getXY().second + 0.5));
+	if (*delayTimer >= 60) {
+		this->_bombs.push_back(Bomb(bombXY, _range, 1, false));
+		*delayTimer = 0;
+	}
 }
 
 std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
