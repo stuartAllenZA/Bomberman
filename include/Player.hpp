@@ -24,6 +24,8 @@ public:
 	void		setFileLocation(const std::string newLocation);
 	std::string	getName() const;
 	void		setName(const std::string newName);
+	int			getProgress() const;
+	void		setProgress(const int newProgress);
 	int			getLevel() const;
 	void		setLevel(const int newLevel);
 	int			getExperience() const;
@@ -40,12 +42,12 @@ public:
 private:
 	std::string	_fileLocation;
 	std::string	_name;
+	int			_progress;
 	int			_level;
 	int			_experience;
 	int			_numberOfBombs;
 	int			_difficulty;
 	float 		_blocksPerSec;
-	float 		_playerWidth;
 };
 
 std::ostream &					operator<<(std::ostream & o, Player const & rhs);
