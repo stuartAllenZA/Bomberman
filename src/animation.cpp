@@ -1,4 +1,4 @@
-#include <animation.hpp>
+#include <Animation.hpp>
 
 Animation::Animation(tinygltf::Animation &animation, tinygltf::Model &model)
 {

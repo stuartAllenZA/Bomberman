@@ -263,9 +263,12 @@ void            Menu::mainMenu() {
 
 	b = new nanogui::Button(nanoguiWindow, "Continue");
 	b->setCallback([this]{
-		loadGameButton();
+		if(this->_game->getPlayer().getProgress() > 1)
+			loadGameButton();
 	});
-	if (this->_game->getHasSave()) {
+	if (this->_game->getPlayer().getProgress() > 1) {
+		b->setEnabled(true);
+	} else {
 		b->setEnabled(false);
 	}
 	if (index == 2)
@@ -321,7 +324,7 @@ void            Menu::mainMenu() {
 						_menuState = MenuState::DIFFICULTY;
 						break;
 					case 2 :
-						if (this->_game->getHasSave())
+						if (this->_game->getPlayer().getProgress() > 1)
 							loadGameButton();
 						else
 							errorPopup("ERROR!", "No previous saved games.", "OK");
@@ -1386,6 +1389,8 @@ void            Menu::newGameButton() {
 
 void            Menu::loadGameButton() {
 	std::cout << "HAS SAVES" << std::endl;
+	_game->setGameState(GameState::PLAY);
+	_game->setPlayState(PlayState::GAME_LOAD);
 	_game->getSound().playMenuClick();
 }
 

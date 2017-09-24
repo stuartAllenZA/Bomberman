@@ -34,10 +34,6 @@ public:
 	void		setNumberOfBombs(const int bombs);
 	int			getDifficulty() const;
 	void		setDifficulty(const int newDifficulty);
-	float 		getBlocksPerSec() const;
-	void		setBlocksPerSec(const float newBlocksPerSec);
-	float 		getPlayerWidth() const;
-	void		setPlayerWidth(const float newPlayerWidth);
 
 private:
 	std::string	_fileLocation;
@@ -47,7 +43,6 @@ private:
 	int			_experience;
 	int			_numberOfBombs;
 	int			_difficulty;
-	float 		_blocksPerSec;
 };
 
 std::ostream &					operator<<(std::ostream & o, Player const & rhs);

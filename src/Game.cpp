@@ -7,7 +7,7 @@ Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT)
 	}
 	if (this->checkPlayers().size() > 0)
 		this->_hasSave = true;
-	this->_player.setBlocksPerSec(0.1f);
+	this->_player.setSpeed(0.1f);
 	std::cout << "Game Constructed\n";
 }
 
@@ -32,7 +32,6 @@ Game &					Game::operator=(Game const & src) {
 	this->_settings = src.getSettings();
 	this->_settings = src.getSettings();
 	this->_enemies = src.getEnemies();
-	this->_hasSave = src.getHasSave();
 	return (*this);
 }
 
@@ -116,14 +115,6 @@ std::vector<Drop*>			Game::getDrops() const {
 
 void					Game::setDrops(const std::vector<Drop*> newDrops) {
 	this->_drops = newDrops;
-}
-
-bool 					Game::getHasSave() const{
-	return (this->_hasSave);
-}
-
-void 					Game::setHasSave(const bool newHasSave){
-	this->_hasSave = newHasSave;
 }
 
 std::pair<int, int>		Game::getMapSize() const {
@@ -446,8 +437,8 @@ void				Game::controller() {
 }
 
 void				Game::moveUp() {
-	float 						dist = _player.getBlocksPerSec() / 60;
-	float 						widthOffset = (_player.getPlayerWidth() / 2);
+	float 						dist = _player.getSpeed() / 60;
+	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
 	char 						collisionType = 'n';
@@ -463,8 +454,8 @@ void				Game::moveUp() {
 }
 
 void				Game::moveDown() {
-	float 						dist = _player.getBlocksPerSec() / 60;
-	float 						widthOffset = (_player.getPlayerWidth() / 2);
+	float 						dist = _player.getSpeed() / 60;
+	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
 	char 						collisionType = 'n';
@@ -480,8 +471,8 @@ void				Game::moveDown() {
 }
 
 void				Game::moveLeft() {
-	float 						dist = _player.getBlocksPerSec() / 60;
-	float 						widthOffset = (_player.getPlayerWidth() / 2);
+	float 						dist = _player.getSpeed() / 60;
+	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
 	char 						collisionType = 'n';
@@ -497,8 +488,8 @@ void				Game::moveLeft() {
 }
 
 void				Game::moveRight() {
-	float 						dist = _player.getBlocksPerSec() / 60;
-	float 						widthOffset = (_player.getPlayerWidth() / 2);
+	float 						dist = _player.getSpeed() / 60;
+	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
 	char 						collisionType = 'n';
@@ -527,8 +518,7 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	o << "Dumping Game State" <<
 	"\nGame State: " << static_cast<std::underlying_type<GameState>::type>(rhs.getGameState()) <<
 	"\nPlay State: " << static_cast<std::underlying_type<PlayState>::type>(rhs.getPlayState()) <<
-	"\nMap Size: " << rhs.getMapSize().first << " x " << rhs.getMapSize().second <<
-	"\nHas Save: " << std::boolalpha << rhs.getHasSave() << std::endl;
+	"\nMap Size: " << rhs.getMapSize().first << " x " << rhs.getMapSize().second << std::endl;
 	for (int i = 0; i < 7; i++) {
 		o << "keyPressArr[" << i << "]: " << std::boolalpha << rhs.getKeyPressArr(i) << std::endl;
 	}

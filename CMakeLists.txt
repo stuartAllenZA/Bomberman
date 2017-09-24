@@ -64,7 +64,7 @@ set(SOURCE_FILES
 	src/RemoteDetonator.cpp
 	src/Settings.cpp
 	src/Sound.cpp
-	src/stb_image.cpp
+	src/Stb_image.cpp
 	src/UnbreakableBox.cpp
 	src/Util.cpp)
 
