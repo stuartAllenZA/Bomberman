@@ -88,24 +88,24 @@ void GraphicsEngine::initSystems() {
 void GraphicsEngine::init() {
 	_camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f), 0, -90.0f);
 	_playerShader = new Shader("gfxUtils/shaders/anime.vert", "gfxUtils/shaders/basic.frag");
-	_wallShader = new Shader("gfxUtils/shaders/basic.vert", "gfxUtils/shaders/basic.frag");
-	_boxShader = new Shader("gfxUtils/shaders/basic.vert", "gfxUtils/shaders/basic.frag");
+//	_wallShader = new Shader("gfxUtils/shaders/basic.vert", "gfxUtils/shaders/basic.frag");
+//	_boxShader = new Shader("gfxUtils/shaders/basic.vert", "gfxUtils/shaders/basic.frag");
 //	_enemyShader = new Shader("gfxUtils/shaders/anime.vert", "gfxUtils/shaders/basic.frag");
 
 	_models["player"] = new Model("resources/models/bomberman.gltf", _playerShader);
-	_models["wall"] = new Model("resources/models/Cube.gltf", _wallShader);
-	_models["box"] = new Model("resources/models/block1.gltf", _boxShader);
+//	_models["wall"] = new Model("resources/models/Cube.gltf", _wallShader);
+//	_models["box"] = new Model("resources/models/block1.gltf", _boxShader);
 //	_models["enemy"] = new Model("resources/models/bomberman.gltf", _enemyShader);
 	
 	// load init positions
-	_matrices["player"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
-	_matrices["wall"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
-	_matrices["box"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
+//	_matrices["player"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
+//	_matrices["wall"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
+//	_matrices["box"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 //	_matrices["enemy"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 
 //	_playerShader = new Shader("gfxUtils/shaders/anime.vert", "gfxUtils/shaders/basic.frag");
-//	_playerShader->enable();
-//	_playerModel = new Model("resources/models/boneBox.gltf", _playerShader);
+	_playerShader->enable();
+	_playerModel = new Model("resources/models/boneBox.gltf", _playerShader);
 }
 
 void GraphicsEngine::render() {
@@ -117,8 +117,6 @@ void GraphicsEngine::render() {
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
-	std::pair<float, float> coords;
-	int vecSize;
 /*
  *	foreach (game->object) {
  *		_matrices.find(gameobjectname)->second) = translate(game->objectCoords);
@@ -126,6 +124,8 @@ void GraphicsEngine::render() {
  *	}
  */
 	/*
+	std::pair<float, float> coords;
+	int vecSize;
 	_enemyShader->enable();
 	std::vector<Enemy> tempEnmy = _game->getEnemies();
 	vecSize = tempEnmy.size();
@@ -136,8 +136,6 @@ void GraphicsEngine::render() {
 		_matrices.find("enemy")->second = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_models.find("enemy")->second->render(_matrices.find("enemy")->second);
 	}
-	*/
-
 	_boxShader->enable();
 	std::vector<BreakableBox> tempBB = _game->getBreakableBs();
 	vecSize = tempBB.size();
@@ -159,7 +157,8 @@ void GraphicsEngine::render() {
 		_matrices.find("wall")->second = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
 		_models.find("wall")->second->render(_matrices.find("wall")->second);
 	}
-	/*
+	*/
+/*	
 	std::vector<Drop*> tempDrp = _game->getDrops();
 	vecSize = tempDrp.size();
 	std::cout << "Doing " << vecSize << " Drops." << std::endl;
@@ -169,12 +168,8 @@ void GraphicsEngine::render() {
 		_matrices.find("wall")->second = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_models.find("wall")->second->render(_matrices.find("wall")->second);
 	}
-	*/
-
-	coords = _game->getPlayer().getXY();
-	std::cout << "PLAYER coords x: " << coords.first << " coords y: " << coords.second << std::endl;
-	_matrices.find("player")->second = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
-	_models.find("player")->second->render(_matrices.find("player")->second);
+*/	
+	_playerModel->render(model);
 
 	glfwSwapBuffers(_window);
 	glfwPollEvents();

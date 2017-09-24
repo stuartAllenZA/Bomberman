@@ -21,6 +21,8 @@ class GraphicsEngine {
 		Camera								*_camera;
 		Shader								*_playerShader;
 		Shader								*_wallShader;
+		Shader								*_boxShader;
+		Shader								*_enemyShader;
 		std::map<std::string, Model*>		_models;
 		std::map<std::string, Shader>		_shaders;
 		std::map<std::string, glm::mat4>	_matrices;

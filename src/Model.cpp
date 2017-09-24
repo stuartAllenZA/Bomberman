@@ -3,7 +3,7 @@
 
 Model::Model(const char *modelPath, Shader *shader) {
 	std::cout << "model constructed\n";
-	Camera camera(glm::vec3(10.0f, 15.0f, 3.0f), -60.0f, -90.0f);
+	Camera camera(glm::vec3(8.0f, 15.0f, -1.0f), -70.0f, -90.0f);
 	_shader = *shader;
 	glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
 	glm::mat4 view = camera.getViewMatrix();
