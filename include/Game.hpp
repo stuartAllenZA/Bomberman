@@ -108,6 +108,12 @@ public:
 	int							getPlayerLevel();
 	void						processEnemies();
 	bool						checkCoOrd(std::pair<float, float> xy);
+	bool 						checkCoOrd(std::pair<float, float> xy, char *type);
+	void 						controller();
+	void 						moveUp();
+	void 						moveDown();
+	void 						moveLeft();
+	void 						moveRight();
 	void						unbreakableRing(int x, int y);
 	void						breakableRing(int x, int y);
 	void						breakableRing(int x, int y, std::pair<int, int> skip);
