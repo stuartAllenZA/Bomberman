@@ -1,0 +1,16 @@
+level:0
+experience:0
+noOfBombs:0
+difficulty:1
+resolutionX:800
+resolutionY:600
+windowed:true
+upKey:265
+downKey:264
+leftKey:263
+rightKey:262
+actionKey:32
+acceptKey:257
+escapeKey:256
+musicVol:1.000000
+FXVol:1.000000
