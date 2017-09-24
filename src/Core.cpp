@@ -153,8 +153,8 @@ void			Core::play() {
 		else if (_game.getPlayer().getLevel() == 2)
 			_game.initLevelThree();
 	}
-	_game.setPlayState(PlayState::GAME_PLAY);
-//	std::cout << _game << std::endl;
+//	_game.setPlayState(PlayState::GAME_PLAY);
+	std::cout << _game << std::endl;
 	glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
