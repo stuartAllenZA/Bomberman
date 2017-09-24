@@ -81,8 +81,6 @@ public:
 	void						setUnbreakableBs(const std::vector<UnbreakableBox> newUnbreakableBs);
 	std::vector<Drop*>			getDrops() const;
 	void						setDrops(const std::vector<Drop*> newDrops);
-	bool 						getHasSave() const;
-	void 						setHasSave(const bool newHasSave);
 	std::pair<int, int>			getMapSize() const;
 	void						setMapSize(const std::pair<int, int> newMapSize);
 	int							getRange() const;

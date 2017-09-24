@@ -1,5 +1,5 @@
 //#define STB_IMAGE_IMPLEMENTATION
-#include <material.hpp>
+#include <Material.hpp>
 
 std::vector<GLuint>     Texture::textureIDs;
 

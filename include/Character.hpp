@@ -8,11 +8,11 @@
 class Character
 {
 public:
-	Character(std::pair<float, float> xy, int speed, int health, int lives, char ori);
-	Character(std::pair<float, float> xy, int speed, int health, int lives);
-	Character(std::pair<float, float> xy, int speed, int health, char ori);
-	Character(std::pair<float, float> xy, int speed, int health);
-	Character(std::pair<float, float> xy, int lives);
+	Character(std::pair<float, float> xy, float speed, int health, int lives, char ori);
+	Character(std::pair<float, float> xy, float speed, int health, int lives);
+	Character(std::pair<float, float> xy, float speed, int health, char ori);
+	Character(std::pair<float, float> xy, float speed, int health);
+	Character(std::pair<float, float> xy, float lives);
 	Character(std::pair<float, float> xy);
 	Character(int lives);
 	Character();
@@ -21,8 +21,8 @@ public:
 	Character &				operator=(Character const & src);
 	std::pair<float, float>	getXY() const;
 	void					setXY(const std::pair<float, float> xy);
-	int						getSpeed() const;
-	void					setSpeed(const int newSpeed);
+	float					getSpeed() const;
+	void					setSpeed(const float newSpeed);
 	int						getHealth() const;
 	void					setHealth(const int newHealth);
 	int						getLives() const;
@@ -34,7 +34,7 @@ public:
 	
 protected:
 	std::pair<float, float>	_xy;
-	int						_speed;
+	float					_speed;
 	int						_health;
 	int						_lives;
 	char					_ori;
