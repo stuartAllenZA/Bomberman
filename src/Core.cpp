@@ -153,7 +153,7 @@ void			Core::play() {
 			_game.initLevelThree();
 	}
 	_game.setPlayState(PlayState::GAME_PLAY);
-	std::cout << _game << std::endl;
+	//std::cout << _game << std::endl;
 	
 	// Move player
 	// Place bomb
