@@ -1,7 +1,7 @@
 level:0
 experience:0
 noOfBombs:0
-difficulty:3
+difficulty:1
 resolutionX:800
 resolutionY:600
 windowed:true
