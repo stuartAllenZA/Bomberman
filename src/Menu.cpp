@@ -454,7 +454,7 @@ void			Menu::settingsMenu() {
 	b = new nanogui::Button(tools, "Cancel");
 	b->setCallback([&]{
 		this->_game->setSettings(buSettings);
-		if (this->_game->getPlayState() == PlayState::GAME_PLAY) {
+		if (this->_game->getPlayState() == PlayState::GAME_PLAY || this->_game->getPlayState() == PlayState::GAME_INIT) {
 			_menuState = MenuState::PAUSE;
 			_game->getSound().playMenuClick();
 		}
