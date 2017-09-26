@@ -5,7 +5,8 @@ Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT)
 	for (int i = 0; i < 7; i++) {
 		this->_keyPressArr[i] = false;
 	}
-	this->_player.setSpeed(0.1f);
+	if (this->checkPlayers().size() > 0)
+		this->_hasSave = true;
 	std::cout << "Game Constructed\n";
 }
 
@@ -435,7 +436,7 @@ void				Game::controller() {
 }
 
 void				Game::moveUp() {
-	float 						dist = _player.getSpeed() / 60;
+	float 						dist = (_player.getSpeed() / 60.0);
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
@@ -450,7 +451,7 @@ void				Game::moveUp() {
 }
 
 void				Game::moveDown() {
-	float 						dist = _player.getSpeed() / 60;
+	float 						dist = (_player.getSpeed() / 60.0);
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
@@ -465,7 +466,7 @@ void				Game::moveDown() {
 }
 
 void				Game::moveLeft() {
-	float 						dist = _player.getSpeed() / 60;
+	float 						dist = (_player.getSpeed() / 60.0);
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
@@ -480,7 +481,7 @@ void				Game::moveLeft() {
 }
 
 void				Game::moveRight() {
-	float 						dist = _player.getSpeed() / 60;
+	float 						dist = (_player.getSpeed() / 60.0);
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
