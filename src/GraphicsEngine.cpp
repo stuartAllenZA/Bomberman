@@ -86,10 +86,15 @@ void	GraphicsEngine::resetCamera() {
 }
 
 void GraphicsEngine::init() {
+	// init camera
 	if (_cameraLoaded)
 		_camera->reset(glm::vec3(4.0f, 12.0f, 4.0f), -60.0f, -90.0f);
 	else _camera = new Camera(glm::vec3(4.0f, 12.0f, 4.0f), -60.0f, -90.0f);
 	_cameraLoaded = true;
+	_prevZ = 0.0f;
+	_prevX = 0.0f;
+
+	// init shaders
 	_shaders["player"] = new Shader("resources/shaders/anime.vert", "resources/shaders/basic.frag");
 	_shaders["wall"] = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_shaders["box"] = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
@@ -97,6 +102,7 @@ void GraphicsEngine::init() {
 	_shaders["enemy"] = new Shader("shaders/anime.vert", "gfxUtils/shaders/basic.frag");
 	_shaders["drop"] = new Shader("shaders/anime.vert", "gfxUtils/shaders/basic.frag");
 
+	// init models
 	_models["player"] = new Model("resources/models/BMrun.gltf", _shaders.find("player")->second);
 	_models["wall"] = new Model("resources/models/Cube.gltf", _shaders.find("wall")->second);
 	_models["box"] = new Model("resources/models/block1.gltf", _shaders.find("box")->second);
@@ -112,8 +118,6 @@ void GraphicsEngine::init() {
 	_matrices["bomb"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_matrices["drop"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	
-	_prevZ = 0.0f;
-	_prevX = 0.0f;
 }
 
 void GraphicsEngine::render() {
@@ -121,7 +125,7 @@ void GraphicsEngine::render() {
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	std::pair<float, float> coords;
 	int vecSize;
