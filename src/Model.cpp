@@ -3,12 +3,7 @@
 
 Model::Model(const char *modelPath, Shader *shader) {
 	std::cout << "model constructed\n";
-	Camera camera(glm::vec3(8.0f, 15.0f, -1.0f), -70.0f, -90.0f);
 	_shader = *shader;
-	glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
-	glm::mat4 view = camera.getViewMatrix();
-	_shader.setUniformMat4((GLchar *)"view_matrix", view);
-	_shader.setUniformMat4((GLchar *)"proj_matrix", projection);
 	loadFromFile(_shader, modelPath);
 }
 
@@ -506,8 +501,38 @@ bool Model::loadAnimationMatrix(int animeType, float time)
 	return true;
 }
 
-void Model::render(glm::mat4 matrix)
+void Model::renderAnimated(glm::mat4 matrix, glm::mat4 view, glm::mat4 projection)
 {
+	_shader.setUniformMat4((GLchar *)"view_matrix", view);
+	_shader.setUniformMat4((GLchar *)"proj_matrix", projection);
+	std::cout << "rendering model\n";
+	_shader.enable();
+	_shader.setUniformMat4((GLchar *)"model_matrix", matrix);
+	if (!_animations.empty())
+	{
+		_shader.setUniform1i((GLchar *)"hasAnime", (int)true);
+		_animations[0]->update();
+		for (Joint *bone : _bones)
+			_loadMatrices(bone, glm::mat4());
+		// edit animation frame time
+		_animations[0]->increaseCurrentTimeStamp(0.02f);
+	}
+	for (std::pair<int, Material> material : _materials)
+		Material::sendMaterialToShader(_shader, material.second, material.first);
+	glBindVertexArray(_vao);
+	glDrawElements(GL_TRIANGLES, (GLsizei)_indicesCount, GL_UNSIGNED_SHORT, (const GLvoid *)nullptr);
+	glBindVertexArray(0);
+	for (std::pair<int, Material> material : _materials)
+		material.second.texure.unbindTexture();
+	_shader.disable();
+	_animeMatrice.clear();
+	std::cout << "model rendered\n";
+}
+
+void Model::render(glm::mat4 matrix, glm::mat4 view, glm::mat4 projection)
+{
+	_shader.setUniformMat4((GLchar *)"view_matrix", view);
+	_shader.setUniformMat4((GLchar *)"proj_matrix", projection);
 	std::cout << "rendering model\n";
 	_shader.enable();
 	_shader.setUniformMat4((GLchar *)"model_matrix", matrix);

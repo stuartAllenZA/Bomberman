@@ -31,6 +31,7 @@ class Model {
 		GLuint						_texture2;
 		tinygltf::Model				_model;
 		Shader						_shader;
+		Camera						*_camera;
 		std::vector<int>    		_nodes;
 		std::string        			_path;
 		std::vector<GLfloat> 		_joints;
@@ -77,7 +78,8 @@ class Model {
 		void    	_loadMatrices(Joint *bone, glm::mat4 parentTransform);
 
 		bool        loadFromFile(Shader& shader, const char *path);
-		void        render(glm::mat4 matrix);
+		void        render(glm::mat4 matrix, glm::mat4 view, glm::mat4 projection);
+		void        renderAnimated(glm::mat4 matrix, glm::mat4 view, glm::mat4 projection);
 		void        basicRender(glm::mat4 matrix);
 		bool        loadAnimationMatrix(int animeType, float time);
 

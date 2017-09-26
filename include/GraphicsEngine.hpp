@@ -23,6 +23,7 @@ class GraphicsEngine {
 		Shader								*_wallShader;
 		Shader								*_boxShader;
 		Shader								*_enemyShader;
+		Shader								*_bombShader;
 		std::map<std::string, Model*>		_models;
 		std::map<std::string, Shader>		_shaders;
 		std::map<std::string, glm::mat4>	_matrices;
@@ -31,6 +32,8 @@ class GraphicsEngine {
 		Material 							_playerMaterial;
 		Game								*_game;
 		GLFWwindow							*_window;
+		float								_prevZ;
+		float								_prevX;
 
 		void								_loadResources();
 		void								_loadModels();
