@@ -24,6 +24,7 @@ class GraphicsEngine {
 		Shader								*_boxShader;
 		Shader								*_enemyShader;
 		Shader								*_bombShader;
+		Shader								*_dropsShader;
 		std::map<std::string, Model*>		_models;
 		std::map<std::string, Shader>		_shaders;
 		std::map<std::string, glm::mat4>	_matrices;

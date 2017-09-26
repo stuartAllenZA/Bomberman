@@ -127,15 +127,15 @@ void GraphicsEngine::render() {
 	coords = _game->getPlayer().getXY();
 	if (_prevZ != coords.second) {
 		if (_game->getKeyPressArr(UP))
-			_camera->changeCameraZPos(-_game->getPlayer().getSpeed() / 60.0f);
+			_camera->changeCameraZPos(-_game->getPlayer().getSpeed() / 30.0f);
 		else if (_game->getKeyPressArr(DOWN))
-			_camera->changeCameraZPos(_game->getPlayer().getSpeed() / 60.0f);
+			_camera->changeCameraZPos(_game->getPlayer().getSpeed() / 30.0f);
 	}
 	if (_prevX != coords.first) {
 		if (_game->getKeyPressArr(RIGHT))
-			_camera->changeCameraXPos(_game->getPlayer().getSpeed() / 60.0f);
+			_camera->changeCameraXPos(_game->getPlayer().getSpeed() / 30.0f);
 		else if (_game->getKeyPressArr(LEFT))
-			_camera->changeCameraXPos(-_game->getPlayer().getSpeed() / 60.0f);
+			_camera->changeCameraXPos(-_game->getPlayer().getSpeed() / 30.0f);
 	}
 	glm::mat4 view = _camera->getViewMatrix();
 	glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
@@ -172,7 +172,28 @@ void GraphicsEngine::render() {
 		_matrices.find("box")->second = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
 		_models.find("box")->second->render(_matrices.find("box")->second, view, projection);
 	}
-	
+/*
+	std::vector<Drop*> tempDrp = _game->getDrops();
+	vecSize = tempDrp.size();
+	std::cout << "Doing " << vecSize << " Drops." << std::endl;
+	for (int i = 0; i < vecSize; i++) {
+		coords = tempUB[i]->getXY();
+		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		_matrices.find("wall")->second = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
+		_models.find("wall")->second->render(_matrices.find("wall")->second);
+	}
+
+	_enemyShader->enable();
+	std::vector<Enemy> tempEnmy = _game->getEnemies();
+	vecSize = tempEnmy.size();
+	std::cout << "Doing " << vecSize << " Enemies." << std::endl;
+	for (int i = 0; i < vecSize; i++) {
+		coords = tempEnmy[i].getXY();
+		std::cout << "ENEMYcoords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		_matrices.find("enemy")->second = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
+		_models.find("enemy")->second->render(_matrices.find("enemy")->second);
+	}
+*/	
 /*	
 	if (_game->getKeyPressArr(ACTION)) {
 		_bombShader->enable();
@@ -222,6 +243,7 @@ void GraphicsEngine::render() {
 		_matrices.find("wall")->second = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_models.find("wall")->second->render(_matrices.find("wall")->second);
 	}
+
 	coords = _game->getPlayer().getXY();
 	std::cout << "PLAYER coords x: " << coords.first << " coords y: " << coords.second << std::endl;
 	_matrices.find("player")->second = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
