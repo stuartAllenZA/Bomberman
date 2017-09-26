@@ -447,10 +447,8 @@ void				Game::moveUp() {
 	tempXY.second = tempXY.second + dist + widthOffset + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
 	checkCoOrd(castTempXY, &collisionType);
-	tempXY.first = tempXY.first - 0.5f;
-	tempXY.second = tempXY.second - 0.5f;
 	if (collisionType != 'b' && collisionType != 'u')
-		_player.setXY(tempXY);
+		_player.setXY(std::make_pair(_player.getXY().first, _player.getXY().second + dist));
 }
 
 void				Game::moveDown() {
@@ -464,10 +462,8 @@ void				Game::moveDown() {
 	tempXY.second = tempXY.second - dist - widthOffset + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
 	checkCoOrd(castTempXY, &collisionType);
-	tempXY.first = tempXY.first - 0.5f;
-	tempXY.second = tempXY.second - 0.5f;
 	if (collisionType != 'b' && collisionType != 'u')
-		_player.setXY(tempXY);
+		_player.setXY(std::make_pair(_player.getXY().first, _player.getXY().second - dist));
 }
 
 void				Game::moveLeft() {
@@ -481,10 +477,8 @@ void				Game::moveLeft() {
 	tempXY.second = tempXY.second + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
 	checkCoOrd(castTempXY, &collisionType);
-	tempXY.first = tempXY.first - 0.5f;
-	tempXY.second = tempXY.second - 0.5f;
 	if (collisionType != 'b' && collisionType != 'u')
-		_player.setXY(tempXY);
+		_player.setXY(std::make_pair(_player.getXY().first - dist, _player.getXY().second));
 }
 
 void				Game::moveRight() {
@@ -498,10 +492,8 @@ void				Game::moveRight() {
 	tempXY.second = tempXY.second + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
 	checkCoOrd(castTempXY, &collisionType);
-	tempXY.first = tempXY.first - 0.5f;
-	tempXY.second = tempXY.second - 0.5f;
 	if (collisionType != 'b' && collisionType != 'u')
-		_player.setXY(tempXY);
+		_player.setXY(std::make_pair(_player.getXY().first + dist, _player.getXY().second));
 }
 
 void				Game::dropBomb(int *delayTimer) {
