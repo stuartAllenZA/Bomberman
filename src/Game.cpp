@@ -1,12 +1,10 @@
 #include <Game.hpp>
 
-Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _settings(Settings()), _hasSave(false), _mapSize(std::make_pair(0, 0)) {
+Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT), _settings(Settings()), _mapSize(std::make_pair(0, 0)) {
 	//std::cout << "Constructing Game\n";
 	for (int i = 0; i < 7; i++) {
 		this->_keyPressArr[i] = false;
 	}
-	if (this->checkPlayers().size() > 0)
-		this->_hasSave = true;
 	this->_player.setSpeed(0.1f);
 	std::cout << "Game Constructed\n";
 }
@@ -679,6 +677,27 @@ void					Game::initLevelTwo() {
 }
 
 void					Game::initLevelThree() {
+}
+
+void					Game::initTestMap() {
+	int half;
+	//determine _mapSize
+	_mapSize = std::make_pair(_player.getDifficulty() * 10, _player.getDifficulty() * 10);
+	half = (_mapSize.first - 2) / 2;
+	//Spawn Boxes
+	unbreakableRing(_mapSize.first, _mapSize.second);
+	for (int i = 0; i < 5; i++)
+		_breakableBs.push_back(BreakableBox(std::make_pair((half - 2) + i, 3)));
+	//Add drops to boxes
+	_breakableBs[0].setDrop(new LevelHatch(_breakableBs[0].getXY()));
+	_breakableBs[1].setDrop(new RemoteDetonator(_breakableBs[1].getXY()));
+	_breakableBs[2].setDrop(new ExtraBomb(_breakableBs[2].getXY()));
+	_breakableBs[3].setDrop(new RangeExtender(_breakableBs[3].getXY()));
+	_breakableBs[4].setDrop(new EnemyDrop(_breakableBs[4].getXY()));
+	//Spawn Player
+	_player.setXY(std::make_pair(half, 1));
+	//Spawn Enemy
+	_enemies.push_back(Enemy(std::make_pair(half, 2)));
 }
 
 void					Game::reset() {

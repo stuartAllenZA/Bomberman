@@ -145,7 +145,8 @@ void			Core::play() {
 	std::cout << "Playing, ESC to exit" << std::endl;
 	if (_game.getPlayState() == PlayState::GAME_INIT) {
 		_game.reset();
-		_game.initLevelOne();
+		//_game.initLevelOne();
+		_game.initTestMap();
 	}
 	else if (_game.getPlayState() == PlayState::GAME_LOAD) {
 		_game.reset();
