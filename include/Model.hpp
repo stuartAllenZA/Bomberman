@@ -1,7 +1,6 @@
 #pragma once
 #include "Util.hpp"
 #include "ModelShader.hpp"
-#include "Camera.hpp"
 #include "Material.hpp"
 #include "Animation.hpp"
 #include <map>
@@ -31,7 +30,6 @@ class Model {
 		GLuint						_texture2;
 		tinygltf::Model				_model;
 		Shader						_shader;
-		Camera						*_camera;
 		std::vector<int>    		_nodes;
 		std::string        			_path;
 		std::vector<GLfloat> 		_joints;

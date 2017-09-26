@@ -18,6 +18,15 @@ Camera& Camera::operator=(const Camera &rhs)
 	return *this;
 }
 
+void	Camera::reset(glm::vec3 position, float pitch, float yaw) {
+	_position = position;
+	_worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+	_front = glm::vec3(0.0f, 0.0f, -1.0f);
+	_yaw = yaw;
+	_pitch = pitch;
+	_updateCamera();
+}
+
 void Camera::_updateCamera()
 {
 	/// Calculate the new Front vector

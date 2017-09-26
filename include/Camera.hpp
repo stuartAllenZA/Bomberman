@@ -21,6 +21,7 @@ class   Camera
 		Camera(const Camera & rhs);
 		Camera&     operator=(const Camera& rhs);
 		~Camera() = default;
+		void	reset(glm::vec3 position = glm::vec3(0, 0, 0), float pitch = 0, float yaw = -90.0f);
 
 		glm::mat4       getViewMatrix() const;
 		glm::vec3       getCameraPosition();
