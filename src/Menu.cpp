@@ -118,7 +118,7 @@ void			Menu::errorPopup(const std::string & title, const std::string & message, 
 }
 
 void			Menu::playerSelectMenu() {
-	glfwSetWindowPos(*(_win), this->_game->getSettings().getXPos(), this->_game->getSettings().getYPos());
+	//glfwSetWindowPos(*(_win), this->_game->getSettings().getXPos(), this->_game->getSettings().getYPos());
 	nanogui::FormHelper				*gui = new nanogui::FormHelper(screen);
 	nanogui::ref<nanogui::Window>	nanoguiWindow = gui->addWindow(Eigen::Vector2i(100, 100), "Player Select");
 	std::vector<std::string>		playerNames = this->_game->checkPlayers();
