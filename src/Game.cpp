@@ -389,35 +389,24 @@ bool					Game::checkCoOrd(std::pair<float, float> xy) {
 	return (ret);
 }
 
-bool 					Game::checkCoOrd(std::pair<float, float> xy, char *type) {
-	bool	ret = true;
-
-	*type = 'n';
+CollisionState			Game::collisionDetection(std::pair<float, float> xy){
 	for (std::vector<Enemy>::iterator it = _enemies.begin(); it != _enemies.end(); ++it) {
-		if (it->getXY() == xy) {
-			ret = false;
-			*type = 'e';
-		}
+		if (it->getXY() == xy)
+			return (CollisionState::ENEMY);
 	}
 	for (std::vector<BreakableBox>::iterator it = _breakableBs.begin(); it != _breakableBs.end(); ++it) {
-		if (it->getXY() == xy) {
-			ret = false;
-			*type = 'b';
-		}
+		if (it->getXY() == xy)
+			return (CollisionState::BREAKABLE_BOX);
 	}
 	for (std::vector<UnbreakableBox>::iterator it = _unbreakableBs.begin(); it != _unbreakableBs.end(); ++it) {
-		if (it->getXY() == xy) {
-			ret = false;
-			*type = 'u';
-		}
+		if (it->getXY() == xy)
+			return (CollisionState::UNBREAKABLE_BOX);
 	}
 	for (std::vector<Drop*>::iterator it = _drops.begin(); it != _drops.end(); ++it) {
-		if ((*it)->getXY() == xy) {
-			ret = false;
-			*type = 'd';
-		}
+		if ((*it)->getXY() == xy)
+			return (CollisionState::DROP);
 	}
-	return (ret);
+	return (CollisionState::NONE);
 }
 
 void				Game::controller() {
@@ -436,62 +425,62 @@ void				Game::controller() {
 }
 
 void				Game::moveUp() {
-	float 						dist = (_player.getSpeed() / 60.0);
+	float 						dist = (_player.getSpeed() / 60.0f);
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
-	char 						collisionType = 'n';
+	CollisionState 				CS;
 
-	tempXY.first = tempXY.first + 0.5f;
+	tempXY.first = tempXY.first + widthOffset + 0.5f;
 	tempXY.second = tempXY.second + dist + widthOffset + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	checkCoOrd(castTempXY, &collisionType);
-	if (collisionType != 'b' && collisionType != 'u')
+	CS = collisionDetection(castTempXY);
+	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
 		_player.setXY(std::make_pair(_player.getXY().first, _player.getXY().second + dist));
 }
 
 void				Game::moveDown() {
-	float 						dist = (_player.getSpeed() / 60.0);
+	float 						dist = (_player.getSpeed() / 60.0f);
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
-	char 						collisionType = 'n';
+	CollisionState 				CS;
 
-	tempXY.first = tempXY.first + 0.5f;
+	tempXY.first = tempXY.first + widthOffset + 0.5f;
 	tempXY.second = tempXY.second - dist - widthOffset + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	checkCoOrd(castTempXY, &collisionType);
-	if (collisionType != 'b' && collisionType != 'u')
+	CS = collisionDetection(castTempXY);
+	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
 		_player.setXY(std::make_pair(_player.getXY().first, _player.getXY().second - dist));
 }
 
 void				Game::moveLeft() {
-	float 						dist = (_player.getSpeed() / 60.0);
+	float 						dist = (_player.getSpeed() / 60.0f);
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
-	char 						collisionType = 'n';
+	CollisionState 				CS;
 
 	tempXY.first = tempXY.first - dist - widthOffset + 0.5f;
-	tempXY.second = tempXY.second + 0.5f;
+	tempXY.second = tempXY.second + widthOffset + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	checkCoOrd(castTempXY, &collisionType);
-	if (collisionType != 'b' && collisionType != 'u')
+	CS = collisionDetection(castTempXY);
+	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
 		_player.setXY(std::make_pair(_player.getXY().first - dist, _player.getXY().second));
 }
 
 void				Game::moveRight() {
-	float 						dist = (_player.getSpeed() / 60.0);
+	float 						dist = (_player.getSpeed() / 60.0f);
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
-	char 						collisionType = 'n';
+	CollisionState 				CS;
 
 	tempXY.first = tempXY.first + dist + widthOffset + 0.5f;
-	tempXY.second = tempXY.second + 0.5f;
+	tempXY.second = tempXY.second + widthOffset + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	checkCoOrd(castTempXY, &collisionType);
-	if (collisionType != 'b' && collisionType != 'u')
+	CS = collisionDetection(castTempXY);
+	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
 		_player.setXY(std::make_pair(_player.getXY().first + dist, _player.getXY().second));
 }
 

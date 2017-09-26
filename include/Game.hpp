@@ -55,6 +55,16 @@ enum class PlayState {
 	GAME_PLAY
 };
 
+enum class CollisionState {
+	ENEMY,
+	DROP,
+	BREAKABLE_BOX,
+	UNBREAKABLE_BOX,
+	BOMB,
+	EXPLOSION,
+	NONE
+};
+
 class Game {
 public:
 	Game();
@@ -109,7 +119,7 @@ public:
 	int							getPlayerLevel();
 	void						processEnemies();
 	bool						checkCoOrd(std::pair<float, float> xy);
-	bool 						checkCoOrd(std::pair<float, float> xy, char *type);
+	CollisionState 				collisionDetection(std::pair<float, float> xy);
 	void 						controller();
 	void 						moveUp();
 	void 						moveDown();
