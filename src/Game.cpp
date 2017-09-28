@@ -5,8 +5,6 @@ Game::Game() : _gameState(GameState::MENU), _playState(PlayState::PLAYER_SELECT)
 	for (int i = 0; i < 7; i++) {
 		this->_keyPressArr[i] = false;
 	}
-	if (this->checkPlayers().size() > 0)
-		this->_hasSave = true;
 	std::cout << "Game Constructed\n";
 }
 
