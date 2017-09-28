@@ -97,22 +97,27 @@ void GraphicsEngine::init() {
 	// init shaders
 	_shaders["player"] = new Shader("resources/shaders/anime.vert", "resources/shaders/basic.frag");
 	_shaders["wall"] = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
+	_shaders["floor"] = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_shaders["box"] = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_shaders["bomb"] = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_shaders["enemy"] = new Shader("shaders/anime.vert", "gfxUtils/shaders/basic.frag");
 	_shaders["drop"] = new Shader("shaders/anime.vert", "gfxUtils/shaders/basic.frag");
 
 	// init models
-	_models["player"] = new Model("resources/models/BMrun.gltf", _shaders.find("player")->second);
+	_models["player"] = new Model("resources/models/BMwalk3.gltf", _shaders.find("player")->second);
 	_models["wall"] = new Model("resources/models/Cube.gltf", _shaders.find("wall")->second);
+	_models["floor"] = new Model("resources/models/Cube.gltf", _shaders.find("wall")->second);
 	_models["box"] = new Model("resources/models/block1.gltf", _shaders.find("box")->second);
 	_models["bomb"] = new Model("resources/models/BMbomb.gltf", _shaders.find("bomb")->second);
 	_models["enemy"] = new Model("resources/models/BMbomb.gltf", _shaders.find("enemy")->second);
 	_models["drop"] = new Model("resources/models/boneBox.gltf", _shaders.find("drop")->second);
 	
 	// load init positions
-	_matrices["player"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
+	std::pair<float, float> coords;
+	coords = _game->getPlayer().getXY();
+	_matrices["player"] = glm::translate(glm::mat4(), glm::vec3(coords.first * 2.0f, 0.0f, coords.second * 2.0f)); 
 	_matrices["wall"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
+	_matrices["floor"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_matrices["box"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_matrices["enemy"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_matrices["bomb"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
@@ -149,9 +154,38 @@ void GraphicsEngine::render() {
 	glm::mat4 view = _camera->getViewMatrix();
 	glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
 
+	_isAnime = false;
+	if (_game->getKeyPressArr(UP)) {
+		_playerRotate = 135.1f;	
+		_isAnime = true;
+	}
+	else if (_game->getKeyPressArr(LEFT)) {
+		_playerRotate = 80.0f;	
+		_isAnime = true;
+	}
+	else if (_game->getKeyPressArr(RIGHT)) {
+		_playerRotate = -80.0f;	
+		_isAnime = true;
+	}
+	else if (_game->getKeyPressArr(DOWN)) {
+		_playerRotate = -0.01f;	
+		_isAnime = true;
+	}
+	////
+	glm::vec4 myPosition(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec3 rotationAxis(0.0f, 1.0f, 0.0f);
+	glm::mat4 scalar = glm::scale(glm::mat4(), glm::vec3(1.0f, 1.0f, 1.0f));
+	glm::mat4 rotator = glm::rotate(glm::mat4(), _playerRotate, rotationAxis);
+	glm::mat4 translator = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
+	///
+
+	glm::mat4 transform = translator * rotator * scalar;
 	_shaders.find("player")->second->enable();
-	_matrices.find("player")->second = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
-	_models.find("player")->second->render(_matrices.find("player")->second, view, projection);
+	_matrices.find("player")->second = transform;
+	
+	if (_isAnime)
+		_models.find("player")->second->renderAnimated(_matrices.find("player")->second, view, projection);
+	else _models.find("player")->second->render(_matrices.find("player")->second, view, projection);
 
 	_prevZ = coords.second;
 	_prevX = coords.first;

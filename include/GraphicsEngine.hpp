@@ -15,7 +15,7 @@
 #include "stb_image.h"
 #include "picojson.h"
 #include "Util.hpp"
-
+#define GLM_FORCE_RADIANS
 class GraphicsEngine {
 	private:
 		Camera								*_camera;
@@ -29,6 +29,8 @@ class GraphicsEngine {
 		GLFWwindow							*_window;
 		float								_prevZ;
 		float								_prevX;
+		float								_playerRotate;
+		bool								_isAnime;
 
 		void								_loadResources();
 		void								_loadModels();

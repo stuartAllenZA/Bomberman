@@ -1,9 +1,9 @@
 level:0
 experience:0
 noOfBombs:0
-difficulty:3
-resolutionX:1920
-resolutionY:1034
+difficulty:1
+resolutionX:800
+resolutionY:600
 windowed:true
 upKey:87
 downKey:83
