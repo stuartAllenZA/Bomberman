@@ -431,7 +431,7 @@ void				Game::moveUp() {
 	std::pair<int, int>			castTempXY;
 	CollisionState 				CS;
 
-	tempXY.first = tempXY.first + widthOffset + 0.5f;
+	tempXY.first = tempXY.first + 0.5f;
 	tempXY.second = tempXY.second + dist + widthOffset + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
 	CS = collisionDetection(castTempXY);
@@ -446,12 +446,13 @@ void				Game::moveDown() {
 	std::pair<int, int>			castTempXY;
 	CollisionState 				CS;
 
-	tempXY.first = tempXY.first + widthOffset + 0.5f;
+	tempXY.first = tempXY.first + 0.5f;
 	tempXY.second = tempXY.second - dist - widthOffset + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
 	CS = collisionDetection(castTempXY);
-	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
+	if (CS == CollisionState::NONE || CS == CollisionState::DROP) {
 		_player.setXY(std::make_pair(_player.getXY().first, _player.getXY().second - dist));
+	}
 }
 
 void				Game::moveLeft() {
@@ -462,7 +463,7 @@ void				Game::moveLeft() {
 	CollisionState 				CS;
 
 	tempXY.first = tempXY.first - dist - widthOffset + 0.5f;
-	tempXY.second = tempXY.second + widthOffset + 0.5f;
+	tempXY.second = tempXY.second + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
 	CS = collisionDetection(castTempXY);
 	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
@@ -477,7 +478,7 @@ void				Game::moveRight() {
 	CollisionState 				CS;
 
 	tempXY.first = tempXY.first + dist + widthOffset + 0.5f;
-	tempXY.second = tempXY.second + widthOffset + 0.5f;
+	tempXY.second = tempXY.second + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
 	CS = collisionDetection(castTempXY);
 	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
