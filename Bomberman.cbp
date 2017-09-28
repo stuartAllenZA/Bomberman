@@ -143,6 +143,9 @@
 		<Unit filename="/goinfre/lchimes/Bomberman/src/ExtraBomb.cpp">
 			<Option target="Bomberman"/>
 		</Unit>
+		<Unit filename="/goinfre/lchimes/Bomberman/src/Flame.cpp">
+			<Option target="Bomberman"/>
+		</Unit>
 		<Unit filename="/goinfre/lchimes/Bomberman/src/Game.cpp">
 			<Option target="Bomberman"/>
 		</Unit>

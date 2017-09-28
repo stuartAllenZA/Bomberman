@@ -52,6 +52,7 @@ set(SOURCE_FILES
 	src/EnemyDrop.cpp
 	src/Exceptions.cpp
 	src/ExtraBomb.cpp
+	src/Flame.cpp
 	src/Game.cpp
 	src/GraphicsEngine.cpp
 	src/LevelHatch.cpp
