@@ -128,8 +128,10 @@ void GraphicsEngine::render() {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	std::pair<float, float> coords;
-	int vecSize;
-	
+	int vecSize;	
+	// 1. rotations
+	// 2. background
+	// 3. HUD
 	/// CAMERA, EVENTS & PLAYER
 	coords = _game->getPlayer().getXY();
 	if (_prevZ != coords.second) {
