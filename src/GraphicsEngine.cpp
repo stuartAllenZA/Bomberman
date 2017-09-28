@@ -85,7 +85,7 @@ void	GraphicsEngine::resetCamera() {
 	}
 }
 
-void GraphicsEngine::init() {
+void	GraphicsEngine::initCamera() {
 	// init camera
 	if (_cameraLoaded)
 		_camera->reset(glm::vec3(4.0f, 12.0f, 4.0f), -60.0f, -90.0f);
@@ -93,6 +93,10 @@ void GraphicsEngine::init() {
 	_cameraLoaded = true;
 	_prevZ = 0.0f;
 	_prevX = 0.0f;
+}
+
+void GraphicsEngine::init() {
+	initCamera();
 
 	// init shaders
 	_shaders["player"] = new Shader("resources/shaders/anime.vert", "resources/shaders/basic.frag");
@@ -100,16 +104,18 @@ void GraphicsEngine::init() {
 	_shaders["floor"] = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_shaders["box"] = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_shaders["bomb"] = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
-	_shaders["enemy"] = new Shader("shaders/anime.vert", "gfxUtils/shaders/basic.frag");
+	_shaders["flame"] = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
+	_shaders["enemy"] = new Shader("shaders/basic.vert", "gfxUtils/shaders/basic.frag");
 	_shaders["drop"] = new Shader("shaders/anime.vert", "gfxUtils/shaders/basic.frag");
 
 	// init models
 	_models["player"] = new Model("resources/models/BMwalk3.gltf", _shaders.find("player")->second);
 	_models["wall"] = new Model("resources/models/Cube.gltf", _shaders.find("wall")->second);
-	_models["floor"] = new Model("resources/models/Cube.gltf", _shaders.find("wall")->second);
+	_models["floor"] = new Model("resources/models/BMfloor.gltf", _shaders.find("floor")->second);
 	_models["box"] = new Model("resources/models/block1.gltf", _shaders.find("box")->second);
 	_models["bomb"] = new Model("resources/models/BMbomb.gltf", _shaders.find("bomb")->second);
-	_models["enemy"] = new Model("resources/models/BMbomb.gltf", _shaders.find("enemy")->second);
+	_models["flame"] = new Model("resources/models/BMextraflame.gltf", _shaders.find("bomb")->second);
+	_models["enemy"] = new Model("resources/models/boneBox.gltf", _shaders.find("enemy")->second);
 	_models["drop"] = new Model("resources/models/boneBox.gltf", _shaders.find("drop")->second);
 	
 	// load init positions
@@ -121,6 +127,7 @@ void GraphicsEngine::init() {
 	_matrices["box"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_matrices["enemy"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_matrices["bomb"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
+	_matrices["flame"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_matrices["drop"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	
 }
@@ -193,9 +200,30 @@ void GraphicsEngine::render() {
 		_shaders.find("bomb")->second->enable();
 		_matrices.find("bomb")->second = glm::translate(glm::mat4(), glm::vec3((3.0 * 2.0), 0.0f, ((-1 * 4.0f) * 2))); 
 		_models.find("bomb")->second->render(_matrices.find("bomb")->second, view, projection);
+
+		_shaders.find("flame")->second->enable();
+		_matrices.find("flame")->second = glm::translate(glm::mat4(), glm::vec3((3.0 * 2.0), 0.0f, ((-1 * 5.0f) * 2))); 
+		_models.find("flame")->second->render(_matrices.find("flame")->second, view, projection);
+
+		_shaders.find("enemy")->second->enable();
+		_matrices.find("enemy")->second = glm::translate(glm::mat4(), glm::vec3((2.5f * 2.0), 0.0f, ((-1 * 4.0f) * 2))); 
+		_models.find("enemy")->second->render(_matrices.find("enemy")->second, view, projection);
 	}
 
 	/// WALLS & BOXES
+	_shaders.find("floor")->second->enable();
+	std::pair<int, int> mapSize = _game->getMapSize();
+	float mapX = (float)mapSize.first;
+	float mapZ = (float)mapSize.second;
+
+	for (float x = 0.0f; x < mapX; x++) {
+		for (float z = 0.0f; z < mapZ; z++) {
+			_matrices.find("floor")->second = glm::translate(glm::mat4(), glm::vec3((x * 2.0), -0.5f, (-1 * z) * 2)); 
+			_models.find("floor")->second->render(_matrices.find("floor")->second, view, projection);
+		
+		}
+	}
+
 	_shaders.find("wall")->second->enable();
 	std::vector<UnbreakableBox> tempUB = _game->getUnbreakableBs();
 	vecSize = tempUB.size();
@@ -230,6 +258,7 @@ void GraphicsEngine::render() {
 		_models.find("drop")->second->render(_matrices.find("drop")->second, view, projection);
 	}
 
+/*
 	_shaders.find("enemy")->second->enable();
 	std::vector<Enemy> tempEnmy = _game->getEnemies();
 	vecSize = tempEnmy.size();
@@ -240,6 +269,7 @@ void GraphicsEngine::render() {
 		_matrices.find("enemy")->second = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_models.find("enemy")->second->render(_matrices.find("enemy")->second, view, projection);
 	}
+*/
 	glfwSwapBuffers(_window);
 }
 

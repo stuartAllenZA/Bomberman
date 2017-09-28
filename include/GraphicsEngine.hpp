@@ -46,6 +46,7 @@ class GraphicsEngine {
 		GraphicsEngine();
 		~GraphicsEngine();
 		void	init();
+		void	initCamera();
 		void	initSystems();
 		bool	processInput();
 		void	render();

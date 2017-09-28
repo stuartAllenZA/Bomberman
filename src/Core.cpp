@@ -92,7 +92,7 @@ void			Core::gameLoop() {
 				break;
 			case GameState::PLAY :
 				if (_game.getPlayState() == PlayState::GAME_INIT) {
-					_gfx->init();
+					_gfx->initCamera();
 					_game.startGameMusic();
 				}
 				else if (_game.getPlayState() == PlayState::GAME_PLAY)
