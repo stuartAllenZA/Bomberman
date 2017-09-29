@@ -1,6 +1,6 @@
 #include <Bomb.hpp>
 
-Bomb::Bomb(std::pair<float, float> xy, int blastRange, int timeToDetonate, bool canBeRemoteDetonated) : _xy(xy), _blastRange(blastRange), _timeToDetonate(timeToDetonate), _canBeRemoteDetonated(canBeRemoteDetonated) {
+Bomb::Bomb(std::pair<float, float> xy, int blastRange, std::uint64_t timeToDetonate, bool canBeRemoteDetonated) : _xy(xy), _blastRange(blastRange), _timeToDetonate(timeToDetonate), _canBeRemoteDetonated(canBeRemoteDetonated) {
 	std::cout << "Bomb at x: " << xy.first << " y: " << xy.second << " Constructed\n";
 }
 
@@ -37,11 +37,11 @@ void				Bomb::setBlastRange(const int newBlastRange) {
 	this->_blastRange = newBlastRange;
 }
 
-int 				Bomb::getTimeToDetonate() const {
+std::uint64_t		Bomb::getTimeToDetonate() const {
 	return (this->_timeToDetonate);
 }
 
-void				Bomb::setTimeToDetonate(const int newTTD) {
+void				Bomb::setTimeToDetonate(const std::uint64_t newTTD) {
 	this->_timeToDetonate = newTTD;
 }
 
