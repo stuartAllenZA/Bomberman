@@ -196,6 +196,19 @@ void GraphicsEngine::render() {
 
 	_prevZ = coords.second;
 	_prevX = coords.first;
+
+	// bombs
+	_shaders.find("bomb")->second->enable();
+	std::vector<Bomb> bombs= _game->getBombs();
+	vecSize = bombs.size();
+	std::cout << "Doing " << vecSize << " BOMBS." << std::endl;
+	for (int i = 0; i < vecSize; i++) {
+		coords = bombs[i].getXY();
+		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		_matrices.find("bomb")->second = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
+		_models.find("bomb")->second->render(_matrices.find("bomb")->second, view, projection);
+	}
+/*
 	if (_game->getKeyPressArr(ACTION)) {
 		_shaders.find("bomb")->second->enable();
 		_matrices.find("bomb")->second = glm::translate(glm::mat4(), glm::vec3((3.0 * 2.0), 0.0f, ((-1 * 4.0f) * 2))); 
@@ -209,6 +222,7 @@ void GraphicsEngine::render() {
 		_matrices.find("enemy")->second = glm::translate(glm::mat4(), glm::vec3((2.5f * 2.0), 0.0f, ((-1 * 4.0f) * 2))); 
 		_models.find("enemy")->second->render(_matrices.find("enemy")->second, view, projection);
 	}
+	*/
 
 	/// WALLS & BOXES
 	_shaders.find("floor")->second->enable();
