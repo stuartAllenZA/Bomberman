@@ -197,7 +197,10 @@ void GraphicsEngine::render() {
 	_prevZ = coords.second;
 	_prevX = coords.first;
 
-	// bombs
+	// BOMBS
+	// temp begin
+	_game->getPlayer().setNumberOfBombs(1);
+	// temp end
 	_shaders.find("bomb")->second->enable();
 	std::vector<Bomb> bombs= _game->getBombs();
 	vecSize = bombs.size();
@@ -241,10 +244,8 @@ void GraphicsEngine::render() {
 	_shaders.find("wall")->second->enable();
 	std::vector<UnbreakableBox> tempUB = _game->getUnbreakableBs();
 	vecSize = tempUB.size();
-	std::cout << "Doing " << vecSize << " Unbreakable Boxes." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = tempUB[i].getXY();
-		std::cout << "UBcoords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_matrices.find("wall")->second = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
 		_models.find("wall")->second->render(_matrices.find("wall")->second, view, projection);
 	}
@@ -252,10 +253,8 @@ void GraphicsEngine::render() {
 	_shaders.find("box")->second->enable();
 	std::vector<BreakableBox> tempBB = _game->getBreakableBs();
 	vecSize = tempBB.size();
-	std::cout << "Doing " << vecSize << " Breakable Boxes." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = tempBB[i].getXY();
-		std::cout << "BB coords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_matrices.find("box")->second = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
 		_models.find("box")->second->render(_matrices.find("box")->second, view, projection);
 	}
@@ -264,10 +263,8 @@ void GraphicsEngine::render() {
 	_shaders.find("drop")->second->enable();
 	std::vector<Drop*> tempDrp = _game->getDrops();
 	vecSize = tempDrp.size();
-	std::cout << "Doing " << vecSize << " Drops." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = tempDrp[i]->getXY();
-		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_matrices.find("drop")->second = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_models.find("drop")->second->render(_matrices.find("drop")->second, view, projection);
 	}
