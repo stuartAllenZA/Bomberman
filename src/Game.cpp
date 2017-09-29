@@ -138,6 +138,14 @@ void 					Game::setBombs(const std::vector<Bomb> newBombs) {
 	this->_bombs = newBombs;
 }
 
+std::vector<Flame>		Game::getFlames() const {
+	return (this->_flames);
+}
+
+void 					Game::setFlames(const std::vector<Flame> newFlames) {
+	this->_flames = newFlames;
+}
+
 void					Game::savePlayer() {
 	DIR							*dir;
 
@@ -395,7 +403,7 @@ bool					Game::checkCoOrd(std::pair<float, float> xy) {
 	return (ret);
 }
 
-CollisionState			Game::collisionDetection(std::pair<float, float> xy){
+CollisionState			Game::collisionDetection(std::pair<float, float> xy, bool ignoreFlame){
 	for (std::vector<Enemy>::iterator it = _enemies.begin(); it != _enemies.end(); ++it) {
 		if (it->getXY() == xy)
 			return (CollisionState::ENEMY);
@@ -411,6 +419,12 @@ CollisionState			Game::collisionDetection(std::pair<float, float> xy){
 	for (std::vector<Drop*>::iterator it = _drops.begin(); it != _drops.end(); ++it) {
 		if ((*it)->getXY() == xy)
 			return (CollisionState::DROP);
+	}
+	if (!ignoreFlame) {
+		for (std::vector<Flame>::iterator it = _flames.begin(); it != _flames.end(); ++it) {
+			if (it->getXY() == xy)
+				return (CollisionState::FLAME);
+		}
 	}
 	return (CollisionState::NONE);
 }
@@ -439,7 +453,7 @@ void				Game::moveUp() {
 	tempXY.first = tempXY.first + 0.5f;
 	tempXY.second = tempXY.second + dist + widthOffset + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	CS = collisionDetection(castTempXY);
+	CS = collisionDetection(castTempXY, false);
 	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
 		_player.setXY(std::make_pair(_player.getXY().first, _player.getXY().second + dist));
 }
@@ -454,7 +468,7 @@ void				Game::moveDown() {
 	tempXY.first = tempXY.first + 0.5f;
 	tempXY.second = tempXY.second - dist - widthOffset + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	CS = collisionDetection(castTempXY);
+	CS = collisionDetection(castTempXY, false);
 	if (CS == CollisionState::NONE || CS == CollisionState::DROP) {
 		_player.setXY(std::make_pair(_player.getXY().first, _player.getXY().second - dist));
 	}
@@ -470,7 +484,7 @@ void				Game::moveLeft() {
 	tempXY.first = tempXY.first - dist - widthOffset + 0.5f;
 	tempXY.second = tempXY.second + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	CS = collisionDetection(castTempXY);
+	CS = collisionDetection(castTempXY, false);
 	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
 		_player.setXY(std::make_pair(_player.getXY().first - dist, _player.getXY().second));
 }
@@ -485,7 +499,7 @@ void				Game::moveRight() {
 	tempXY.first = tempXY.first + dist + widthOffset + 0.5f;
 	tempXY.second = tempXY.second + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	CS = collisionDetection(castTempXY);
+	CS = collisionDetection(castTempXY, false);
 	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
 		_player.setXY(std::make_pair(_player.getXY().first + dist, _player.getXY().second));
 }
@@ -493,31 +507,45 @@ void				Game::moveRight() {
 void				Game::dropBomb(float delayTimer) {
 	std::pair<float, float>		bombXY;
 
+	std::cout << "attempting bomb drop" << std::endl;
 	if ((int)_bombs.size() <= _player.getNumberOfBombs()) {
-		std::uint64_t epochTimeToExplode = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())).count() + ((int)delayTimer * 1000);
+		//std::uint64_t epochTimeToExplode = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())).count() + std::chrono::duration_cast<std::chrono::milliseconds>(delayTimer);
+		std::uint64_t epochTimeToExplode = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())).count();
+		epochTimeToExplode += int(delayTimer * 1000);
 		bombXY = std::make_pair((int) (_player.getXY().first + 0.5), (int) (_player.getXY().second + 0.5));
 		_bombs.push_back(Bomb(bombXY, 1, epochTimeToExplode, false));
+		std::cout << "BOMB DROPPED" << std::endl;
 	}
 }
 
 void				Game::checkBombAndFlameTimers() {
+	std::cout << "checking bomb timers" << std::endl;
 	std::uint64_t currentEpochTime = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())).count();
-	for (std::vector<Bomb>::iterator it = _bombs.begin(); it != _bombs.end(); ++it) {
-		if (it->getTimeToDetonate() >= currentEpochTime) {
-			dropFlames(*(it));
-			_bombs.erase(it);
+	for (int i = 0; (unsigned long)i < _bombs.size(); i++) {
+		std::cout << "current epoch time : " << currentEpochTime << std::endl;
+		std::cout << "bombs detonation time" << _bombs[i].getTimeToDetonate() << std::endl;
+		if (currentEpochTime >= _bombs[i].getTimeToDetonate()) {
+			dropFlames(_bombs[i]);
+			std::cout << "before erasing" << std::endl;
+			_bombs.erase(_bombs.begin() + i);
+			std::cout << "after erasing" << std::endl;
 		}
 	}
-	for (std::vector<Flame>::iterator it = _flames.begin(); it != _flames.end(); ++it) {
-		if (it->getTimeToDie() >= currentEpochTime) {
-			_flames.erase(it);
+	std::cout << "checking flame timers" << std::endl;
+	for (int i = 0; (unsigned long)i < _flames.size(); i++) {
+		std::cout << "current epoch time : " << currentEpochTime << std::endl;
+		std::cout << "bombs detonation time" << _bombs[i].getTimeToDetonate() << std::endl;
+		if (currentEpochTime >= _flames[i].getTimeToDie()) {
+			_flames.erase(_flames.begin() + i);
 		}
 	}
+	std::cout << "done checking bomb and flame timers" << std::endl;
 }
 
 void				Game::dropFlames(Bomb explodingBomb) {
 	std::uint64_t epochTimeToDie = (std::chrono::duration_cast<std::chrono::milliseconds>
-			(std::chrono::system_clock::now().time_since_epoch()).count()) + 1000;
+			(std::chrono::system_clock::now().time_since_epoch()).count());
+	epochTimeToDie += 100;
 
 	_flames.push_back(Flame(std::make_pair(explodingBomb.getXY().first, explodingBomb.getXY().second), epochTimeToDie)); // middle flame
 	for (int i = 1; i <= explodingBomb.getBlastRange(); i++)
@@ -526,6 +554,12 @@ void				Game::dropFlames(Bomb explodingBomb) {
 		_flames.push_back(Flame(std::make_pair(explodingBomb.getXY().first, explodingBomb.getXY().second - i), epochTimeToDie)); // down flame
 		_flames.push_back(Flame(std::make_pair(explodingBomb.getXY().first - i, explodingBomb.getXY().second), epochTimeToDie)); // left flame
 		_flames.push_back(Flame(std::make_pair(explodingBomb.getXY().first + i, explodingBomb.getXY().second), epochTimeToDie)); // right flame
+	}
+	for (unsigned long int i = 0; i < (unsigned long)_breakableBs.size(); i++) {
+		for (std::vector<Flame>::iterator iter = _flames.begin(); iter != _flames.end(); ++iter) {
+			if (iter->getXY() == _breakableBs[i].getXY())
+				_breakableBs.erase(_breakableBs.begin() + i);
+		}
 	}
 }
 
