@@ -40,6 +40,7 @@ Player &	Player::operator=(Player const & src) {
 	this->_level = src.getLevel();
 	this->_experience = src.getExperience();
 	this->_numberOfBombs = src.getNumberOfBombs();
+	this->_numberOfFlames = src.getNumberOfFlames();
 	this->_difficulty = src.getDifficulty();
 	return (*this);
 }
@@ -93,6 +94,14 @@ void		Player::setNumberOfBombs(const int bombs) {
 	this->_numberOfBombs = bombs;
 }
 
+int			Player::getNumberOfFlames() const {
+	return (this->_numberOfFlames);
+}
+
+void		Player::setNumberOfFlames(const int flames) {
+	this->_numberOfFlames = flames;
+}
+
 int			Player::getDifficulty() const {
 	return (this->_difficulty);
 }
@@ -113,6 +122,7 @@ std::ostream & 			operator<<(std::ostream & o, Player const & rhs) {
 	"\nLevel: " << rhs.getLevel() <<
 	"\nExperience: " << rhs.getExperience() <<
 	"\nNumber of Bombs: " << rhs.getNumberOfBombs() <<
+	"\nNumber of Flames: " << rhs.getNumberOfFlames() <<
 	"\nDifficulty: " << rhs.getDifficulty() <<
 	"\nFile Location: " << rhs.getFileLocation() << std::endl;
 	return o;
