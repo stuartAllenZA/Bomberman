@@ -32,6 +32,8 @@ public:
 	void		setExperience(const int newExp);
 	int			getNumberOfBombs() const;
 	void		setNumberOfBombs(const int bombs);
+	int			getNumberOfFlames() const;
+	void		setNumberOfFlames(const int flames);
 	int			getDifficulty() const;
 	void		setDifficulty(const int newDifficulty);
 
@@ -42,6 +44,7 @@ private:
 	int			_level;
 	int			_experience;
 	int			_numberOfBombs;
+	int			_numberOfFlames;
 	int			_difficulty;
 };
 

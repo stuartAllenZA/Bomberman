@@ -17,6 +17,7 @@
 #include <RemoteDetonator.hpp>
 #include <ExtraBomb.hpp>
 #include <RangeExtender.hpp>
+#include <EnemyDrop.hpp>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -139,6 +140,7 @@ public:
 	void						initLevelOne();
 	void						initLevelTwo();
 	void						initLevelThree();
+	void						initTestMap();
 	int							dropFreeBoxInd();
 	void 						setDifficulty(const int dif);
 	void						reset();
@@ -156,7 +158,6 @@ private:
 	std::vector<Drop*>			_drops;
 	std::vector<Bomb>			_bombs;
 	std::vector<Flame>			_flames;
-	bool						_hasSave;
 	std::pair<int, int>			_mapSize;
 	int							_range;
 };
