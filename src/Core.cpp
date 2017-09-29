@@ -79,7 +79,7 @@ void			Core::gameLoop() {
 	glfwSetWindowPos(_win, this->_game.getSettings().getXPos(), this->_game.getSettings().getYPos());
 	while (loop == true && !glfwWindowShouldClose(_win)) {
 		input();
-		std::cout << "post input\n";
+	//	std::cout << "post input\n";
 		gs = this->_game.getGameState();
 		switch (gs) {
 			case GameState::MENU :
@@ -92,7 +92,7 @@ void			Core::gameLoop() {
 				break;
 			case GameState::PLAY :
 				if (_game.getPlayState() == PlayState::GAME_INIT) {
-					_gfx->init();
+					_gfx->initCamera();
 					_game.startGameMusic();
 				}
 				else if (_game.getPlayState() == PlayState::GAME_PLAY)
@@ -104,7 +104,7 @@ void			Core::gameLoop() {
 				loop = false;
 				break;
 		}
-		std::cout << "Main gameLoop looping." << std::endl;
+	//	std::cout << "Main gameLoop looping." << std::endl;
 	}
 }
 
@@ -132,7 +132,7 @@ void			Core::fatalError(std::string errorString) {
 }
 
 void			Core::play() {
-	std::cout << "Playing, ESC to exit" << std::endl;
+	//std::cout << "Playing, ESC to exit" << std::endl;
 	if (_game.getPlayState() == PlayState::GAME_INIT) {
 		_game.reset();
 		//_game.initLevelOne();
@@ -162,7 +162,7 @@ void			Core::play() {
 	if (_game.getGameState() == GameState::EXIT)
 		std::cout << "MENU" << std::endl;
 	while (!glfwWindowShouldClose(_win) && _game.getGameState() == GameState::PLAY) {
-		std::cout << "check for keys loop" << std::endl;
+		//std::cout << "check for keys loop" << std::endl;
 		glfwPollEvents();
 		updateKeys();
 		_game.controller();

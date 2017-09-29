@@ -493,7 +493,7 @@ void				Game::moveRight() {
 void				Game::dropBomb(float delayTimer) {
 	std::pair<float, float>		bombXY;
 
-	if ((int)_bombs.size() < _player.getNumberOfBombs()) {
+	if ((int)_bombs.size() <= _player.getNumberOfBombs()) {
 		std::uint64_t epochTimeToExplode = (std::chrono::duration_cast<std::chrono::milliseconds>
 				(std::chrono::system_clock::now().time_since_epoch()).count()) + (delayTimer * 1000);
 		bombXY = std::make_pair((int) (_player.getXY().first + 0.5), (int) (_player.getXY().second + 0.5));
@@ -580,7 +580,7 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 void					Game::unbreakableRing(int x, int y) {
 	int		xStart = (_mapSize.first - x);
 	int		yStart = (_mapSize.second - y);
-	std::cout << "Passed x: " << x << " Passed y: " << y << " xStart: " << xStart << " yStart: " << yStart << std::endl;
+	//std::cout << "Passed x: " << x << " Passed y: " << y << " xStart: " << xStart << " yStart: " << yStart << std::endl;
 
 	for (int i = xStart; i < x; i++) {
 		if (i == xStart || i == x-1) {
@@ -598,7 +598,7 @@ void					Game::unbreakableRing(int x, int y) {
 void					Game::breakableRing(int x, int y) {
 	int		xStart = (_mapSize.first - x);
 	int		yStart = (_mapSize.second - y);
-	std::cout << "Passed x: " << x << " Passed y: " << y << " xStart: " << xStart << " yStart: " << yStart << std::endl;
+	//std::cout << "Passed x: " << x << " Passed y: " << y << " xStart: " << xStart << " yStart: " << yStart << std::endl;
 
 	for (int i = xStart; i < x; i++) {
 		if (i == xStart || i == x-1) {
@@ -617,7 +617,7 @@ void					Game::breakableRing(int x, int y, std::pair<int, int> skip) {
 	int		xStart = (_mapSize.first - x);
 	int		yStart = (_mapSize.second - y);
 	std::pair<int, int>	temp;
-	std::cout << "Passed x: " << x << " Passed y: " << y << " xStart: " << xStart << " yStart: " << yStart << std::endl;
+	// std::cout << "Passed x: " << x << " Passed y: " << y << " xStart: " << xStart << " yStart: " << yStart << std::endl;
 
 	for (int i = xStart; i < x; i++) {
 		if (i == xStart || i == x-1) {
@@ -644,7 +644,7 @@ void					Game::cornerBox(int x, int y) {
 	int		y1 = (_mapSize.second - y);
 	int		y2 = y - 1;
 
-	std::cout << "Doing corners\n";
+//	std::cout << "Doing corners\n";
 	_breakableBs.push_back(BreakableBox(std::make_pair(x1, y1)));
 	_breakableBs.push_back(BreakableBox(std::make_pair(x1, y2)));
 	_breakableBs.push_back(BreakableBox(std::make_pair(x2, y1)));
@@ -656,7 +656,7 @@ int					Game::dropFreeBoxInd() {
 
 	while (1) {
 		randomInt = rand() % _breakableBs.size();
-		std::cout << "Random Int = " << randomInt << " size = " << _breakableBs.size() << std::endl;
+//		std::cout << "Random Int = " << randomInt << " size = " << _breakableBs.size() << std::endl;
 		if (!_breakableBs[randomInt].getDrop())
 			return (randomInt);
 	}

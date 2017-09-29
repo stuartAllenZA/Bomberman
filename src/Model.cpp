@@ -462,7 +462,6 @@ void Model::_loadMaterials()
 
 void Model::_loadMatrices(Joint *bone, glm::mat4 parentTransform)
 {
-	std::cout << "loading matrices\n";
 	std::string str = std::string("jointMat[") + std::to_string(bone->id) + std::string("]");
 
 //	glm::mat4 currentLocalTransform = _animations[0]->getJointAnimationMatrix(bone->index);
@@ -472,7 +471,6 @@ void Model::_loadMatrices(Joint *bone, glm::mat4 parentTransform)
 	for (Joint *child : bone->children)
 		_loadMatrices(child, currentTransform);
 	_shader.setUniformMat4((GLchar *)str.c_str(), currentTransform * bone->invMatrix);
-	std::cout << "matrices loaded\n";
 }
 
 bool Model::loadAnimationMatrix(int animeType, float time)
@@ -505,7 +503,6 @@ void Model::renderAnimated(glm::mat4 matrix, glm::mat4 view, glm::mat4 projectio
 {
 	_shader.setUniformMat4((GLchar *)"view_matrix", view);
 	_shader.setUniformMat4((GLchar *)"proj_matrix", projection);
-	std::cout << "rendering model\n";
 	_shader.enable();
 	_shader.setUniformMat4((GLchar *)"model_matrix", matrix);
 	if (!_animations.empty())
@@ -526,27 +523,14 @@ void Model::renderAnimated(glm::mat4 matrix, glm::mat4 view, glm::mat4 projectio
 		material.second.texure.unbindTexture();
 	_shader.disable();
 	_animeMatrice.clear();
-	std::cout << "model rendered\n";
 }
 
 void Model::render(glm::mat4 matrix, glm::mat4 view, glm::mat4 projection)
 {
 	_shader.setUniformMat4((GLchar *)"view_matrix", view);
 	_shader.setUniformMat4((GLchar *)"proj_matrix", projection);
-	std::cout << "rendering model\n";
 	_shader.enable();
 	_shader.setUniformMat4((GLchar *)"model_matrix", matrix);
-	/*
-	if (!_animations.empty())
-	{
-		_shader.setUniform1i((GLchar *)"hasAnime", (int)true);
-		_animations[0]->update();
-		for (Joint *bone : _bones)
-			_loadMatrices(bone, glm::mat4());
-		// edit animation frame time
-		_animations[0]->increaseCurrentTimeStamp(0.02f);
-	}
-	*/
 	for (std::pair<int, Material> material : _materials)
 		Material::sendMaterialToShader(_shader, material.second, material.first);
 	glBindVertexArray(_vao);
@@ -556,15 +540,12 @@ void Model::render(glm::mat4 matrix, glm::mat4 view, glm::mat4 projection)
 		material.second.texure.unbindTexture();
 	_shader.disable();
 	_animeMatrice.clear();
-	std::cout << "model rendered\n";
 }
 
 void Model::basicRender(glm::mat4 matrix)
 {
-	std::cout << "simple render begin\n";
 	_shader.setUniformMat4((GLchar *)"model_matrix", matrix);
 	glBindVertexArray(_vao);
 	glDrawElements(GL_TRIANGLES, (GLsizei)_indicesCount, GL_UNSIGNED_SHORT, (const GLvoid *)nullptr);
 	glBindVertexArray(0);
-	std::cout << "simple render end\n";
 }
