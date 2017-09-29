@@ -19,12 +19,33 @@
 class GraphicsEngine {
 	private:
 		Camera								*_camera;
-		std::map<std::string, Model*>		_models;
-		std::map<std::string, Shader*>		_shaders;
-		std::map<std::string, glm::mat4>	_matrices;
+		Shader								*_playerShader;
+		Shader								*_wallShader;
+		Shader								*_floorShader;
+		Shader								*_boxShader;
+		Shader								*_bombShader;
+		Shader								*_flameShader;
+		Shader								*_enemyShader;
+		Shader								*_dropShader;
+		
 		Model								*_playerModel;
 		Model								*_wallModel;
-		Material 							_playerMaterial;
+		Model								*_floorModel;
+		Model								*_boxModel;
+		Model								*_bombModel;
+		Model								*_flameModel;
+		Model								*_enemyModel;
+		Model								*_dropModel;
+
+		glm::mat4							_playerMatrice;
+		glm::mat4							_wallMatrice;
+		glm::mat4							_floorMatrice;
+		glm::mat4							_boxMatrice;
+		glm::mat4							_bombMatrice;
+		glm::mat4							_flameMatrice;
+		glm::mat4							_enemyMatrice;
+		glm::mat4							_dropMatrice;
+
 		Game								*_game;
 		GLFWwindow							*_window;
 		float								_prevZ;
@@ -57,9 +78,23 @@ class GraphicsEngine {
 		Game								*getGame() const;
 		GLFWwindow							*getWindow() const;
 		Camera								*getCamera() const;
-		std::map<std::string, Shader*>		getShaders() const;
-		std::map<std::string, Model*>		getModels() const;
-		std::map<std::string, glm::mat4>	getMatrices() const;
+		Shader								*getPlayerShader() const;
+		Shader								*getWallShader() const;
+		Shader								*getFloorShader() const;
+		Shader								*getBoxShader() const;
+		Shader								*getBombShader() const;
+		Shader								*getFlameShader() const;
+		Shader								*getEnemyShader() const;
+		Shader								*getDropShader() const;
+
+		Model								*getPlayerModel() const;
+		Model								*getWallModel() const;
+		Model								*getFloorModel() const;
+		Model								*getBoxModel() const;
+		Model								*getBombModel() const;
+		Model								*getFlameModel() const;
+		Model								*getEnemyModel() const;
+		Model								*getDropModel() const;
 
 		// setters
 

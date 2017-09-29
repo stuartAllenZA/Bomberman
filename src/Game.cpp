@@ -499,8 +499,6 @@ void				Game::dropBomb(float delayTimer) {
 		bombXY = std::make_pair((int) (_player.getXY().first + 0.5), (int) (_player.getXY().second + 0.5));
 		_bombs.push_back(Bomb(bombXY, 1, epochTimeToExplode, false));
 	}
-	std::cout << "BOMBS SIZE: " << _bombs.size() << std::endl;
-	std::cout << "PLAYER BOMBS: " << _player.getNumberOfBombs() << std::endl;
 }
 
 void				Game::checkBombAndFlameTimers() {
