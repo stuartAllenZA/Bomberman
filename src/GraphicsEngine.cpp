@@ -29,7 +29,6 @@ glm::mat4 model2;
 GraphicsEngine::GraphicsEngine() {}
 
 GraphicsEngine::~GraphicsEngine() {
-	delete this->_camera;
 	delete this->_playerShader;
 	delete this->_wallShader;
 	delete this->_floorShader;
@@ -48,7 +47,6 @@ GraphicsEngine::~GraphicsEngine() {
 	delete this->_enemyModel;
 	delete this->_dropModel;
 
-	this->_camera = nullptr;
 	this->_playerShader = nullptr;
 	this->_wallShader = nullptr;
 	this->_floorShader = nullptr;
@@ -127,17 +125,10 @@ void GraphicsEngine::initSystems() {
 	glEnable(GL_DEPTH_TEST);
 }
 
-void	GraphicsEngine::resetCamera() {
-	if (_camera) {
-		delete _camera;
-	}
-}
-
 void	GraphicsEngine::initCamera() {
 	// init camera
 	if (_cameraLoaded)
-		_camera->reset(glm::vec3(4.0f, 12.0f, 4.0f), -60.0f, -90.0f);
-	else _camera = new Camera(glm::vec3(4.0f, 12.0f, 4.0f), -60.0f, -90.0f);
+		_camera.reset();
 	_cameraLoaded = true;
 	_prevZ = 0.0f;
 	_prevX = 0.0f;
@@ -153,8 +144,8 @@ void GraphicsEngine::init() {
 	_boxShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_bombShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_flameShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
-	_dropShader = new Shader("shaders/basic.vert", "gfxUtils/shaders/basic.frag");
-	_enemyShader = new Shader("shaders/anime.vert", "gfxUtils/shaders/basic.frag");
+	_dropShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
+	_enemyShader = new Shader("resources/shaders/anime.vert", "resources/shaders/basic.frag");
 
 	// init models
 	_playerModel = new Model("resources/models/BMwalk3.gltf", _playerShader);
@@ -196,17 +187,17 @@ void GraphicsEngine::render() {
 	coords = _game->getPlayer().getXY();
 	if (_prevZ != coords.second) {
 		if (_game->getKeyPressArr(UP))
-			_camera->changeCameraZPos(-_game->getPlayer().getSpeed() / 30.0f);
+			_camera.changeCameraZPos(-_game->getPlayer().getSpeed() / 30.0f);
 		else if (_game->getKeyPressArr(DOWN))
-			_camera->changeCameraZPos(_game->getPlayer().getSpeed() / 30.0f);
+			_camera.changeCameraZPos(_game->getPlayer().getSpeed() / 30.0f);
 	}
 	if (_prevX != coords.first) {
 		if (_game->getKeyPressArr(RIGHT))
-			_camera->changeCameraXPos(_game->getPlayer().getSpeed() / 30.0f);
+			_camera.changeCameraXPos(_game->getPlayer().getSpeed() / 30.0f);
 		else if (_game->getKeyPressArr(LEFT))
-			_camera->changeCameraXPos(-_game->getPlayer().getSpeed() / 30.0f);
+			_camera.changeCameraXPos(-_game->getPlayer().getSpeed() / 30.0f);
 	}
-	glm::mat4 view = _camera->getViewMatrix();
+	glm::mat4 view = _camera.getViewMatrix();
 	glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
 
 	_isAnime = false;
@@ -343,7 +334,7 @@ GLFWwindow							*GraphicsEngine::getWindow() const {
 	return this->_window;
 }
 
-Camera								*GraphicsEngine::getCamera() const {
+Camera								GraphicsEngine::getCamera() const {
 	return this->_camera;
 }
 
@@ -358,7 +349,7 @@ void	GraphicsEngine::setWindow(GLFWwindow *window) {
 }
 
 void	GraphicsEngine::setCamera(Camera camera) {
-	this->_camera = &camera;
+	this->_camera = camera;
 }
 
 Shader								*GraphicsEngine::getPlayerShader() const {

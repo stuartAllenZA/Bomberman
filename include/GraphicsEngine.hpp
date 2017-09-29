@@ -18,7 +18,7 @@
 #define GLM_FORCE_RADIANS
 class GraphicsEngine {
 	private:
-		Camera								*_camera;
+		Camera								_camera;
 		Shader								*_playerShader;
 		Shader								*_wallShader;
 		Shader								*_floorShader;
@@ -71,13 +71,12 @@ class GraphicsEngine {
 		void	initSystems();
 		bool	processInput();
 		void	render();
-		void	resetCamera();
 
 		// getters
 		
 		Game								*getGame() const;
 		GLFWwindow							*getWindow() const;
-		Camera								*getCamera() const;
+		Camera								getCamera() const;
 		Shader								*getPlayerShader() const;
 		Shader								*getWallShader() const;
 		Shader								*getFloorShader() const;

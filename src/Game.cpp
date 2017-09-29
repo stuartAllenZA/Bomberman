@@ -494,16 +494,14 @@ void				Game::dropBomb(float delayTimer) {
 	std::pair<float, float>		bombXY;
 
 	if ((int)_bombs.size() <= _player.getNumberOfBombs()) {
-		std::uint64_t epochTimeToExplode = (std::chrono::duration_cast<std::chrono::milliseconds>
-				(std::chrono::system_clock::now().time_since_epoch()).count()) + (delayTimer * 1000);
+		std::uint64_t epochTimeToExplode = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())).count() + ((int)delayTimer * 1000);
 		bombXY = std::make_pair((int) (_player.getXY().first + 0.5), (int) (_player.getXY().second + 0.5));
 		_bombs.push_back(Bomb(bombXY, 1, epochTimeToExplode, false));
 	}
 }
 
 void				Game::checkBombAndFlameTimers() {
-	std::uint64_t currentEpochTime = std::chrono::duration_cast<std::chrono::milliseconds>
-			(std::chrono::system_clock::now().time_since_epoch()).count();
+	std::uint64_t currentEpochTime = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())).count();
 	for (std::vector<Bomb>::iterator it = _bombs.begin(); it != _bombs.end(); ++it) {
 		if (it->getTimeToDetonate() >= currentEpochTime) {
 			dropFlames(*(it));

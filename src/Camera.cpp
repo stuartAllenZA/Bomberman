@@ -1,12 +1,7 @@
 #include <Camera.hpp>
 
-Camera::Camera(glm::vec3 position, float pitch, float yaw)
+Camera::Camera() : _position(glm::vec3(4.0f, 12.0f, 4.0f)), _front(glm::vec3(0.0f, 0.0f, -1.0f)), _worldUp(glm::vec3(0.0f, 1.0f, 0.0f)), _pitch(-60.0f), _yaw(-90.0f)
 {
-	_position = position;
-	_worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	_front = glm::vec3(0.0f, 0.0f, -1.0f);
-	_yaw = yaw;
-	_pitch = pitch;
 	_updateCamera();
 }
 
@@ -18,12 +13,12 @@ Camera& Camera::operator=(const Camera &rhs)
 	return *this;
 }
 
-void	Camera::reset(glm::vec3 position, float pitch, float yaw) {
-	_position = position;
+void	Camera::reset() {
+	_position = glm::vec3(4.0f, 12.0f, 4.0f);
 	_worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	_front = glm::vec3(0.0f, 0.0f, -1.0f);
-	_yaw = yaw;
-	_pitch = pitch;
+	_yaw = -90.0f;
+	_pitch = -60.0f;
 	_updateCamera();
 }
 
