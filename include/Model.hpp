@@ -1,7 +1,6 @@
 #pragma once
 #include "Util.hpp"
 #include "ModelShader.hpp"
-#include "Camera.hpp"
 #include "Material.hpp"
 #include "Animation.hpp"
 #include <map>
@@ -77,7 +76,8 @@ class Model {
 		void    	_loadMatrices(Joint *bone, glm::mat4 parentTransform);
 
 		bool        loadFromFile(Shader& shader, const char *path);
-		void        render(glm::mat4 matrix);
+		void        render(glm::mat4 matrix, glm::mat4 view, glm::mat4 projection);
+		void        renderAnimated(glm::mat4 matrix, glm::mat4 view, glm::mat4 projection);
 		void        basicRender(glm::mat4 matrix);
 		bool        loadAnimationMatrix(int animeType, float time);
 

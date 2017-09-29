@@ -10,6 +10,7 @@
 #include <Sound.hpp>
 #include <Box.hpp>
 #include <Bomb.hpp>
+#include <Flame.hpp>
 #include <BreakableBox.hpp>
 #include <UnbreakableBox.hpp>
 #include <LevelHatch.hpp>
@@ -27,6 +28,7 @@
 #include <dirent.h>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
 
 #define UP		0
 #define DOWN	1
@@ -54,6 +56,16 @@ enum class PlayState {
 	GAME_LOAD,
 	GAME_INIT,
 	GAME_PLAY
+};
+
+enum class CollisionState {
+	ENEMY,
+	DROP,
+	BREAKABLE_BOX,
+	UNBREAKABLE_BOX,
+	BOMB,
+	EXPLOSION,
+	NONE
 };
 
 class Game {
@@ -86,6 +98,8 @@ public:
 	void						setMapSize(const std::pair<int, int> newMapSize);
 	int							getRange() const;
 	void 						setRange(const int newRange);
+	std::vector<Bomb>			getBombs() const;
+	void 						setBombs(const std::vector<Bomb> newBombs);
 
 	void						initSound();
 	void						savePlayer();
@@ -110,13 +124,15 @@ public:
 	int							getPlayerLevel();
 	void						processEnemies();
 	bool						checkCoOrd(std::pair<float, float> xy);
-	bool 						checkCoOrd(std::pair<float, float> xy, char *type);
+	CollisionState 				collisionDetection(std::pair<float, float> xy);
 	void 						controller();
 	void 						moveUp();
 	void 						moveDown();
 	void 						moveLeft();
 	void 						moveRight();
-	void 						dropBomb(int *delayTimer);
+	void 						dropBomb(float delayTimer);
+	void 						checkBombAndFlameTimers();
+	void 						dropFlames(Bomb explodingBomb);
 	void						unbreakableRing(int x, int y);
 	void						breakableRing(int x, int y);
 	void						breakableRing(int x, int y, std::pair<int, int> skip);
@@ -141,6 +157,7 @@ private:
 	std::vector<UnbreakableBox>	_unbreakableBs;
 	std::vector<Drop*>			_drops;
 	std::vector<Bomb>			_bombs;
+	std::vector<Flame>			_flames;
 	std::pair<int, int>			_mapSize;
 	int							_range;
 };

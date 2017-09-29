@@ -43,7 +43,6 @@ void			Core::init() {
 	std::cout << "Initializing Core" << std::endl;
 	this->_game.initSound();
 	_win = nullptr;
-	//std::cout << "Creating GLFW Window" << std::endl;
 	glfwInit();
 	glfwSetTime(0);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -51,15 +50,6 @@ void			Core::init() {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_SAMPLES, 8);
-	/*
-	glfwWindowHint(GLFW_RED_BITS, 8);
-	glfwWindowHint(GLFW_GREEN_BITS, 8);
-	glfwWindowHint(GLFW_BLUE_BITS, 8);
-	glfwWindowHint(GLFW_ALPHA_BITS, 8);
-	glfwWindowHint(GLFW_STENCIL_BITS, 8);
-	glfwWindowHint(GLFW_DEPTH_BITS, 24);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	*/
 	_win = glfwCreateWindow(_width, _height, "Bomberman", nullptr, nullptr);
 	if (_win == nullptr)
 		fatalError("GLFW context is shot");
@@ -70,7 +60,7 @@ void			Core::init() {
 	}
 	glfwMakeContextCurrent(_win);
 	glfwSwapInterval(1);
-	glewExperimental = true; // Needed for core profile
+	glewExperimental = true;
 	if (glewInit() != GLEW_OK) {
 		fprintf(stderr, "Failed to initialize GLEW\n");
 		getchar();
@@ -78,8 +68,6 @@ void			Core::init() {
 	}
 	_gfx = new GraphicsEngine(&_game, &_win);
 	_gfx->init();
-	std::cout << "GRAPHICS init called\n";
-
 	std::cout << "GLFW Window Created." << std::endl;
 }
 
@@ -103,8 +91,10 @@ void			Core::gameLoop() {
 				_game.pauseMenuMusic();
 				break;
 			case GameState::PLAY :
-				if (_game.getPlayState() == PlayState::GAME_INIT)
+				if (_game.getPlayState() == PlayState::GAME_INIT) {
+					_gfx->init();
 					_game.startGameMusic();
+				}
 				else if (_game.getPlayState() == PlayState::GAME_PLAY)
 					_game.resumeGameMusic();
 				play();
@@ -157,7 +147,7 @@ void			Core::play() {
 		else if (_game.getPlayer().getLevel() == 2)
 			_game.initLevelThree();
 	}
-//	_game.setPlayState(PlayState::GAME_PLAY);
+	_game.setPlayState(PlayState::GAME_PLAY);
 	//std::cout << _game << std::endl;
 	glfwSetInputMode(_win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glEnable(GL_DEPTH_TEST);
@@ -176,7 +166,6 @@ void			Core::play() {
 		glfwPollEvents();
 		updateKeys();
 		_game.controller();
-//		_gfx->processInput();
 		_gfx->render();	
 		if (_game.getKeyPressArr(ESCAPE)){
 			this->_game.setGameState(GameState::MENU);

@@ -19,22 +19,21 @@
 class GraphicsEngine {
 	private:
 		Camera								*_camera;
-		Shader								*_playerShader;
-		Shader								*_wallShader;
-		Shader								*_boxShader;
-		Shader								*_enemyShader;
 		std::map<std::string, Model*>		_models;
-		std::map<std::string, Shader>		_shaders;
+		std::map<std::string, Shader*>		_shaders;
 		std::map<std::string, glm::mat4>	_matrices;
 		Model								*_playerModel;
 		Model								*_wallModel;
 		Material 							_playerMaterial;
 		Game								*_game;
 		GLFWwindow							*_window;
+		float								_prevZ;
+		float								_prevX;
 
 		void								_loadResources();
 		void								_loadModels();
 		void								_loadModel();
+		bool								_cameraLoaded;
 
 	public:
 		GraphicsEngine(Game	*game, GLFWwindow **window);
@@ -48,13 +47,14 @@ class GraphicsEngine {
 		void	initSystems();
 		bool	processInput();
 		void	render();
+		void	resetCamera();
 
 		// getters
 		
 		Game								*getGame() const;
 		GLFWwindow							*getWindow() const;
 		Camera								*getCamera() const;
-		std::map<std::string, Shader>		getShaders() const;
+		std::map<std::string, Shader*>		getShaders() const;
 		std::map<std::string, Model*>		getModels() const;
 		std::map<std::string, glm::mat4>	getMatrices() const;
 
@@ -63,7 +63,7 @@ class GraphicsEngine {
 		void	setGame(Game *);
 		void	setWindow(GLFWwindow *);
 		void	setCamera(Camera);
-		void	setShaders(std::map<std::string, Shader>);
+		void	setShaders(std::map<std::string, Shader*>);
 		void	setModels(std::map<std::string, Model*>);
 		void	setMatrices(std::map<std::string, glm::mat4>);
 };

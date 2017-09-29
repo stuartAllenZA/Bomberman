@@ -9,7 +9,6 @@ float x = 0.0f;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow *window);
 
 //settings
 const unsigned int SCR_WIDTH = 800;
@@ -30,12 +29,7 @@ glm::mat4 model2;
 GraphicsEngine::GraphicsEngine() {}
 
 GraphicsEngine::~GraphicsEngine() {
-	delete this->_playerModel;
-	delete this->_playerShader;
 	delete this->_camera;
-	
-	_playerModel = nullptr;
-	_playerShader = nullptr;
 	_camera = nullptr;
 }
 
@@ -85,24 +79,45 @@ void GraphicsEngine::initSystems() {
 	glEnable(GL_DEPTH_TEST);
 }
 
-void GraphicsEngine::init() {
-	_camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f), 0, -90.0f);
-	_playerShader = new Shader("resources/shaders/anime.vert", "resources/shaders/basic.frag");
-	_wallShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
-	_boxShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
-//	_enemyShader = new Shader("shaders/anime.vert", "gfxUtils/shaders/basic.frag");
+void	GraphicsEngine::resetCamera() {
+	if (_camera) {
+		delete _camera;
+	}
+}
 
-	_models["player"] = new Model("resources/models/BMrun.gltf", _playerShader);
-	_models["wall"] = new Model("resources/models/Cube.gltf", _wallShader);
-	_models["box"] = new Model("resources/models/block1.gltf", _boxShader);
-//	_models["enemy"] = new Model("resources/models/bomberman.gltf", _enemyShader);
+void GraphicsEngine::init() {
+	// init camera
+	if (_cameraLoaded)
+		_camera->reset(glm::vec3(4.0f, 12.0f, 4.0f), -60.0f, -90.0f);
+	else _camera = new Camera(glm::vec3(4.0f, 12.0f, 4.0f), -60.0f, -90.0f);
+	_cameraLoaded = true;
+	_prevZ = 0.0f;
+	_prevX = 0.0f;
+
+	// init shaders
+	_shaders["player"] = new Shader("resources/shaders/anime.vert", "resources/shaders/basic.frag");
+	_shaders["wall"] = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
+	_shaders["box"] = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
+	_shaders["bomb"] = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
+	_shaders["enemy"] = new Shader("shaders/anime.vert", "gfxUtils/shaders/basic.frag");
+	_shaders["drop"] = new Shader("shaders/anime.vert", "gfxUtils/shaders/basic.frag");
+
+	// init models
+	_models["player"] = new Model("resources/models/BMrun.gltf", _shaders.find("player")->second);
+	_models["wall"] = new Model("resources/models/Cube.gltf", _shaders.find("wall")->second);
+	_models["box"] = new Model("resources/models/block1.gltf", _shaders.find("box")->second);
+	_models["bomb"] = new Model("resources/models/BMbomb.gltf", _shaders.find("bomb")->second);
+	_models["enemy"] = new Model("resources/models/BMbomb.gltf", _shaders.find("enemy")->second);
+	_models["drop"] = new Model("resources/models/boneBox.gltf", _shaders.find("drop")->second);
 	
 	// load init positions
 	_matrices["player"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_matrices["wall"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_matrices["box"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
-//	_matrices["enemy"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
-
+	_matrices["enemy"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
+	_matrices["bomb"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
+	_matrices["drop"] = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
+	
 }
 
 void GraphicsEngine::render() {
@@ -110,43 +125,42 @@ void GraphicsEngine::render() {
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 
-	processInput();
-
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	std::pair<float, float> coords;
 	int vecSize;
-/*
- *	foreach (game->object) {
- *		_matrices.find(gameobjectname)->second) = translate(game->objectCoords);
- *		render(_models.find(gameobjectname)->second);
- *	}
- */
-	/*
-	_enemyShader->enable();
-	std::vector<Enemy> tempEnmy = _game->getEnemies();
-	vecSize = tempEnmy.size();
-	std::cout << "Doing " << vecSize << " Enemies." << std::endl;
-	for (int i = 0; i < vecSize; i++) {
-		coords = tempEnmy[i].getXY();
-		std::cout << "ENEMYcoords x: " << coords.first << " coords y: " << coords.second << std::endl;
-		_matrices.find("enemy")->second = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
-		_models.find("enemy")->second->render(_matrices.find("enemy")->second);
+	
+	/// CAMERA, EVENTS & PLAYER
+	coords = _game->getPlayer().getXY();
+	if (_prevZ != coords.second) {
+		if (_game->getKeyPressArr(UP))
+			_camera->changeCameraZPos(-_game->getPlayer().getSpeed() / 30.0f);
+		else if (_game->getKeyPressArr(DOWN))
+			_camera->changeCameraZPos(_game->getPlayer().getSpeed() / 30.0f);
 	}
-	*/
+	if (_prevX != coords.first) {
+		if (_game->getKeyPressArr(RIGHT))
+			_camera->changeCameraXPos(_game->getPlayer().getSpeed() / 30.0f);
+		else if (_game->getKeyPressArr(LEFT))
+			_camera->changeCameraXPos(-_game->getPlayer().getSpeed() / 30.0f);
+	}
+	glm::mat4 view = _camera->getViewMatrix();
+	glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
 
-	_boxShader->enable();
-	std::vector<BreakableBox> tempBB = _game->getBreakableBs();
-	vecSize = tempBB.size();
-	std::cout << "Doing " << vecSize << " Breakable Boxes." << std::endl;
-	for (int i = 0; i < vecSize; i++) {
-		coords = tempBB[i].getXY();
-		std::cout << "BB coords x: " << coords.first << " coords y: " << coords.second << std::endl;
-		_matrices.find("box")->second = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
-		_models.find("box")->second->render(_matrices.find("box")->second);
+	_shaders.find("player")->second->enable();
+	_matrices.find("player")->second = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
+	_models.find("player")->second->render(_matrices.find("player")->second, view, projection);
+
+	_prevZ = coords.second;
+	_prevX = coords.first;
+	if (_game->getKeyPressArr(ACTION)) {
+		_shaders.find("bomb")->second->enable();
+		_matrices.find("bomb")->second = glm::translate(glm::mat4(), glm::vec3((3.0 * 2.0), 0.0f, ((-1 * 4.0f) * 2))); 
+		_models.find("bomb")->second->render(_matrices.find("bomb")->second, view, projection);
 	}
 
-	_wallShader->enable();
+	/// WALLS & BOXES
+	_shaders.find("wall")->second->enable();
 	std::vector<UnbreakableBox> tempUB = _game->getUnbreakableBs();
 	vecSize = tempUB.size();
 	std::cout << "Doing " << vecSize << " Unbreakable Boxes." << std::endl;
@@ -154,84 +168,43 @@ void GraphicsEngine::render() {
 		coords = tempUB[i].getXY();
 		std::cout << "UBcoords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_matrices.find("wall")->second = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
-		_models.find("wall")->second->render(_matrices.find("wall")->second);
+		_models.find("wall")->second->render(_matrices.find("wall")->second, view, projection);
 	}
-	/*
+	
+	_shaders.find("box")->second->enable();
+	std::vector<BreakableBox> tempBB = _game->getBreakableBs();
+	vecSize = tempBB.size();
+	std::cout << "Doing " << vecSize << " Breakable Boxes." << std::endl;
+	for (int i = 0; i < vecSize; i++) {
+		coords = tempBB[i].getXY();
+		std::cout << "BB coords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		_matrices.find("box")->second = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
+		_models.find("box")->second->render(_matrices.find("box")->second, view, projection);
+	}
+
+	/// DROPS & ENEMIES
+	_shaders.find("drop")->second->enable();
 	std::vector<Drop*> tempDrp = _game->getDrops();
 	vecSize = tempDrp.size();
 	std::cout << "Doing " << vecSize << " Drops." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
-		coords = tempUB[i]->getXY();
+		coords = tempDrp[i]->getXY();
 		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
-		_matrices.find("wall")->second = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
-		_models.find("wall")->second->render(_matrices.find("wall")->second);
+		_matrices.find("drop")->second = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
+		_models.find("drop")->second->render(_matrices.find("drop")->second, view, projection);
 	}
-	*/
 
-	coords = _game->getPlayer().getXY();
-	std::cout << "PLAYER coords x: " << coords.first << " coords y: " << coords.second << std::endl;
-	_matrices.find("player")->second = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
-	_models.find("player")->second->render(_matrices.find("player")->second);
-
+	_shaders.find("enemy")->second->enable();
+	std::vector<Enemy> tempEnmy = _game->getEnemies();
+	vecSize = tempEnmy.size();
+	std::cout << "Doing " << vecSize << " Enemies." << std::endl;
+	for (int i = 0; i < vecSize; i++) {
+		coords = tempEnmy[i].getXY();
+		std::cout << "ENEMYcoords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		_matrices.find("enemy")->second = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
+		_models.find("enemy")->second->render(_matrices.find("enemy")->second, view, projection);
+	}
 	glfwSwapBuffers(_window);
-	glfwPollEvents();
-}
-
-bool GraphicsEngine::processInput()
-{
-	_playerShader->enable();
-	if (_game->getKeyPressArr(UP)) {
-		// check direction, then rotate:
-		z -= 0.1f;
-//		_playerModel->render(model);
-		model = glm::translate(glm::mat4(), glm::vec3(x, 0.0f, z)); 
-		axis = 'z';
-		direction = 'n';
-		std::cout << "w\n";
-	}
-	if (_game->getKeyPressArr(DOWN)) {
-		if (axis == 'z' && direction == 'n')
-			model = glm::rotate(model, -180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-		else if (axis == 'x' && direction == 'e')
-			model = glm::rotate(model, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-		else if (axis == 'x' && direction == 'w')
-			model = glm::rotate(model, -90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-		z += 0.1f;
-//		_playerModel->render(model);
-		model = glm::translate(glm::mat4(), glm::vec3(x, 0.0f, z)); 
-		axis = 'z';
-		direction = 's';
-		std::cout << "s\n";
-	}
-	if (_game->getKeyPressArr(LEFT)) {
-		if (axis == 'x' && direction == 'e')
-			model = glm::rotate(model, -180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-		else if (axis == 'z' && direction == 'n')
-			model = glm::rotate(model, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-		else if (axis == 'z' && direction == 's')
-			model = glm::rotate(model, -90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-//		_playerModel->render(model);
-		x -= 0.1f;
-		model = glm::translate(glm::mat4(), glm::vec3(x, 0.0f, z)); 
-		axis = 'x';
-		direction = 'w';
-		std::cout << "a\n";
-	}
-	if (_game->getKeyPressArr(RIGHT)) {
-		if (axis == 'x' && direction == 'w')
-			model = glm::rotate(model, 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-		else if (axis == 'z' && direction == 'n')
-			model = glm::rotate(model, -90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-		else if (axis == 'z' && direction == 's')
-			model = glm::rotate(model, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-//		_playerModel->render(model);
-		direction = 'e';
-		model = glm::translate(glm::mat4(), glm::vec3(x, 0.0f, z)); 
-		x += 0.1f;
-		axis = 'x';
-		std::cout << "d\n";
-	}
-	return false;
 }
 
 // getters
@@ -248,7 +221,7 @@ Camera								*GraphicsEngine::getCamera() const {
 	return this->_camera;
 }
 
-std::map<std::string, Shader>		GraphicsEngine::getShaders() const {
+std::map<std::string, Shader*>		GraphicsEngine::getShaders() const {
 	return this->_shaders;
 }
 
@@ -274,7 +247,7 @@ void	GraphicsEngine::setCamera(Camera camera) {
 	this->_camera = &camera;
 }
 
-void	GraphicsEngine::setShaders(std::map<std::string, Shader> shaders) {
+void	GraphicsEngine::setShaders(std::map<std::string, Shader*> shaders) {
 	this->_shaders = shaders;
 }
 

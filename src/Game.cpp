@@ -130,6 +130,14 @@ void					Game::setRange(const int newRange) {
 	this->_range = newRange;
 }
 
+std::vector<Bomb>		Game::getBombs() const {
+	return (this->_bombs);
+}
+
+void 					Game::setBombs(const std::vector<Bomb> newBombs) {
+	this->_bombs = newBombs;
+}
+
 void					Game::savePlayer() {
 	DIR							*dir;
 
@@ -387,39 +395,27 @@ bool					Game::checkCoOrd(std::pair<float, float> xy) {
 	return (ret);
 }
 
-bool 					Game::checkCoOrd(std::pair<float, float> xy, char *type) {
-	bool	ret = true;
-
-	*type = 'n';
+CollisionState			Game::collisionDetection(std::pair<float, float> xy){
 	for (std::vector<Enemy>::iterator it = _enemies.begin(); it != _enemies.end(); ++it) {
-		if (it->getXY() == xy) {
-			ret = false;
-			*type = 'e';
-		}
+		if (it->getXY() == xy)
+			return (CollisionState::ENEMY);
 	}
 	for (std::vector<BreakableBox>::iterator it = _breakableBs.begin(); it != _breakableBs.end(); ++it) {
-		if (it->getXY() == xy) {
-			ret = false;
-			*type = 'b';
-		}
+		if (it->getXY() == xy)
+			return (CollisionState::BREAKABLE_BOX);
 	}
 	for (std::vector<UnbreakableBox>::iterator it = _unbreakableBs.begin(); it != _unbreakableBs.end(); ++it) {
-		if (it->getXY() == xy) {
-			ret = false;
-			*type = 'u';
-		}
+		if (it->getXY() == xy)
+			return (CollisionState::UNBREAKABLE_BOX);
 	}
 	for (std::vector<Drop*>::iterator it = _drops.begin(); it != _drops.end(); ++it) {
-		if ((*it)->getXY() == xy) {
-			ret = false;
-			*type = 'd';
-		}
+		if ((*it)->getXY() == xy)
+			return (CollisionState::DROP);
 	}
-	return (ret);
+	return (CollisionState::NONE);
 }
 
 void				Game::controller() {
-	static int 		dropBombDelayTimer = 60;
 	if (_keyPressArr[UP])
 		moveUp();
 	if (_keyPressArr[DOWN])
@@ -429,76 +425,109 @@ void				Game::controller() {
 	if (_keyPressArr[RIGHT])
 		moveRight();
 	if (_keyPressArr[ACTION])
-		dropBomb(&dropBombDelayTimer);
-	dropBombDelayTimer++;
+		dropBomb(1.0f);
+	checkBombAndFlameTimers();
 }
 
 void				Game::moveUp() {
-	float 						dist = (_player.getSpeed() / 60.0);
+	float 						dist = (_player.getSpeed() / 60.0f);
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
-	char 						collisionType = 'n';
+	CollisionState 				CS;
 
 	tempXY.first = tempXY.first + 0.5f;
 	tempXY.second = tempXY.second + dist + widthOffset + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	checkCoOrd(castTempXY, &collisionType);
-	if (collisionType != 'b' && collisionType != 'u')
+	CS = collisionDetection(castTempXY);
+	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
 		_player.setXY(std::make_pair(_player.getXY().first, _player.getXY().second + dist));
 }
 
 void				Game::moveDown() {
-	float 						dist = (_player.getSpeed() / 60.0);
+	float 						dist = (_player.getSpeed() / 60.0f);
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
-	char 						collisionType = 'n';
+	CollisionState 				CS;
 
 	tempXY.first = tempXY.first + 0.5f;
 	tempXY.second = tempXY.second - dist - widthOffset + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	checkCoOrd(castTempXY, &collisionType);
-	if (collisionType != 'b' && collisionType != 'u')
+	CS = collisionDetection(castTempXY);
+	if (CS == CollisionState::NONE || CS == CollisionState::DROP) {
 		_player.setXY(std::make_pair(_player.getXY().first, _player.getXY().second - dist));
+	}
 }
 
 void				Game::moveLeft() {
-	float 						dist = (_player.getSpeed() / 60.0);
+	float 						dist = (_player.getSpeed() / 60.0f);
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
-	char 						collisionType = 'n';
+	CollisionState 				CS;
 
 	tempXY.first = tempXY.first - dist - widthOffset + 0.5f;
 	tempXY.second = tempXY.second + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	checkCoOrd(castTempXY, &collisionType);
-	if (collisionType != 'b' && collisionType != 'u')
+	CS = collisionDetection(castTempXY);
+	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
 		_player.setXY(std::make_pair(_player.getXY().first - dist, _player.getXY().second));
 }
 
 void				Game::moveRight() {
-	float 						dist = (_player.getSpeed() / 60.0);
+	float 						dist = (_player.getSpeed() / 60.0f);
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
-	char 						collisionType = 'n';
+	CollisionState 				CS;
 
 	tempXY.first = tempXY.first + dist + widthOffset + 0.5f;
 	tempXY.second = tempXY.second + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	checkCoOrd(castTempXY, &collisionType);
-	if (collisionType != 'b' && collisionType != 'u')
+	CS = collisionDetection(castTempXY);
+	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
 		_player.setXY(std::make_pair(_player.getXY().first + dist, _player.getXY().second));
 }
 
-void				Game::dropBomb(int *delayTimer) {
+void				Game::dropBomb(float delayTimer) {
 	std::pair<float, float>		bombXY;
 
-	bombXY = std::make_pair((int)(_player.getXY().first + 0.5), (int)(_player.getXY().second + 0.5));
-	if (*delayTimer >= 60) {
-		*delayTimer = 0;
+	if ((int)_bombs.size() < _player.getNumberOfBombs()) {
+		std::uint64_t epochTimeToExplode = (std::chrono::duration_cast<std::chrono::milliseconds>
+				(std::chrono::system_clock::now().time_since_epoch()).count()) + (delayTimer * 1000);
+		bombXY = std::make_pair((int) (_player.getXY().first + 0.5), (int) (_player.getXY().second + 0.5));
+		_bombs.push_back(Bomb(bombXY, 1, epochTimeToExplode, false));
+	}
+}
+
+void				Game::checkBombAndFlameTimers() {
+	std::uint64_t currentEpochTime = std::chrono::duration_cast<std::chrono::milliseconds>
+			(std::chrono::system_clock::now().time_since_epoch()).count();
+	for (std::vector<Bomb>::iterator it = _bombs.begin(); it != _bombs.end(); ++it) {
+		if (it->getTimeToDetonate() >= currentEpochTime) {
+			dropFlames(*(it));
+			_bombs.erase(it);
+		}
+	}
+	for (std::vector<Flame>::iterator it = _flames.begin(); it != _flames.end(); ++it) {
+		if (it->getTimeToDie() >= currentEpochTime) {
+			_flames.erase(it);
+		}
+	}
+}
+
+void				Game::dropFlames(Bomb explodingBomb) {
+	std::uint64_t epochTimeToDie = (std::chrono::duration_cast<std::chrono::milliseconds>
+			(std::chrono::system_clock::now().time_since_epoch()).count()) + 1000;
+
+	_flames.push_back(Flame(std::make_pair(explodingBomb.getXY().first, explodingBomb.getXY().second), epochTimeToDie)); // middle flame
+	for (int i = 1; i <= explodingBomb.getBlastRange(); i++)
+	{
+		_flames.push_back(Flame(std::make_pair(explodingBomb.getXY().first, explodingBomb.getXY().second + i), epochTimeToDie)); // up flame
+		_flames.push_back(Flame(std::make_pair(explodingBomb.getXY().first, explodingBomb.getXY().second - i), epochTimeToDie)); // down flame
+		_flames.push_back(Flame(std::make_pair(explodingBomb.getXY().first - i, explodingBomb.getXY().second), epochTimeToDie)); // left flame
+		_flames.push_back(Flame(std::make_pair(explodingBomb.getXY().first + i, explodingBomb.getXY().second), epochTimeToDie)); // right flame
 	}
 }
 
