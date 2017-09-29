@@ -12,10 +12,6 @@ set(GLM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.libraries/glm)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -g3")
 
-if (NOT IS_DIRECTORY "$ENV{HOME}/.brew")
-	message("ERROR: Please make sure brew is installed.")
-endif()
-
 if (NOT IS_DIRECTORY "$ENV{HOME}/.brew/Cellar/glew")
 	execute_process(COMMAND brew install glew)
 endif()
