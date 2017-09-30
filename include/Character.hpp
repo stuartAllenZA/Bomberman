@@ -21,6 +21,8 @@ public:
 	Character &				operator=(Character const & src);
 	std::pair<float, float>	getXY() const;
 	void					setXY(const std::pair<float, float> xy);
+	std::pair<float, float>	getPrevXY() const;
+	void					setPrevXY(const std::pair<float, float> prevXY);
 	float					getSpeed() const;
 	void					setSpeed(const float newSpeed);
 	int						getHealth() const;
@@ -34,6 +36,7 @@ public:
 	
 protected:
 	std::pair<float, float>	_xy;
+	std::pair<float, float>	_prevXY;
 	float					_speed;
 	int						_health;
 	int						_lives;

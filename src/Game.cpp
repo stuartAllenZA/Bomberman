@@ -371,76 +371,74 @@ void					Game::processEnemies() {
 			if (curPos != it->getXY())
 				break ;
 			it->determineNewCoOrds(_player.getXY(), unable);
-			if (it->getNewCoOrd() != it->getXY() && checkCoOrd(it->getNewCoOrd()))
+			if (it->getNewCoOrd() != it->getXY() && enemyCanMove(it->getNewCoOrd())) {
 				it->setXY(it->getNewCoOrd());
-			else if (it->getNewCoOrd() == it->getXY())
-				it->attack();
+				std::pair<int, int> newXY = std::make_pair(static_cast<int>(it->getXY().first), static_cast<int>(it->getXY().second));
+				std::pair<int, int> oldXY = std::make_pair(static_cast<int>(it->getPrevXY().first), static_cast<int>(it->getPrevXY().second));
+				if (newXY != oldXY) {
+					_mapState[oldXY.first][oldXY.second] = false;
+					_mapState[newXY.first][newXY.second] = true;
+				}
+				if (it->getPenetration(_player.getXY()) > 0) {
+					//render attack anim
+					_player.setHealth(_player.getHealth() - 100 * it->getPenetration(_player.getXY()));
+				}
+				//Check flame damage
+			}
 			else
 				unable.push_back(it->getOri());
 		}
 	}
 }
 
-bool					Game::checkCoOrd(std::pair<float, float> xy) {
-	bool	ret = true;
-
-	for (std::vector<Enemy>::iterator it = _enemies.begin(); it != _enemies.end(); ++it) {
-		if (it->getXY() == xy)
-			ret = false;
-	}
-	for (std::vector<BreakableBox>::iterator it = _breakableBs.begin(); it != _breakableBs.end(); ++it) {
-		if (it->getXY() == xy)
-			ret = false;
-	}
-	for (std::vector<UnbreakableBox>::iterator it = _unbreakableBs.begin(); it != _unbreakableBs.end(); ++it) {
-		if (it->getXY() == xy)
-			ret = false;
-	}
-	for (std::vector<Drop*>::iterator it = _drops.begin(); it != _drops.end(); ++it) {
-		if ((*it)->getXY() == xy)
-			ret = false;
-	}
-	return (ret);
+bool				Game::enemyCanMove(std::pair<float, float> newXY) {
+	if (!checkBBCollision(newXY) && !checkUBCollision(newXY) && !checkDropCollision(newXY) && !checkBombCollision(newXY) && !checkFlameCollision(newXY))
+		return (true);
+	else
+		return (false);
 }
 
-CollisionState			Game::collisionDetection(std::pair<float, float> xy, bool ignoreFlame){
-	for (std::vector<Enemy>::iterator it = _enemies.begin(); it != _enemies.end(); ++it) {
-		if (it->getXY() == xy)
-			return (CollisionState::ENEMY);
+bool				Game::playerCanMove(std::pair<int, int> newXY) {
+	if (!checkBBCollision(newXY) && !checkUBCollision(newXY))
+		return (true);
+	else
+		return (false);
+}
+
+void				Game::playerHasMoved() {
+	std::pair<int, int> newXY = std::make_pair(static_cast<int>(_player.getXY().first), static_cast<int>(_player.getXY().second));
+	std::pair<int, int> oldXY = std::make_pair(static_cast<int>(_player.getPrevXY().first), static_cast<int>(_player.getPrevXY().second));
+	if (newXY != oldXY) {
+		_mapState[oldXY.first][oldXY.second] = false;
+		_mapState[newXY.first][newXY.second] = true;
 	}
-	for (std::vector<BreakableBox>::iterator it = _breakableBs.begin(); it != _breakableBs.end(); ++it) {
-		if (it->getXY() == xy)
-			return (CollisionState::BREAKABLE_BOX);
+	if (checkDropCollision(_player.getXY())) {
+		//handle drop pickup
 	}
-	for (std::vector<UnbreakableBox>::iterator it = _unbreakableBs.begin(); it != _unbreakableBs.end(); ++it) {
-		if (it->getXY() == xy)
-			return (CollisionState::UNBREAKABLE_BOX);
-	}
-	for (std::vector<Drop*>::iterator it = _drops.begin(); it != _drops.end(); ++it) {
-		if ((*it)->getXY() == xy)
-			return (CollisionState::DROP);
-	}
-	if (!ignoreFlame) {
-		for (std::vector<Flame>::iterator it = _flames.begin(); it != _flames.end(); ++it) {
-			if (it->getXY() == xy)
-				return (CollisionState::FLAME);
-		}
-	}
-	return (CollisionState::NONE);
+	if (checkFlameCollision(_player.getXY()))
+		_player.setHealth(_player.getHealth() - 100);
 }
 
 void				Game::controller() {
-	if (_keyPressArr[UP])
-		moveUp();
-	if (_keyPressArr[DOWN])
-		moveDown();
-	if (_keyPressArr[LEFT])
-		moveLeft();
-	if (_keyPressArr[RIGHT])
-		moveRight();
-	if (_keyPressArr[ACTION])
-		dropBomb(1.0f);
-	checkBombAndFlameTimers();
+	if (_player.getHealth() <= 0) {
+		_gameState = GameState::MENU;
+		//_menu->setMenuState(MenuState::LEVEL_FAIL);
+	}
+	else
+	{
+		if (_keyPressArr[UP])
+			moveUp();
+		if (_keyPressArr[DOWN])
+			moveDown();
+		if (_keyPressArr[LEFT])
+			moveLeft();
+		if (_keyPressArr[RIGHT])
+			moveRight();
+		if (_keyPressArr[ACTION])
+			dropBomb(1.0f);
+		processEnemies();
+		checkBombAndFlameTimers();
+	}
 }
 
 void				Game::moveUp() {
@@ -448,14 +446,14 @@ void				Game::moveUp() {
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
-	CollisionState 				CS;
 
 	tempXY.first = tempXY.first + 0.5f;
 	tempXY.second = tempXY.second + dist + widthOffset + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	CS = collisionDetection(castTempXY, false);
-	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
+	if (playerCanMove(castTempXY)) {
 		_player.setXY(std::make_pair(_player.getXY().first, _player.getXY().second + dist));
+		playerHasMoved();
+	}
 }
 
 void				Game::moveDown() {
@@ -463,14 +461,13 @@ void				Game::moveDown() {
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
-	CollisionState 				CS;
 
 	tempXY.first = tempXY.first + 0.5f;
 	tempXY.second = tempXY.second - dist - widthOffset + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	CS = collisionDetection(castTempXY, false);
-	if (CS == CollisionState::NONE || CS == CollisionState::DROP) {
+	if (playerCanMove(castTempXY)) {
 		_player.setXY(std::make_pair(_player.getXY().first, _player.getXY().second - dist));
+		playerHasMoved();
 	}
 }
 
@@ -479,14 +476,14 @@ void				Game::moveLeft() {
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
-	CollisionState 				CS;
 
 	tempXY.first = tempXY.first - dist - widthOffset + 0.5f;
 	tempXY.second = tempXY.second + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	CS = collisionDetection(castTempXY, false);
-	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
+	if (playerCanMove(castTempXY)) {
 		_player.setXY(std::make_pair(_player.getXY().first - dist, _player.getXY().second));
+		playerHasMoved();
+	}
 }
 
 void				Game::moveRight() {
@@ -494,14 +491,14 @@ void				Game::moveRight() {
 	float 						widthOffset = (_player.getSize() / 2);
 	std::pair<float, float> 	tempXY = _player.getXY();
 	std::pair<int, int>			castTempXY;
-	CollisionState 				CS;
 
 	tempXY.first = tempXY.first + dist + widthOffset + 0.5f;
 	tempXY.second = tempXY.second + 0.5f;
 	castTempXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
-	CS = collisionDetection(castTempXY, false);
-	if (CS == CollisionState::NONE || CS == CollisionState::DROP)
+	if (playerCanMove(castTempXY)) {
 		_player.setXY(std::make_pair(_player.getXY().first + dist, _player.getXY().second));
+		playerHasMoved();
+	}
 }
 
 void				Game::dropBomb(float delayTimer) {
@@ -509,7 +506,6 @@ void				Game::dropBomb(float delayTimer) {
 
 	std::cout << "attempting bomb drop" << std::endl;
 	if ((int)_bombs.size() <= _player.getNumberOfBombs()) {
-		//std::uint64_t epochTimeToExplode = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())).count() + std::chrono::duration_cast<std::chrono::milliseconds>(delayTimer);
 		std::uint64_t epochTimeToExplode = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())).count();
 		epochTimeToExplode += int(delayTimer * 1000);
 		bombXY = std::make_pair((int) (_player.getXY().first + 0.5), (int) (_player.getXY().second + 0.5));
@@ -544,7 +540,7 @@ void				Game::checkBombAndFlameTimers() {
 
 void				Game::dropFlames(Bomb explodingBomb) {
 	std::uint64_t epochTimeToDie = (std::chrono::duration_cast<std::chrono::milliseconds>
-			(std::chrono::system_clock::now().time_since_epoch()).count());
+		(std::chrono::system_clock::now().time_since_epoch()).count());
 	epochTimeToDie += 100;
 
 	_flames.push_back(Flame(std::make_pair(explodingBomb.getXY().first, explodingBomb.getXY().second), epochTimeToDie)); // middle flame
@@ -607,6 +603,78 @@ std::ostream & 			operator<<(std::ostream & o, Game const & rhs) {
 	
 	o << "\nSettings: " << rhs.getSettings() << std::endl << "Player: " << rhs.getPlayer();
 	return o;
+}
+
+bool					Game::checkEnemiesCollision(std::pair<int, int> xy) {
+	for (std::vector<Enemy>::iterator it = _enemies.begin(); it != _enemies.end(); ++it) {
+		if (static_cast<int>(it->getXY().first) == xy.first && static_cast<int>(it->getXY().second) == xy.second)
+			return (true);
+	}
+	return(false);
+}
+
+bool					Game::checkBBCollision(std::pair<int, int> xy) {
+	for (std::vector<BreakableBox>::iterator it = _breakableBs.begin(); it != _breakableBs.end(); ++it) {
+		if (static_cast<int>(it->getXY().first) == xy.first && static_cast<int>(it->getXY().second) == xy.second)
+			return (true);
+	}
+	return(false);
+}
+
+bool					Game::checkUBCollision(std::pair<int, int> xy) {
+	for (std::vector<UnbreakableBox>::iterator it = _unbreakableBs.begin(); it != _unbreakableBs.end(); ++it) {
+		if (static_cast<int>(it->getXY().first) == xy.first && static_cast<int>(it->getXY().second) == xy.second)
+			return (true);
+	}
+	return(false);
+}
+
+bool					Game::checkDropCollision(std::pair<int, int> xy) {
+	for (std::vector<Drop*>::iterator it = _drops.begin(); it != _drops.end(); ++it) {
+		if (static_cast<int>((*it)->getXY().first) == xy.first && static_cast<int>((*it)->getXY().second) == xy.second)
+			return (true);
+	}
+	return(false);
+}
+
+bool					Game::checkBombCollision(std::pair<int, int> xy) {
+	for (std::vector<Bomb>::iterator it = _bombs.begin(); it != _bombs.end(); ++it) {
+		if (static_cast<int>(it->getXY().first) == xy.first && static_cast<int>(it->getXY().second) == xy.second)
+			return (true);
+	}
+	return(false);
+}
+
+bool					Game::checkFlameCollision(std::pair<int, int> xy) {
+	for (std::vector<Flame>::iterator it = _flames.begin(); it != _flames.end(); ++it) {
+		if (static_cast<int>(it->getXY().first) == xy.first && static_cast<int>(it->getXY().second) == xy.second)
+			return (true);
+	}
+	return(false);
+}
+
+bool					Game::checkPlayerCollision(std::pair<int, int> xy) {
+	for (std::vector<BreakableBox>::iterator it = _breakableBs.begin(); it != _breakableBs.end(); ++it) {
+		if (static_cast<int>(it->getXY().first) == xy.first && static_cast<int>(it->getXY().second) == xy.second)
+			return (true);
+	}
+	return(false);
+}
+
+void					Game::initMapState() {
+	_mapState.clear();
+	std::pair<int, int>	temp;
+	for (int x = 0; x < _mapSize.first; x++) {
+		std::vector<bool> tempVec;
+		for (int y = 0; y < _mapSize.second; y++) {
+			temp = std::make_pair(x, y);
+			if (!checkEnemiesCollision(temp) && !checkBBCollision(temp) && !checkUBCollision(temp) && !checkDropCollision(temp) && !checkBombCollision(temp) && !checkFlameCollision(temp) && !checkPlayerCollision(temp))
+				tempVec.push_back(true);
+			else
+				tempVec.push_back(false);
+		}
+		_mapState.push_back(tempVec);
+	}
 }
 
 void					Game::unbreakableRing(int x, int y) {

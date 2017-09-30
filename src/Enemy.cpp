@@ -63,16 +63,16 @@ void					Enemy::determineNewCoOrds(std::pair<float, float> playerPos, std::vecto
 		_ori = 'S';
 	}
 	//Determine new co-ords
-	if (_ori == 'N')
+	if (_ori == 'E')
 		_newCoOrd.first = static_cast<int>(_newCoOrd.first + (_speed * (0.5 * _size)));
-	else if (_ori == 'S')
-		_newCoOrd.first = static_cast<int>(_newCoOrd.first - (_speed * (0.5 * _size)));
-	else if (_ori == 'E')
-		_newCoOrd.second = static_cast<int>(_newCoOrd.second + (_speed * (0.5 * _size)));
 	else if (_ori == 'W')
+		_newCoOrd.first = static_cast<int>(_newCoOrd.first - (_speed * (0.5 * _size)));
+	else if (_ori == 'N')
+		_newCoOrd.second = static_cast<int>(_newCoOrd.second + (_speed * (0.5 * _size)));
+	else if (_ori == 'S')
 		_newCoOrd.second = static_cast<int>(_newCoOrd.second - (_speed * (0.5 * _size)));
-	if (_newCoOrd == playerPos)
-		_newCoOrd = _xy;
+	//if (_newCoOrd == playerPos)
+		//_newCoOrd = _xy;
 }
 
 bool					Enemy::checkUnable(std::vector<char> unable, char dir) const {
@@ -84,7 +84,17 @@ bool					Enemy::checkUnable(std::vector<char> unable, char dir) const {
 	return (flag);
 }
 
-void					Enemy::attack() {
+float					Enemy::getPenetration(std::pair<float, float> playerPos) {
+	float	penetration = 0.0;
+	if (_ori == 'E' && _xy.first + _attackSize >= playerPos.first)
+		penetration = playerPos.first - (_xy.first + _attackSize);
+	else if (_ori == 'W' && _xy.first - _attackSize <= playerPos.first)
+		penetration = (_xy.first - _attackSize) - playerPos.first;
+	else if (_ori == 'N' && _xy.second + _attackSize >= playerPos.second)
+		penetration = playerPos.second - (_xy.second + _attackSize);
+	else if (_ori == 'S' && _xy.second - _attackSize <= playerPos.second)
+		penetration = (_xy.second - _attackSize) - playerPos.second;
+	return (penetration);
 }
 
 std::ostream & 			operator<<(std::ostream & o, Enemy const & rhs) {
