@@ -1,6 +1,8 @@
 #include <GraphicsEngine.hpp>
 #include <Model.hpp>
 
+float previous = 0.0f;
+int displayTime = 59;
 //settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -311,7 +313,11 @@ void GraphicsEngine::render() {
 
 void		GraphicsEngine::displayHUD() {
 //	glUseProgram(getText2DShaderID());
-
+	float current = glfwGetTime();
+	if (current - previous >= 1.0f) {
+		displayTime--;
+		previous = current;
+	}
 	glGenVertexArrays(1, &_textVertexArrayID);
 	glBindVertexArray(_textVertexArrayID);
 	
@@ -326,10 +332,12 @@ void		GraphicsEngine::displayHUD() {
 	std::string upgradesText = "Upgrades(drops):";
 	std::string upgrades = std::to_string(_game->getDrops().size());
 	
-	printText2D((healthText+health).c_str(), 10, 500, 30);
-	printText2D((bombsText+bombs).c_str(), 10, 400, 30);
-	printText2D((rangeText+range).c_str(), 10, 300, 30);
-	printText2D((upgradesText+upgrades).c_str(), 10, 200, 30);
+	printText2D("Time:", 10, 500, 15);
+	printText2D((to_string(displayTime)).c_str(), 100, 500, 15);
+	printText2D((healthText+health).c_str(), 10, 300, 15);
+	printText2D((bombsText+bombs).c_str(), 10, 450, 15);
+	printText2D((rangeText+range).c_str(), 10, 400, 15);
+	printText2D((upgradesText+upgrades).c_str(), 10, 350, 15);
 }
 
 // getters
