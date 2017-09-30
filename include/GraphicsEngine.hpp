@@ -6,6 +6,10 @@
 #include <glm.hpp>
 #include <type_ptr.hpp>
 #include <matrix_transform.hpp>
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
+
 
 #include "Game.hpp"
 #include "Camera.hpp"
@@ -15,8 +19,12 @@
 #include "stb_image.h"
 #include "picojson.h"
 #include "Util.hpp"
-#include "text2D.hpp"
-#include "texture.hpp"
+#include "../common/shader.hpp"
+#include "../common/texture.hpp"
+#include "../common/controls.hpp"
+#include "../common/objloader.hpp"
+#include "../common/vboindexer.hpp"
+#include "../common/text2D.hpp"
 
 #define GLM_FORCE_RADIANS
 
@@ -75,6 +83,7 @@ class GraphicsEngine {
 		void	initSystems();
 		bool	processInput();
 		void	render();
+		void	renderText();
 
 		// getters
 		

@@ -43,6 +43,7 @@ set(SOURCE_FILES
 	src/vboindexer.cpp
 	src/Animation.cpp
 	src/Bomb.cpp
+	src/Bomberman.cpp
 	src/Box.cpp
 	src/BreakableBox.cpp
 	src/Camera.cpp
@@ -70,7 +71,6 @@ set(SOURCE_FILES
 	src/Stb_image.cpp
 	src/text2D.cpp
 	src/texture.cpp
-	src/tutorial11.cpp
 	src/UnbreakableBox.cpp
 	src/Util.cpp)
 

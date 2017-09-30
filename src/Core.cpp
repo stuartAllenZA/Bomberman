@@ -67,6 +67,7 @@ void			Core::init() {
 		glfwTerminate();
 	}
 	_gfx = new GraphicsEngine(&_game, &_win);
+	_gfx->renderText();
 	_gfx->init();
 	std::cout << "GLFW Window Created." << std::endl;
 }
