@@ -15,7 +15,11 @@
 #include "stb_image.h"
 #include "picojson.h"
 #include "Util.hpp"
+#include "text2D.hpp"
+#include "texture.hpp"
+
 #define GLM_FORCE_RADIANS
+
 class GraphicsEngine {
 	private:
 		Camera								_camera;

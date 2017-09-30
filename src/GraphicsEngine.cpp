@@ -169,6 +169,7 @@ void GraphicsEngine::init() {
 	_enemyMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_dropMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	
+	initText2D( "Holstein.DDS" );
 }
 
 void GraphicsEngine::render() {
@@ -176,8 +177,9 @@ void GraphicsEngine::render() {
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.1f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+
 	std::pair<float, float> coords;
 	int vecSize;	
 	// 1. rotations
@@ -292,7 +294,6 @@ void GraphicsEngine::render() {
 		_boxMatrice = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
 		_boxModel->render(_boxMatrice, view, projection);
 	}
-/*
 	/// DROPS & ENEMIES
 	_dropShader->enable();
 	std::vector<Drop*> tempDrp = _game->getDrops();
@@ -304,7 +305,6 @@ void GraphicsEngine::render() {
 		_dropMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_dropModel->render(_dropMatrice, view, projection);
 	}
-*/
 	_enemyShader->enable();
 	std::vector<Enemy> tempEnmy = _game->getEnemies();
 	vecSize = tempEnmy.size();
@@ -315,6 +315,7 @@ void GraphicsEngine::render() {
 		_enemyMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_enemyModel->render(_enemyMatrice, view, projection);
 	}
+	printText2D("text here", 10, 500, 60);
 	glfwSwapBuffers(_window);
 }
 
