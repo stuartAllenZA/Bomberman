@@ -244,7 +244,7 @@ void GraphicsEngine::render() {
 	for (int i = 0; i < vecSize; i++) {
 		coords = bombs[i].getXY();
 		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
-		_bombMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
+		_bombMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first * 2.0f, 0.0f, (-1 * coords.second * 2.0f))); 
 		_bombModel->render(_bombMatrice, view, projection);
 	}
 	std::vector<Flame> flames= _game->getFlames();
@@ -253,24 +253,9 @@ void GraphicsEngine::render() {
 	for (int i = 0; i < vecSize; i++) {
 		coords = flames[i].getXY();
 		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
-		_flameMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second)));
+		_flameMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first * 2.0f, 0.0f, (-1 * coords.second * 2.0f)));
 		_flameModel->render(_flameMatrice, view, projection);
 	}
-/*
-	if (_game->getKeyPressArr(ACTION)) {
-		_shaders.find("bomb")->second->enable();
-		_matrices.find("bomb")->second = glm::translate(glm::mat4(), glm::vec3((3.0 * 2.0), 0.0f, ((-1 * 4.0f) * 2))); 
-		_models.find("bomb")->second->render(_matrices.find("bomb")->second, view, projection);
-
-		_shaders.find("flame")->second->enable();
-		_matrices.find("flame")->second = glm::translate(glm::mat4(), glm::vec3((3.0 * 2.0), 0.0f, ((-1 * 5.0f) * 2))); 
-		_models.find("flame")->second->render(_matrices.find("flame")->second, view, projection);
-
-		_shaders.find("enemy")->second->enable();
-		_matrices.find("enemy")->second = glm::translate(glm::mat4(), glm::vec3((2.5f * 2.0), 0.0f, ((-1 * 4.0f) * 2))); 
-		_models.find("enemy")->second->render(_matrices.find("enemy")->second, view, projection);
-	}
-	*/
 
 	/// WALLS & BOXES
 	_floorShader->enable();
@@ -307,7 +292,7 @@ void GraphicsEngine::render() {
 		_boxMatrice = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
 		_boxModel->render(_boxMatrice, view, projection);
 	}
-
+/*
 	/// DROPS & ENEMIES
 	_dropShader->enable();
 	std::vector<Drop*> tempDrp = _game->getDrops();
@@ -319,7 +304,7 @@ void GraphicsEngine::render() {
 		_dropMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_dropModel->render(_dropMatrice, view, projection);
 	}
-
+*/
 	_enemyShader->enable();
 	std::vector<Enemy> tempEnmy = _game->getEnemies();
 	vecSize = tempEnmy.size();
