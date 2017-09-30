@@ -25,10 +25,11 @@ public:
 	void					setNewCoOrd(const std::pair<float, float> newCoOrd);
 	void					determineNewCoOrds(std::pair<float, float> playerPos, std::vector<char> unable);
 	bool					checkUnable(std::vector<char> unable, char dir) const;
-	void					attack();
+	float					getPenetration(std::pair<float, float> playerPos);
 
 private:
 	std::pair<float, float> _newCoOrd;
+	float					_attackSize;
 };
 
 std::ostream &					operator<<(std::ostream & o, Enemy const & rhs);

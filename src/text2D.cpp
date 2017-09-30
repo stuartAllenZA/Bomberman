@@ -1,15 +1,3 @@
-#include <vector>
-#include <cstring>
-
-#include <GL/glew.h>
-
-#include <glm.hpp>
-#include <matrix_transform.hpp>
-using namespace glm;
-
-#include <shader.hpp>
-#include <texture.hpp>
-
 #include <text2D.hpp>
 
 unsigned int Text2DTextureID;
@@ -28,7 +16,7 @@ void initText2D(const char * texturePath){
 	glGenBuffers(1, &Text2DUVBufferID);
 
 	// Initialize Shader
-	Text2DShaderID = LoadShaders( "TextVertexShader.vertexshader", "TextVertexShader.fragmentshader" );
+	Text2DShaderID = LoadShaders( "resources/shaders/TextVertexShader.vertexshader", "resources/shaders/TextVertexShader.fragmentshader" );
 
 	// Initialize uniforms' IDs
 	Text2DUniformID = glGetUniformLocation( Text2DShaderID, "myTextureSampler" );
@@ -110,6 +98,10 @@ void printText2D(const char * text, int x, int y, int size){
 
 }
 
+GLuint		getText2DShaderID() {
+	return Text2DTextureID;
+}
+
 void cleanupText2D(){
 
 	// Delete buffers
@@ -122,3 +114,4 @@ void cleanupText2D(){
 	// Delete shader
 	glDeleteProgram(Text2DShaderID);
 }
+

@@ -123,7 +123,6 @@ void	GraphicsEngine::initCamera() {
 
 void GraphicsEngine::init() {
 	initCamera();
-
 	// init shaders
 	_playerShader = new Shader("resources/shaders/anime.vert", "resources/shaders/basic.frag");
 	_wallShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
@@ -140,8 +139,8 @@ void GraphicsEngine::init() {
 	_floorModel = new Model("resources/models/BMfloor.gltf", _floorShader);
 	_boxModel = new Model("resources/models/block1.gltf", _boxShader);
 	_bombModel = new Model("resources/models/BMbomb.gltf", _bombShader);
-	_flameModel = new Model("resources/models/BMextraflame.gltf", _flameShader);
-	_enemyModel = new Model("resources/models/boneBox.gltf", _enemyShader);
+	_flameModel = new Model("resources/models/boneBox.gltf", _flameShader);
+	_enemyModel = new Model("resources/models/BMextraflame.gltf", _enemyShader);
 	_dropModel = new Model("resources/models/boneBox.gltf", _dropShader);
 	
 	// load init positions
@@ -156,62 +155,6 @@ void GraphicsEngine::init() {
 	_enemyMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_dropMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	
-}
-
-void	GraphicsEngine::renderText() {
-	// Dark blue background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-
-	// Enable depth test
-//	glEnable(GL_DEPTH_TEST);
-	// Accept fragment if it closer to the camera than the former one
-//	glDepthFunc(GL_LESS); 
-
-	// Cull triangles which normal is not towards the camera
-//	glEnable(GL_CULL_FACE);
-
-	GLuint VertexArrayID;
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
-
-	initText2D( "Holstein.DDS" );
-
-	// For speed computation
-	double lastTime = glfwGetTime();
-	int nbFrames = 0;
-
-	do{
-
-		// Measure speed
-		double currentTime = glfwGetTime();
-		nbFrames++;
-		if ( currentTime - lastTime >= 1.0 ){ // If last prinf() was more than 1sec ago
-			// printf and reset
-			printf("%f ms/frame\n", 1000.0/double(nbFrames));
-			nbFrames = 0;
-			lastTime += 1.0;
-		}
-
-		// Clear the screen
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		char text[256];
-		sprintf(text,"%.2f sec", glfwGetTime() );
-		printText2D(text, 10, 500, 60);
-
-		// Swap buffers
-		glfwSwapBuffers(_window);
-		glfwPollEvents();
-
-	} // Check if the ESC key was pressed or the window was closed
-	while( glfwGetKey(_window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
-		   glfwWindowShouldClose(_window) == 0 );
-	// Delete the text's VBO, the shader and the texture
-	cleanupText2D();
-
-	// Close OpenGL window and terminate GLFW
-	glfwTerminate();
-
-
 }
 
 void GraphicsEngine::render() {
@@ -261,7 +204,7 @@ void GraphicsEngine::render() {
 		_playerRotate = -0.01f;	
 		_isAnime = true;
 	}
-	////
+	///
 	glm::vec4 myPosition(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 rotationAxis(0.0f, 1.0f, 0.0f);
 	glm::mat4 scalar = glm::scale(glm::mat4(), glm::vec3(1.0f, 1.0f, 1.0f));
@@ -357,14 +300,28 @@ void GraphicsEngine::render() {
 		_enemyMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_enemyModel->render(_enemyMatrice, view, projection);
 	}
-	GLuint VertexArrayID;
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
-	initText2D( "Holstein.DDS" );
-	char text[256];
-	sprintf(text,"%.2f sec", glfwGetTime() );
-	printText2D(text, 10, 500, 60);
+	displayHUD();
 	glfwSwapBuffers(_window);
+}
+
+void		GraphicsEngine::displayHUD() {
+//	glUseProgram(getText2DShaderID());
+
+	glGenVertexArrays(1, &_textVertexArrayID);
+	glBindVertexArray(_textVertexArrayID);
+	
+	initText2D( "resources/fonts/Holstein.DDS" );
+
+	std::string	healthText = "Health:";
+	std::string	health = std::to_string(_game->getPlayer().getHealth());
+	std::string bombsText = "Bombs:";
+	std::string bombs = std::to_string(_game->getPlayer().getNumberOfBombs());
+	std::string rangeText = "Range:";
+	std::string range = std::to_string(_game->getPlayer().getNumberOfFlames());
+	
+	printText2D((healthText+health).c_str(), 10, 500, 30);
+	printText2D((bombsText+bombs).c_str(), 10, 400, 30);
+	printText2D((rangeText+range).c_str(), 10, 300, 30);
 }
 
 // getters

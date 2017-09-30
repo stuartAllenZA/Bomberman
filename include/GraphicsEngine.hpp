@@ -19,12 +19,9 @@
 #include "stb_image.h"
 #include "picojson.h"
 #include "Util.hpp"
-#include "../common/shader.hpp"
-#include "../common/texture.hpp"
-#include "../common/controls.hpp"
-#include "../common/objloader.hpp"
-#include "../common/vboindexer.hpp"
-#include "../common/text2D.hpp"
+#include "shader.hpp"
+#include "texture.hpp"
+#include "text2D.hpp"
 
 #define GLM_FORCE_RADIANS
 
@@ -64,6 +61,7 @@ class GraphicsEngine {
 		float								_prevX;
 		float								_playerRotate;
 		bool								_isAnime;
+		GLuint 								_textVertexArrayID;
 
 		void								_loadResources();
 		void								_loadModels();
@@ -84,6 +82,7 @@ class GraphicsEngine {
 		bool	processInput();
 		void	render();
 		void	renderText();
+		void	displayHUD();
 
 		// getters
 		

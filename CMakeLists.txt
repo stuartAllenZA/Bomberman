@@ -35,12 +35,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 set(SOURCE_FILES
-	src/controls.cpp
-	src/objLoader.cpp
-	src/quaternion_utils.cpp
 	src/shader.cpp
-	src/tangentspace.cpp
-	src/vboindexer.cpp
 	src/Animation.cpp
 	src/Bomb.cpp
 	src/Bomberman.cpp

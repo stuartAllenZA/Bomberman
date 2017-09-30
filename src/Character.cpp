@@ -1,34 +1,34 @@
 #include <Character.hpp>
 
-Character::Character(std::pair<float, float> xy, float speed, int health, int lives, char ori) : _xy(xy), _speed(speed), _health(health), _lives(lives), _ori(ori), _size(0.5f) {
+Character::Character(std::pair<float, float> xy, float speed, int health, int lives, char ori) : _xy(xy), _prevXY(xy), _speed(speed), _health(health), _lives(lives), _ori(ori), _size(0.5f) {
 	//std::cout << "Character with XY, Speed, Health & Lives Constructed\n";
 }
 
-Character::Character(std::pair<float, float> xy, float speed, int health, int lives) : _xy(xy), _speed(speed), _health(health), _lives(lives), _ori('E'), _size(0.5f) {
+Character::Character(std::pair<float, float> xy, float speed, int health, int lives) : _xy(xy), _prevXY(xy), _speed(speed), _health(health), _lives(lives), _ori('E'), _size(0.5f) {
 	//std::cout << "Character with XY, Speed, Health & Lives Constructed\n";
 }
 
-Character::Character(std::pair<float, float> xy, float speed, int health, char ori) : _xy(xy), _speed(speed), _health(health), _lives(1), _ori(ori), _size(0.5f) {
+Character::Character(std::pair<float, float> xy, float speed, int health, char ori) : _xy(xy), _prevXY(xy), _speed(speed), _health(health), _lives(1), _ori(ori), _size(0.5f) {
 	//std::cout << "Character with XY, Speed & Health Constructed\n";
 }
 
-Character::Character(std::pair<float, float> xy, float speed, int health) : _xy(xy), _speed(speed), _health(health), _lives(1), _ori('E'), _size(0.5f) {
+Character::Character(std::pair<float, float> xy, float speed, int health) : _xy(xy), _prevXY(xy), _speed(speed), _health(health), _lives(1), _ori('E'), _size(0.5f) {
 	//std::cout << "Character with XY, Speed & Health Constructed\n";
 }
 
-Character::Character(std::pair<float, float> xy, float lives) : _xy(xy), _speed(2), _health(100), _lives(lives), _ori('E'), _size(0.5f) {
+Character::Character(std::pair<float, float> xy, float lives) : _xy(xy), _prevXY(xy), _speed(2), _health(100), _lives(lives), _ori('E'), _size(0.5f) {
 	//std::cout << "Character with XY & Lives Constructed\n";
 }
 
-Character::Character(std::pair<float, float> xy) : _xy(xy), _speed(2), _health(100), _lives(1), _ori('E'), _size(0.5f) {
+Character::Character(std::pair<float, float> xy) : _xy(xy), _prevXY(xy), _speed(2), _health(100), _lives(1), _ori('E'), _size(0.5f) {
 	//std::cout << "Character with XY Constructed\n";
 }
 
-Character::Character(int lives) : _xy(std::make_pair(0.0, 0.0)), _speed(2), _health(100), _lives(lives), _ori('E'), _size(0.5f) {
+Character::Character(int lives) : _xy(std::make_pair(0.0, 0.0)), _prevXY(std::make_pair(0.0, 0.0)), _speed(2), _health(100), _lives(lives), _ori('E'), _size(0.5f) {
 	//std::cout << "Character with Lives Constructed\n";
 }
 
-Character::Character() : _xy(std::make_pair(0.0, 0.0)), _speed(2), _health(100), _lives(1), _ori('E'), _size(0.5f) {
+Character::Character() : _xy(std::make_pair(0.0, 0.0)), _prevXY(std::make_pair(0.0, 0.0)), _speed(2), _health(100), _lives(1), _ori('E'), _size(0.5f) {
 	//std::cout << "Character Default Constructed\n";
 }
 
@@ -43,6 +43,7 @@ Character::~Character() {
 
 Character &			Character::operator=(Character const & src) {
 	this->_xy = src.getXY();
+	this->_prevXY = src.getPrevXY();
 	this->_speed = src.getSpeed();
 	this->_health = src.getHealth();
 	this->_lives = src.getLives();
@@ -56,7 +57,16 @@ std::pair<float, float>	Character::getXY() const {
 }
 
 void				Character::setXY(const std::pair<float, float> xy) {
+	this->_prevXY = _xy;
 	this->_xy = xy;
+}
+
+std::pair<float, float>	Character::getPrevXY() const {
+	return (this->_prevXY);
+}
+
+void				Character::setPrevXY(const std::pair<float, float> prevXY) {
+	this->_prevXY = prevXY;
 }
 
 float 				Character::getSpeed() const {
