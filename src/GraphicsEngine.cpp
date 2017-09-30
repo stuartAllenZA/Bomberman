@@ -133,6 +133,7 @@ void GraphicsEngine::init() {
 	_bombShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_flameShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_dropShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
+	_doorShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_enemyShader = new Shader("resources/shaders/anime.vert", "resources/shaders/basic.frag");
 
 	// init models
@@ -142,13 +143,30 @@ void GraphicsEngine::init() {
 	_boxModel = new Model("resources/models/block1.gltf", _boxShader);
 	_bombModel = new Model("resources/models/BMbomb.gltf", _bombShader);
 	_flameModel = new Model("resources/models/boneBox.gltf", _flameShader);
-	_enemyModel = new Model("resources/models/BarramundiFish.gltf", _enemyShader);
+	_enemyModel = new Model("resources/models/Monster.gltf", _enemyShader);
 	_dropModel = new Model("resources/models/BMextraflame.gltf", _dropShader);
-	
+	_doorModel = new Model("resources/models/SciFiHelmet.gltf", _doorShader);
+
 	// load init positions
 	std::pair<float, float> coords;
 	coords = _game->getPlayer().getXY();
-	_playerMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first * 2.0f, 0.0f, coords.second * 2.0f)); 
+	glm::mat4 view = _camera.getViewMatrix();
+	glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
+	_playerRotate = -0.01f;	
+	glm::vec4 myPosition(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec3 rotationAxis(0.0f, 1.0f, 0.0f);
+	glm::mat4 scalar = glm::scale(glm::mat4(), glm::vec3(1.0f, 1.0f, 1.0f));
+	glm::mat4 rotator = glm::rotate(glm::mat4(), _playerRotate, rotationAxis);
+	glm::mat4 translator = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
+	///
+
+	glm::mat4 transform = translator * rotator * scalar;
+	_playerShader->enable();
+	_playerMatrice = transform;
+
+	if (_isAnime)
+		_playerModel->renderAnimated(_playerMatrice, view, projection);
+	else _playerModel->render(_playerMatrice, view, projection);
 	_wallMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_boxMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_bombMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
@@ -156,7 +174,8 @@ void GraphicsEngine::init() {
 	_floorMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_enemyMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_dropMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
-	
+	_doorMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
+
 }
 
 void GraphicsEngine::render() {
@@ -217,7 +236,7 @@ void GraphicsEngine::render() {
 	glm::mat4 transform = translator * rotator * scalar;
 	_playerShader->enable();
 	_playerMatrice = transform;
-	
+
 	if (_isAnime)
 		_playerModel->renderAnimated(_playerMatrice, view, projection);
 	else _playerModel->render(_playerMatrice, view, projection);
@@ -255,7 +274,7 @@ void GraphicsEngine::render() {
 		for (float z = 0.0f; z < mapZ; z++) {
 			_floorMatrice = glm::translate(glm::mat4(), glm::vec3((x * 2.0), -0.5f, (-1 * z) * 2)); 
 			_floorModel->render(_floorMatrice, view, projection);
-		
+
 		}
 	}
 
@@ -267,7 +286,7 @@ void GraphicsEngine::render() {
 		_wallMatrice = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
 		_wallModel->render(_wallMatrice, view, projection);
 	}
-	
+
 	_boxShader->enable();
 	std::vector<BreakableBox> tempBB = _game->getBreakableBs();
 	vecSize = tempBB.size();
@@ -277,16 +296,16 @@ void GraphicsEngine::render() {
 		_boxModel->render(_boxMatrice, view, projection);
 	}
 
-// testing
+	// NEED TO KNOW WHICH TYPE TO RENDER
+	// testing
 	std::vector<Drop*> newDrops;
 	std::pair<float, float> dropCoords;
-	dropCoords.first = 6.0f;
-	dropCoords.second = 6.0f;
+	dropCoords.first = 3.0f;
+	dropCoords.second = 3.0f;
 	Drop	*tempDrop = new EnemyDrop(dropCoords);
 	newDrops.push_back(tempDrop);
 	_game->setDrops(newDrops);
-// testing
-
+	// testing
 
 	/// DROPS & ENEMIES
 	_dropShader->enable();
@@ -296,9 +315,11 @@ void GraphicsEngine::render() {
 	for (int i = 0; i < vecSize; i++) {
 		coords = tempDrp[i]->getXY();
 		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
-		_dropMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
+		_dropMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first * 2.0f, 0.0f, (-1 * coords.second * 2.0f))); 
 		_dropModel->render(_dropMatrice, view, projection);
 	}
+
+	// testing
 	_enemyShader->enable();
 	std::vector<Enemy> tempEnmy = _game->getEnemies();
 	vecSize = tempEnmy.size();
@@ -307,12 +328,14 @@ void GraphicsEngine::render() {
 		_enemyMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_enemyModel->render(_enemyMatrice, view, projection);
 	}
+
 	displayHUD();
+
 	glfwSwapBuffers(_window);
 }
 
 void		GraphicsEngine::displayHUD() {
-//	glUseProgram(getText2DShaderID());
+	//	glUseProgram(getText2DShaderID());
 	float current = glfwGetTime();
 	if (current - previous >= 1.0f) {
 		displayTime--;
@@ -320,7 +343,7 @@ void		GraphicsEngine::displayHUD() {
 	}
 	glGenVertexArrays(1, &_textVertexArrayID);
 	glBindVertexArray(_textVertexArrayID);
-	
+
 	initText2D( "resources/fonts/Holstein.DDS" );
 
 	std::string	healthText = "Health:";
@@ -329,15 +352,15 @@ void		GraphicsEngine::displayHUD() {
 	std::string bombs = std::to_string(_game->getPlayer().getNumberOfBombs());
 	std::string rangeText = "Range:";
 	std::string range = std::to_string(_game->getPlayer().getNumberOfFlames());
-	std::string upgradesText = "Upgrades(drops):";
+	std::string upgradesText = "Drops:";
 	std::string upgrades = std::to_string(_game->getDrops().size());
-	
-	printText2D("Time:", 10, 500, 15);
-	printText2D((to_string(displayTime)).c_str(), 100, 500, 15);
-	printText2D((healthText+health).c_str(), 10, 300, 15);
-	printText2D((bombsText+bombs).c_str(), 10, 450, 15);
-	printText2D((rangeText+range).c_str(), 10, 400, 15);
-	printText2D((upgradesText+upgrades).c_str(), 10, 350, 15);
+
+	printText2D("Time:", 10, 500, 20);
+	printText2D((to_string(displayTime)).c_str(), 120, 500, 20);
+	printText2D((healthText+health).c_str(), 10, 300, 20);
+	printText2D((bombsText+bombs).c_str(), 10, 450, 20);
+	printText2D((rangeText+range).c_str(), 10, 400, 20);
+	printText2D((upgradesText+upgrades).c_str(), 10, 350, 20);
 }
 
 // getters

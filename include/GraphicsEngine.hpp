@@ -36,6 +36,7 @@ class GraphicsEngine {
 		Shader								*_flameShader;
 		Shader								*_enemyShader;
 		Shader								*_dropShader;
+		Shader								*_doorShader;
 		
 		Model								*_playerModel;
 		Model								*_wallModel;
@@ -45,6 +46,7 @@ class GraphicsEngine {
 		Model								*_flameModel;
 		Model								*_enemyModel;
 		Model								*_dropModel;
+		Model								*_doorModel;
 
 		glm::mat4							_playerMatrice;
 		glm::mat4							_wallMatrice;
@@ -54,6 +56,7 @@ class GraphicsEngine {
 		glm::mat4							_flameMatrice;
 		glm::mat4							_enemyMatrice;
 		glm::mat4							_dropMatrice;
+		glm::mat4							_doorMatrice;
 
 		Game								*_game;
 		GLFWwindow							*_window;
