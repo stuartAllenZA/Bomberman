@@ -67,8 +67,8 @@ void			Core::init() {
 		glfwTerminate();
 	}
 	_gfx = new GraphicsEngine(&_game, &_win);
-	_gfx->renderText();
 	_gfx->init();
+	//_gfx->renderText();
 	std::cout << "GLFW Window Created." << std::endl;
 }
 
@@ -154,6 +154,7 @@ void			Core::play() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
+	glEnable(GL_CULL_FACE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	std::cout << "this is the gamestate ";
 	if (_game.getGameState() == GameState::PLAY)

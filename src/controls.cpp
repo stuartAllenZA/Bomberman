@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <glm.hpp>
 #include <matrix_transform.hpp>
-extern GLFWwindow* window; // The "extern" keyword here is to access the variable "window" declared in tutorialXXX.cpp. This is a hack to keep the tutorials simple. Please avoid this.
+//extern GLFWwindow* window; // The "extern" keyword here is to access the variable "window" declared in tutorialXXX.cpp. This is a hack to keep the tutorials simple. Please avoid this.
 using namespace glm;
 
 #include <controls.hpp>
@@ -44,10 +44,10 @@ void computeMatricesFromInputs(){
 
 	// Get mouse position
 	double xpos, ypos;
-	glfwGetCursorPos(window, &xpos, &ypos);
+	//glfwGetCursorPos(window, &xpos, &ypos);
 
 	// Reset mouse position for next frame
-	glfwSetCursorPos(window, 1024/2, 768/2);
+	//glfwSetCursorPos(window, 1024/2, 768/2);
 
 	// Compute new orientation
 	horizontalAngle += mouseSpeed * float(1024/2 - xpos );
@@ -69,7 +69,7 @@ void computeMatricesFromInputs(){
 	
 	// Up vector
 	glm::vec3 up = glm::cross( right, direction );
-
+/*
 	// Move forward
 	if (glfwGetKey( window, GLFW_KEY_UP ) == GLFW_PRESS){
 		position += direction * deltaTime * speed;
@@ -86,7 +86,7 @@ void computeMatricesFromInputs(){
 	if (glfwGetKey( window, GLFW_KEY_LEFT ) == GLFW_PRESS){
 		position -= right * deltaTime * speed;
 	}
-
+*/
 	float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
