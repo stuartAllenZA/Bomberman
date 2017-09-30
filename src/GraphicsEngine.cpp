@@ -1,6 +1,8 @@
 #include <GraphicsEngine.hpp>
 #include <Model.hpp>
 
+float previous = 0.0f;
+int displayTime = 59;
 //settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -93,7 +95,7 @@ void GraphicsEngine::initSystems() {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-	_window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+	_window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Bomberman", NULL, NULL);
 	if (_window == NULL)
 	{
 		//std::cout << "Failed to create GLFW window" << std::endl;
@@ -140,8 +142,8 @@ void GraphicsEngine::init() {
 	_boxModel = new Model("resources/models/block1.gltf", _boxShader);
 	_bombModel = new Model("resources/models/BMbomb.gltf", _bombShader);
 	_flameModel = new Model("resources/models/boneBox.gltf", _flameShader);
-	_enemyModel = new Model("resources/models/BMextraflame.gltf", _enemyShader);
-	_dropModel = new Model("resources/models/boneBox.gltf", _dropShader);
+	_enemyModel = new Model("resources/models/BarramundiFish.gltf", _enemyShader);
+	_dropModel = new Model("resources/models/BMextraflame.gltf", _dropShader);
 	
 	// load init positions
 	std::pair<float, float> coords;
@@ -227,16 +229,15 @@ void GraphicsEngine::render() {
 	_bombShader->enable();
 	std::vector<Bomb> bombs= _game->getBombs();
 	vecSize = bombs.size();
-	//std::cout << "Doing " << vecSize << " Drops." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = bombs[i].getXY();
 		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_bombMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first * 2.0f, 0.0f, (-1 * coords.second * 2.0f))); 
 		_bombModel->render(_bombMatrice, view, projection);
 	}
+
 	std::vector<Flame> flames= _game->getFlames();
 	vecSize = flames.size();
-	//std::cout << "Doing " << vecSize << " Drops." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = flames[i].getXY();
 		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
@@ -261,10 +262,8 @@ void GraphicsEngine::render() {
 	_wallShader->enable();
 	std::vector<UnbreakableBox> tempUB = _game->getUnbreakableBs();
 	vecSize = tempUB.size();
-	//std::cout << "Doing " << vecSize << " Unbreakable Boxes." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = tempUB[i].getXY();
-		//std::cout << "UBcoords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_wallMatrice = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
 		_wallModel->render(_wallMatrice, view, projection);
 	}
@@ -272,31 +271,39 @@ void GraphicsEngine::render() {
 	_boxShader->enable();
 	std::vector<BreakableBox> tempBB = _game->getBreakableBs();
 	vecSize = tempBB.size();
-	//std::cout << "Doing " << vecSize << " Breakable Boxes." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = tempBB[i].getXY();
-		//std::cout << "BB coords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_boxMatrice = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
 		_boxModel->render(_boxMatrice, view, projection);
 	}
+
+// testing
+	std::vector<Drop*> newDrops;
+	std::pair<float, float> dropCoords;
+	dropCoords.first = 6.0f;
+	dropCoords.second = 6.0f;
+	Drop	*tempDrop = new EnemyDrop(dropCoords);
+	newDrops.push_back(tempDrop);
+	_game->setDrops(newDrops);
+// testing
+
+
 	/// DROPS & ENEMIES
 	_dropShader->enable();
 	std::vector<Drop*> tempDrp = _game->getDrops();
 	vecSize = tempDrp.size();
-	//std::cout << "Doing " << vecSize << " Drops." << std::endl;
+	std::cout << "Doing " << vecSize << " Drops." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = tempDrp[i]->getXY();
-		//std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_dropMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_dropModel->render(_dropMatrice, view, projection);
 	}
 	_enemyShader->enable();
 	std::vector<Enemy> tempEnmy = _game->getEnemies();
 	vecSize = tempEnmy.size();
-	//std::cout << "Doing " << vecSize << " Enemies." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = tempEnmy[i].getXY();
-		//std::cout << "ENEMYcoords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_enemyMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_enemyModel->render(_enemyMatrice, view, projection);
 	}
@@ -306,7 +313,11 @@ void GraphicsEngine::render() {
 
 void		GraphicsEngine::displayHUD() {
 //	glUseProgram(getText2DShaderID());
-
+	float current = glfwGetTime();
+	if (current - previous >= 1.0f) {
+		displayTime--;
+		previous = current;
+	}
 	glGenVertexArrays(1, &_textVertexArrayID);
 	glBindVertexArray(_textVertexArrayID);
 	
@@ -318,10 +329,15 @@ void		GraphicsEngine::displayHUD() {
 	std::string bombs = std::to_string(_game->getPlayer().getNumberOfBombs());
 	std::string rangeText = "Range:";
 	std::string range = std::to_string(_game->getPlayer().getNumberOfFlames());
+	std::string upgradesText = "Upgrades(drops):";
+	std::string upgrades = std::to_string(_game->getDrops().size());
 	
-	printText2D((healthText+health).c_str(), 10, 500, 30);
-	printText2D((bombsText+bombs).c_str(), 10, 400, 30);
-	printText2D((rangeText+range).c_str(), 10, 300, 30);
+	printText2D("Time:", 10, 500, 15);
+	printText2D((to_string(displayTime)).c_str(), 100, 500, 15);
+	printText2D((healthText+health).c_str(), 10, 300, 15);
+	printText2D((bombsText+bombs).c_str(), 10, 450, 15);
+	printText2D((rangeText+range).c_str(), 10, 400, 15);
+	printText2D((upgradesText+upgrades).c_str(), 10, 350, 15);
 }
 
 // getters
