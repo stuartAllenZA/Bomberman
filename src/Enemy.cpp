@@ -25,12 +25,12 @@ Enemy::Enemy() : Character() {
 }
 
 Enemy::Enemy(Enemy const & src) {
-	std::cout << "Enemy Copy-Constructed\n";
+	//std::cout << "Enemy Copy-Constructed\n";
 	*this = src;
 }
 
 Enemy::~Enemy() {
-	std::cout << "Enemy De-Constructed\n";
+	//std::cout << "Enemy De-Constructed\n";
 }
 
 Enemy &	Enemy::operator=(Enemy const & src) {

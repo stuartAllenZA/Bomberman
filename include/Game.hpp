@@ -64,7 +64,7 @@ enum class CollisionState {
 	BREAKABLE_BOX,
 	UNBREAKABLE_BOX,
 	BOMB,
-	EXPLOSION,
+	FLAME,
 	NONE
 };
 
@@ -100,6 +100,11 @@ public:
 	void 						setRange(const int newRange);
 	std::vector<Bomb>			getBombs() const;
 	void 						setBombs(const std::vector<Bomb> newBombs);
+	std::vector<Flame>			getFlames() const;
+	void 						setFlames(const std::vector<Flame> newFlames);
+	unsigned long int			getFrameCountTimer() const;
+	void						setFrameCountTimer(const unsigned long int newFrameCountTimer);
+	void 						incrementFrameCountTimer();
 
 	void						initSound();
 	void						savePlayer();
@@ -124,7 +129,7 @@ public:
 	int							getPlayerLevel();
 	void						processEnemies();
 	bool						checkCoOrd(std::pair<float, float> xy);
-	CollisionState 				collisionDetection(std::pair<float, float> xy);
+	CollisionState 				collisionDetection(std::pair<float, float> xy, bool ignoreFlame);
 	void 						controller();
 	void 						moveUp();
 	void 						moveDown();
@@ -160,6 +165,7 @@ private:
 	std::vector<Flame>			_flames;
 	std::pair<int, int>			_mapSize;
 	int							_range;
+	unsigned long int			_frameCountTimer;
 };
 
 std::ostream &					operator<<(std::ostream & o, Game const & rhs);

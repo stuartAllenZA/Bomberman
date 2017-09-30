@@ -109,7 +109,7 @@ void GraphicsEngine::initSystems() {
 	_window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
 	if (_window == NULL)
 	{
-		std::cout << "Failed to create GLFW window" << std::endl;
+		//std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 	}
 	glfwMakeContextCurrent(_window);
@@ -240,12 +240,21 @@ void GraphicsEngine::render() {
 	_bombShader->enable();
 	std::vector<Bomb> bombs= _game->getBombs();
 	vecSize = bombs.size();
-	std::cout << "Doing " << vecSize << " Drops." << std::endl;
+	//std::cout << "Doing " << vecSize << " Drops." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = bombs[i].getXY();
 		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_bombMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_bombModel->render(_bombMatrice, view, projection);
+	}
+	std::vector<Flame> flames= _game->getFlames();
+	vecSize = flames.size();
+	//std::cout << "Doing " << vecSize << " Drops." << std::endl;
+	for (int i = 0; i < vecSize; i++) {
+		coords = flames[i].getXY();
+		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		_flameMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second)));
+		_flameModel->render(_flameMatrice, view, projection);
 	}
 /*
 	if (_game->getKeyPressArr(ACTION)) {
@@ -280,10 +289,10 @@ void GraphicsEngine::render() {
 	_wallShader->enable();
 	std::vector<UnbreakableBox> tempUB = _game->getUnbreakableBs();
 	vecSize = tempUB.size();
-	std::cout << "Doing " << vecSize << " Unbreakable Boxes." << std::endl;
+	//std::cout << "Doing " << vecSize << " Unbreakable Boxes." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = tempUB[i].getXY();
-		std::cout << "UBcoords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		//std::cout << "UBcoords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_wallMatrice = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
 		_wallModel->render(_wallMatrice, view, projection);
 	}
@@ -291,10 +300,10 @@ void GraphicsEngine::render() {
 	_boxShader->enable();
 	std::vector<BreakableBox> tempBB = _game->getBreakableBs();
 	vecSize = tempBB.size();
-	std::cout << "Doing " << vecSize << " Breakable Boxes." << std::endl;
+	//std::cout << "Doing " << vecSize << " Breakable Boxes." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = tempBB[i].getXY();
-		std::cout << "BB coords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		//std::cout << "BB coords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_boxMatrice = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
 		_boxModel->render(_boxMatrice, view, projection);
 	}
@@ -303,10 +312,10 @@ void GraphicsEngine::render() {
 	_dropShader->enable();
 	std::vector<Drop*> tempDrp = _game->getDrops();
 	vecSize = tempDrp.size();
-	std::cout << "Doing " << vecSize << " Drops." << std::endl;
+	//std::cout << "Doing " << vecSize << " Drops." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = tempDrp[i]->getXY();
-		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		//std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_dropMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_dropModel->render(_dropMatrice, view, projection);
 	}
@@ -314,10 +323,10 @@ void GraphicsEngine::render() {
 	_enemyShader->enable();
 	std::vector<Enemy> tempEnmy = _game->getEnemies();
 	vecSize = tempEnmy.size();
-	std::cout << "Doing " << vecSize << " Enemies." << std::endl;
+	//std::cout << "Doing " << vecSize << " Enemies." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = tempEnmy[i].getXY();
-		std::cout << "ENEMYcoords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		//std::cout << "ENEMYcoords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_enemyMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_enemyModel->render(_enemyMatrice, view, projection);
 	}
