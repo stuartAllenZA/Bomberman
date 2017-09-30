@@ -145,7 +145,7 @@ void GraphicsEngine::init() {
 	_flameModel = new Model("resources/models/boneBox.gltf", _flameShader);
 	_enemyModel = new Model("resources/models/Monster.gltf", _enemyShader);
 	_dropModel = new Model("resources/models/BMextraflame.gltf", _dropShader);
-	_doorModel = new Model("resources/models/SciFiHelmet.gltf", _doorShader);
+	_doorModel = new Model("resources/models/scene.gltf", _doorShader);
 
 	// load init positions
 	std::pair<float, float> coords;
@@ -319,7 +319,10 @@ void GraphicsEngine::render() {
 		_dropModel->render(_dropMatrice, view, projection);
 	}
 
-	// testing
+	// DOOR: 
+//	_doorMatrice = glm::translate(glm::mat4(), glm::vec3(2.0f, 0.0f, -7.0f)); 
+//	_doorModel->render(_doorMatrice, view, projection);
+
 	_enemyShader->enable();
 	std::vector<Enemy> tempEnmy = _game->getEnemies();
 	vecSize = tempEnmy.size();
