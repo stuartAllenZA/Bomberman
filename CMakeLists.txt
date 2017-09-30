@@ -31,10 +31,11 @@ endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     message(STATUS "GCC detected, adding compile flags")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -Wextra")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
 set(SOURCE_FILES
+	src/shader.cpp
 	src/Animation.cpp
 	src/Bomb.cpp
 	src/Bomberman.cpp
@@ -60,8 +61,11 @@ set(SOURCE_FILES
 	src/RangeExtender.cpp
 	src/RemoteDetonator.cpp
 	src/Settings.cpp
+	src/shader.cpp
 	src/Sound.cpp
 	src/Stb_image.cpp
+	src/text2D.cpp
+	src/texture.cpp
 	src/UnbreakableBox.cpp
 	src/Util.cpp)
 

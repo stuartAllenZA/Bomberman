@@ -1,15 +1,6 @@
 #include <GraphicsEngine.hpp>
 #include <Model.hpp>
 
-char axis = 'z';
-char direction = 'n';
-float z = 0.0f;
-float x = 0.0f;
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-
 //settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -17,14 +8,10 @@ const unsigned int SCR_HEIGHT = 600;
 //camera
 float lastX = SCR_WIDTH / 2.0;
 float lastY = SCR_HEIGHT / 2.0f;
-bool firstMouse = true;
 
 //timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
-
-glm::mat4 model;
-glm::mat4 model2;
 
 GraphicsEngine::GraphicsEngine() {}
 
@@ -136,7 +123,6 @@ void	GraphicsEngine::initCamera() {
 
 void GraphicsEngine::init() {
 	initCamera();
-
 	// init shaders
 	_playerShader = new Shader("resources/shaders/anime.vert", "resources/shaders/basic.frag");
 	_wallShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
@@ -153,8 +139,8 @@ void GraphicsEngine::init() {
 	_floorModel = new Model("resources/models/BMfloor.gltf", _floorShader);
 	_boxModel = new Model("resources/models/block1.gltf", _boxShader);
 	_bombModel = new Model("resources/models/BMbomb.gltf", _bombShader);
-	_flameModel = new Model("resources/models/BMextraflame.gltf", _flameShader);
-	_enemyModel = new Model("resources/models/boneBox.gltf", _enemyShader);
+	_flameModel = new Model("resources/models/boneBox.gltf", _flameShader);
+	_enemyModel = new Model("resources/models/BMextraflame.gltf", _enemyShader);
 	_dropModel = new Model("resources/models/boneBox.gltf", _dropShader);
 	
 	// load init positions
@@ -176,8 +162,9 @@ void GraphicsEngine::render() {
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.1f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+
 	std::pair<float, float> coords;
 	int vecSize;	
 	// 1. rotations
@@ -217,7 +204,7 @@ void GraphicsEngine::render() {
 		_playerRotate = -0.01f;	
 		_isAnime = true;
 	}
-	////
+	///
 	glm::vec4 myPosition(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 rotationAxis(0.0f, 1.0f, 0.0f);
 	glm::mat4 scalar = glm::scale(glm::mat4(), glm::vec3(1.0f, 1.0f, 1.0f));
@@ -292,7 +279,6 @@ void GraphicsEngine::render() {
 		_boxMatrice = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
 		_boxModel->render(_boxMatrice, view, projection);
 	}
-/*
 	/// DROPS & ENEMIES
 	_dropShader->enable();
 	std::vector<Drop*> tempDrp = _game->getDrops();
@@ -304,7 +290,6 @@ void GraphicsEngine::render() {
 		_dropMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_dropModel->render(_dropMatrice, view, projection);
 	}
-*/
 	_enemyShader->enable();
 	std::vector<Enemy> tempEnmy = _game->getEnemies();
 	vecSize = tempEnmy.size();
@@ -315,7 +300,28 @@ void GraphicsEngine::render() {
 		_enemyMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first, 0.0f, (-1 * coords.second))); 
 		_enemyModel->render(_enemyMatrice, view, projection);
 	}
+	displayHUD();
 	glfwSwapBuffers(_window);
+}
+
+void		GraphicsEngine::displayHUD() {
+//	glUseProgram(getText2DShaderID());
+
+	glGenVertexArrays(1, &_textVertexArrayID);
+	glBindVertexArray(_textVertexArrayID);
+	
+	initText2D( "resources/fonts/Holstein.DDS" );
+
+	std::string	healthText = "Health:";
+	std::string	health = std::to_string(_game->getPlayer().getHealth());
+	std::string bombsText = "Bombs:";
+	std::string bombs = std::to_string(_game->getPlayer().getNumberOfBombs());
+	std::string rangeText = "Range:";
+	std::string range = std::to_string(_game->getPlayer().getNumberOfFlames());
+	
+	printText2D((healthText+health).c_str(), 10, 500, 30);
+	printText2D((bombsText+bombs).c_str(), 10, 400, 30);
+	printText2D((rangeText+range).c_str(), 10, 300, 30);
 }
 
 // getters

@@ -6,6 +6,10 @@
 #include <glm.hpp>
 #include <type_ptr.hpp>
 #include <matrix_transform.hpp>
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
+
 
 #include "Game.hpp"
 #include "Camera.hpp"
@@ -15,7 +19,12 @@
 #include "stb_image.h"
 #include "picojson.h"
 #include "Util.hpp"
+#include "shader.hpp"
+#include "texture.hpp"
+#include "text2D.hpp"
+
 #define GLM_FORCE_RADIANS
+
 class GraphicsEngine {
 	private:
 		Camera								_camera;
@@ -52,6 +61,7 @@ class GraphicsEngine {
 		float								_prevX;
 		float								_playerRotate;
 		bool								_isAnime;
+		GLuint 								_textVertexArrayID;
 
 		void								_loadResources();
 		void								_loadModels();
@@ -71,6 +81,8 @@ class GraphicsEngine {
 		void	initSystems();
 		bool	processInput();
 		void	render();
+		void	renderText();
+		void	displayHUD();
 
 		// getters
 		
