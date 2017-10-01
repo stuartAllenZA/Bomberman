@@ -455,6 +455,10 @@ void				Game::controller() {
 		playerHasMoved();
 		processEnemies();
 		checkBombAndFlameTimers();
+        if (_breakableBs.size() < 1) {
+            this->_gameState = GameState::MENU;
+            this->_playState = PlayState::PLAYER_WIN;
+        }
 	}
 }
 
@@ -840,8 +844,6 @@ void					Game::initLevelOne() {
 	//Spawn Player
 	_player.setXY(std::make_pair(1, 2));
 	//Randomize one of each Drop
-	index = dropFreeBoxInd();
-	_breakableBs[index].setDrop(new LevelHatch(_breakableBs[index].getXY()));
 	index = dropFreeBoxInd();
 	_breakableBs[index].setDrop(new RemoteDetonator(_breakableBs[index].getXY()));
 	if (_player.getLevel() == 0) {
