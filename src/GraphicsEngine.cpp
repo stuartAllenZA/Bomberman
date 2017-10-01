@@ -137,6 +137,7 @@ void GraphicsEngine::init() {
 	_enemyShader = new Shader("resources/shaders/anime.vert", "resources/shaders/basic.frag");
 
 	// init models
+	_playerShader->enable();
 	_playerModel = new Model("resources/models/BMwalk3.gltf", _playerShader);
 	_wallModel = new Model("resources/models/Cube.gltf", _wallShader);
 	_floorModel = new Model("resources/models/BMfloor.gltf", _floorShader);
@@ -149,10 +150,19 @@ void GraphicsEngine::init() {
 	//_dropModel = new Model("resources/models/BMextrabombNEW.gltf", _dropShader);
 	_doorModel = new Model("resources/models/BMtrapdoor.gltf", _doorShader);
 
-	// load init positions
 	std::pair<float, float> coords;
 	coords = _game->getPlayer().getXY();
-	_playerMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
+	glm::mat4 view = _camera.getViewMatrix();
+	glm::mat4 projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
+	_playerRotate = -0.01f;	
+	glm::vec3 rotationAxis(0.0f, 1.0f, 0.0f);
+	glm::mat4 scalar = glm::scale(glm::mat4(), glm::vec3(1.2f, 1.2f, 1.2f));
+	glm::mat4 rotator = glm::rotate(glm::mat4(), _playerRotate, rotationAxis);
+	glm::mat4 translator = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2))); 
+	glm::mat4 transform = translator * rotator * scalar;
+	_playerMatrice = transform;
+	_playerModel->renderAnimated(_playerMatrice, view, projection);
+	 //_playerMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_wallMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_boxMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_bombMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
@@ -161,7 +171,6 @@ void GraphicsEngine::init() {
 	_enemyMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_dropMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_doorMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
-
 }
 
 void GraphicsEngine::render() {
@@ -174,6 +183,7 @@ void GraphicsEngine::render() {
 
 	std::pair<float, float> coords;
 	int vecSize;	
+
 	coords = _game->getPlayer().getXY();
 	if (_prevZ != coords.second) {
 		if (_game->getKeyPressArr(UP))
