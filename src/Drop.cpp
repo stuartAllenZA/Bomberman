@@ -29,3 +29,11 @@ std::pair<float, float>	Drop::getXY() const {
 void				Drop::setXY(const std::pair<float, float> xy) {
 	this->_xy = xy;
 }
+
+DropType			Drop::getDropType() const {
+	return (this->_type);
+}
+
+void				Drop::setDropType(const DropType newType) {
+	this->_type = newType;
+}

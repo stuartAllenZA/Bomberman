@@ -51,13 +51,11 @@ void			Menu::menu() {
 	glfwSetCharCallback(*_win, [](GLFWwindow *, unsigned int codepoint) {
 		screen->charCallbackEvent(codepoint);
 	});
-
+	if (this->_game->getPlayState() == PlayState::PLAYER_DEAD)
+		_menuState = MenuState::LEVEL_FAIL;
+	else if (this->_game->getPlayState() == PlayState::PLAYER_WIN)
+		_menuState = MenuState::LEVEL_PASS;
 	while (this->_game->getGameState() == GameState::MENU) {
-		if (this->_game->getPlayState() == PlayState::PLAYER_DEAD)
-            levelFailMenu();
-        else if (this->_game->getPlayState() == PlayState::PLAYER_WIN)
-            levelPassMenu();
-        else
             switch (_menuState) {
             case MenuState::PLAYER_SELECT :
                 playerSelectMenu();

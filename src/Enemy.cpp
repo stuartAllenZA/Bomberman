@@ -46,22 +46,19 @@ void					Enemy::setNewCoOrd(const std::pair<float, float> newCoOrd) {
 	this->_newCoOrd = newCoOrd;
 }
 
-void					Enemy::determineNewCoOrds(std::pair<float, float> playerPos, std::vector<char> unable) {
+void					Enemy::determineNewCoOrds(std::vector<char> able) {
+	static unsigned long int		cnt = 0;
+	int 							randomOri;
+	char							oldOri;
 	//Set to current XY
 	_newCoOrd = this->_xy;
+	oldOri = _ori;
 	//Determine correct ori
-	if (playerPos.first > _xy.first && checkUnable(unable, 'E') == false) {
-		_ori = 'E';
+	if (cnt % 120 == 0) {
+		randomOri = rand() % able.size();
+		_ori = able[randomOri];
 	}
-	else if (playerPos.first < _xy.first && checkUnable(unable, 'W') == false) {
-		_ori = 'W';
-	}
-	else if (playerPos.second > _xy.second && checkUnable(unable, 'N') == false) {
-		_ori = 'N';
-	}
-	else if (playerPos.second < _xy.second && checkUnable(unable, 'S') == false) {
-		_ori = 'S';
-	}
+	cnt++;
 	//Determine new co-ords
 	if (_ori == 'E')
 		_newCoOrd.first = static_cast<int>(_newCoOrd.first + (_speed * (0.5 * _size)));
@@ -73,15 +70,6 @@ void					Enemy::determineNewCoOrds(std::pair<float, float> playerPos, std::vecto
 		_newCoOrd.second = static_cast<int>(_newCoOrd.second - (_speed * (0.5 * _size)));
 	//if (_newCoOrd == playerPos)
 		//_newCoOrd = _xy;
-}
-
-bool					Enemy::checkUnable(std::vector<char> unable, char dir) const {
-	bool flag = false;
-	for (std::vector<char>::iterator it = unable.begin(); it != unable.end(); ++it) {
-		if (*it == dir)
-			flag = true;
-	}
-	return (flag);
 }
 
 float					Enemy::getPenetration(std::pair<float, float> playerPos) {
