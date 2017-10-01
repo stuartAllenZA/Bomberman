@@ -146,8 +146,8 @@ void GraphicsEngine::init() {
 	_flameModel = new Model("resources/models/boneBox.gltf", _flameShader);
 	//_enemyModel = new Model("resources/models/MechGoblin_Anim_Walk01.gltf", _enemyShader);
 	_enemyModel = new Model("resources/models/man.gltf", _enemyShader);
-	_dropModel = new Model("resources/models/BMtrapdoor.gltf", _dropShader);
-	//_dropModel = new Model("resources/models/BMextrabombNEW.gltf", _dropShader);
+	_dropModel = new Model("resources/models/BMextraflame.gltf", _dropShader);
+//	_dropModel = new Model("resources/models/BMextrabombNEW.gltf", _dropShader);
 	_doorModel = new Model("resources/models/BMtrapdoor.gltf", _doorShader);
 
 	std::pair<float, float> coords;
@@ -342,17 +342,17 @@ void GraphicsEngine::render() {
 	for (int i = 0; i < vecSize; i++) {
 		coords = tempEnmy[i].getXY();
 		if (tempEnmy[i].getOri() == 'N')
-			_enemyRotate = 135.1f;	
-		else if (tempEnmy[i].getOri() == 'S')
-			_enemyRotate = -0.01f;	
-		else if (tempEnmy[i].getOri() == 'E')
-			_enemyRotate = -80.0f;	
-		else if (tempEnmy[i].getOri() == 'W')
 			_enemyRotate = 80.0f;	
+		else if (tempEnmy[i].getOri() == 'S')
+			_enemyRotate = -80.0f;	
+		else if (tempEnmy[i].getOri() == 'E')
+			_enemyRotate = -0.01f;	
+		else if (tempEnmy[i].getOri() == 'W')
+			_enemyRotate = 135.1f;	
 	//	glm::vec4 enemyPosition(1.0f, 1.0f, 1.0f, 1.0f);
 		glm::vec3 enemyRotationAxis(0.0f, 1.0f, 0.0f);
 		glm::mat4 enemyScalar = glm::scale(glm::mat4(), glm::vec3(0.4f, 0.4f, 0.4f));
-		glm::mat4 enemyRotator = glm::rotate(glm::mat4(), _playerRotate, rotationAxis);
+		glm::mat4 enemyRotator = glm::rotate(glm::mat4(), _enemyRotate, rotationAxis);
 		glm::mat4 enemyTranslator = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2.0f))); 
 		glm::mat4 enemyTransform = enemyTranslator * enemyRotator * enemyScalar;
 		_enemyMatrice = enemyTransform;
