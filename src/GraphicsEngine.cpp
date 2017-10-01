@@ -3,6 +3,7 @@
 
 float previous = 0.0f;
 int displayTime = 0;
+int displayMin = 0;
 //settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -122,6 +123,7 @@ void	GraphicsEngine::initCamera() {
 	_prevZ = 0.0f;
 	_prevX = 0.0f;
 	displayTime = 0;
+	displayMin = 0;
 }
 
 void GraphicsEngine::init() {
@@ -369,6 +371,10 @@ void		GraphicsEngine::displayHUD() {
 		displayTime++;
 		previous = current;
 	}
+	if (displayTime == 60) {
+		displayTime = 0;
+		displayMin++;
+	}
 	glGenVertexArrays(1, &_textVertexArrayID);
 	glBindVertexArray(_textVertexArrayID);
 
@@ -380,7 +386,9 @@ void		GraphicsEngine::displayHUD() {
 	std::string bombs = std::to_string(_game->getPlayer().getNumberOfBombs());
 
 	printText2D("Time:", 10, 570, 20);
-	printText2D((to_string(displayTime)).c_str(), 120, 570, 20);
+	printText2D((to_string(displayMin)).c_str(), 120, 570, 20);
+	printText2D(":", 125, 570, 20);
+	printText2D((to_string(displayTime)).c_str(), 130, 570, 20);
 	printText2D((healthText+health).c_str(), 10, 545, 20);
 	printText2D((bombsText+bombs).c_str(), 10, 520, 20);
 }
