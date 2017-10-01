@@ -823,7 +823,7 @@ void					Game::initLevelTwo() {
 		index = dropFreeBoxInd();
 		_breakableBs[index].setDrop(new RangeExtender(_breakableBs[index].getXY()));
 	}
-	for (int i = 0; i < (_player.getDifficulty * 10) / 2; i++) {
+	for (int i = 0; i < (_player.getDifficulty() * 10) / 2; i++) {
 		index = dropFreeBoxInd();
 		_breakableBs[index].setDrop(new EnemyDrop(_breakableBs[index].getXY()));
 	}
@@ -851,7 +851,7 @@ void					Game::initLevelOne() {
 		index = dropFreeBoxInd();
 		_breakableBs[index].setDrop(new RangeExtender(_breakableBs[index].getXY()));
 	}
-	for (int i = 0; i < (_player.getDifficulty * 10) / 2; i++) {
+	for (int i = 0; i < (_player.getDifficulty() * 10) / 2; i++) {
 		index = dropFreeBoxInd();
 		_breakableBs[index].setDrop(new EnemyDrop(_breakableBs[index].getXY()));
 	}
@@ -880,7 +880,7 @@ void					Game::initLevelThree() {
 		index = dropFreeBoxInd();
 		_breakableBs[index].setDrop(new RangeExtender(_breakableBs[index].getXY()));
 	}
-	for (int i = 0; i < (_player.getDifficulty * 10) / 2; i++) {
+	for (int i = 0; i < (_player.getDifficulty() * 10) / 2; i++) {
 		index = dropFreeBoxInd();
 		_breakableBs[index].setDrop(new EnemyDrop(_breakableBs[index].getXY()));
 	}
