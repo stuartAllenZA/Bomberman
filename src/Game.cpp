@@ -903,4 +903,7 @@ void					Game::reset() {
 	_breakableBs.clear();
 	_unbreakableBs.clear();
 	_drops.clear();
+    _bombs.clear();
+    _flames.clear();
+    _player.setHealth(100);
 }
