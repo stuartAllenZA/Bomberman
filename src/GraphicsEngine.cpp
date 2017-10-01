@@ -133,7 +133,7 @@ void GraphicsEngine::init() {
 	_bombShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_flameShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_dropShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
-	_doorShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
+//	_doorShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_enemyShader = new Shader("resources/shaders/anime.vert", "resources/shaders/basic.frag");
 
 	// init models
@@ -150,7 +150,9 @@ void GraphicsEngine::init() {
 	_dropModel = new Model("resources/models/BMflame.gltf", _dropShader);
 	//_dropModel = new Model("resources/models/BMextraflame.gltf", _dropShader);
 //	_dropModel = new Model("resources/models/BMextrabombNEW.gltf", _dropShader);
-	_doorModel = new Model("resources/models/BMtrapdoor.gltf", _doorShader);
+	_doorModel = new Model("resources/models/BMtrapdoor.gltf", _dropShader);
+	_flameExtModel = new Model("resources/models/BMextraflame.gltf", _dropShader);
+	_extBombModel = new Model("resources/models/BMextrabombNEW.gltf", _dropShader);
 
 	std::pair<float, float> coords;
 	coords = _game->getPlayer().getXY();
@@ -197,7 +199,6 @@ void GraphicsEngine::init() {
 	}
 
 	_dropMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
-	_doorMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 }
 
 void GraphicsEngine::render() {
@@ -324,7 +325,12 @@ void GraphicsEngine::render() {
 		coords = tempDrp[i]->getXY();
 		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_dropMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first * 2.0f, 0.0f, (-1 * coords.second * 2.0f))); 
-		_dropModel->render(_dropMatrice, view, projection);
+		if (tempDrp[i]->getDropType() == DropType::LEVEL_HATCH)
+		   _doorModel->render(_dropMatrice, view, projection);
+		else if (tempDrp[i]->getDropType() == DropType::FLAME_EXT)
+		   _flameExtModel->render(_dropMatrice, view, projection);
+		else if (tempDrp[i]->getDropType() == DropType::BOMB_ADD)
+		   _extBombModel->render(_dropMatrice, view, projection);
 	}
 
 	_enemyShader->enable();

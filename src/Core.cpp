@@ -84,10 +84,10 @@ void			Core::gameLoop() {
 		gs = this->_game.getGameState();
 		switch (gs) {
 			case GameState::MENU :
-				if (_menu->getMenuState() == MenuState::PLAYER_SELECT)
-					_game.startMenuMusic();
-				else if (_menu->getMenuState() == MenuState::PAUSE)
-					_game.resumeMenuMusic();
+//				if (_menu->getMenuState() == MenuState::PLAYER_SELECT)
+//					_game.startMenuMusic();
+//				else if (_menu->getMenuState() == MenuState::PAUSE)
+//					_game.resumeMenuMusic();
 				_menu->menu();
 				_game.pauseMenuMusic();
 				break;
