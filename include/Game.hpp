@@ -55,7 +55,9 @@ enum class PlayState {
 	PLAYER_SELECT,
 	GAME_LOAD,
 	GAME_INIT,
-	GAME_PLAY
+	GAME_PLAY,
+	PLAYER_DEAD,
+	PLAYER_WIN
 };
 
 class Game {

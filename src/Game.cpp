@@ -421,7 +421,7 @@ void				Game::playerHasMoved() {
 void				Game::controller() {
 	if (_player.getHealth() <= 0) {
 		_gameState = GameState::MENU;
-		//_menu->setMenuState(MenuState::LEVEL_FAIL);
+		_playState = PlayState::PLAYER_DEAD;
 	}
 	else
 	{

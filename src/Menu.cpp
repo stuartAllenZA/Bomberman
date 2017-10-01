@@ -53,36 +53,41 @@ void			Menu::menu() {
 	});
 
 	while (this->_game->getGameState() == GameState::MENU) {
-		switch (_menuState) {
-			case MenuState::PLAYER_SELECT :
-				playerSelectMenu();
-				break;
-			case MenuState::MAIN_MENU :
-				mainMenu();
-				break;
-			case MenuState::LOAD_SAVE :
-				break;
-			case MenuState::SETTINGS :
-				settingsMenu();
-				break;
-			case MenuState::KEYBINDING :
-				keyBindingMenu();
-				break;
-			case MenuState::PAUSE :
-				pauseMenu();
-				break;
-			case MenuState::DIFFICULTY :
-				difficultyMenu();
-				break;
-			case MenuState::LEVEL_FAIL :
-				levelFailMenu();
-				break;
-			case MenuState::LEVEL_PASS :
-				levelPassMenu();
-				break;
-			case MenuState::NO_MENU :
-				break;
-		}
+		if (this->_game->getPlayState() == PlayState::PLAYER_DEAD)
+            levelFailMenu();
+        else if (this->_game->getPlayState() == PlayState::PLAYER_WIN)
+            levelPassMenu();
+        else
+            switch (_menuState) {
+            case MenuState::PLAYER_SELECT :
+                playerSelectMenu();
+                break;
+            case MenuState::MAIN_MENU :
+                mainMenu();
+                break;
+            case MenuState::LOAD_SAVE :
+                break;
+            case MenuState::SETTINGS :
+                settingsMenu();
+                break;
+            case MenuState::KEYBINDING :
+                keyBindingMenu();
+                break;
+            case MenuState::PAUSE :
+                pauseMenu();
+                break;
+            case MenuState::DIFFICULTY :
+                difficultyMenu();
+                break;
+            case MenuState::LEVEL_FAIL :
+                levelFailMenu();
+                break;
+            case MenuState::LEVEL_PASS :
+                levelPassMenu();
+                break;
+            case MenuState::NO_MENU :
+                    break;
+		    }
 	}
 }
 
