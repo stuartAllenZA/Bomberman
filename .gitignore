@@ -8,4 +8,5 @@ CMakeCache.txt
 CMakeFiles
 Makefile
 .libraries
+resources
 cmake_install.cmake
