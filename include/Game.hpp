@@ -60,6 +60,17 @@ enum class PlayState {
 	PLAYER_WIN
 };
 
+enum class CS {
+	UB,
+	FLAME,
+	BB,
+	BOMB,
+	DROP,
+	ENEMY,
+	PLAYER,
+	OPEN
+};
+
 class Game {
 public:
 	Game();
@@ -165,7 +176,7 @@ private:
 	std::vector<Bomb>				_bombs;
 	std::vector<Flame>				_flames;
 	std::pair<int, int>				_mapSize;
-	std::vector<std::vector<bool>>	_mapState;
+	std::vector<std::vector<CS>>	_mapState;
 	int								_range;
 	unsigned long int				_frameCountTimer;
 };

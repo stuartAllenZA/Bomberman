@@ -23,8 +23,7 @@ public:
 	Enemy &	operator=(Enemy const & src);
 	std::pair<float, float>	getNewCoOrd() const;
 	void					setNewCoOrd(const std::pair<float, float> newCoOrd);
-	void					determineNewCoOrds(std::pair<float, float> playerPos, std::vector<char> unable);
-	bool					checkUnable(std::vector<char> unable, char dir) const;
+	void					determineNewCoOrds(std::vector<char> unable);
 	float					getPenetration(std::pair<float, float> playerPos);
 
 private:
