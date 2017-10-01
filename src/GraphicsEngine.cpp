@@ -98,7 +98,7 @@ void GraphicsEngine::initSystems() {
 	_window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Bomberman", NULL, NULL);
 	if (_window == NULL)
 	{
-		//std::cout << "Failed to create GLFW window" << std::endl;
+		////std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 	}
 	glfwMakeContextCurrent(_window);
@@ -270,7 +270,7 @@ void GraphicsEngine::render() {
 	vecSize = bombs.size();
 	for (int i = 0; i < vecSize; i++) {
 		coords = bombs[i].getXY();
-		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		//std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_bombMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first * 2.0f, 0.0f, (-1 * coords.second * 2.0f))); 
 		_bombModel->render(_bombMatrice, view, projection);
 	}
@@ -279,7 +279,7 @@ void GraphicsEngine::render() {
 	vecSize = flames.size();
 	for (int i = 0; i < vecSize; i++) {
 		coords = flames[i].getXY();
-		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		//std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_flameMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first * 2.0f, 0.0f, (-1 * coords.second * 2.0f)));
 		_flameModel->render(_flameMatrice, view, projection);
 	}
@@ -320,10 +320,10 @@ void GraphicsEngine::render() {
 	_dropShader->enable();
 	std::vector<Drop*> tempDrp = _game->getDrops();
 	vecSize = tempDrp.size();
-	std::cout << "Doing " << vecSize << " Drops." << std::endl;
+	//std::cout << "Doing " << vecSize << " Drops." << std::endl;
 	for (int i = 0; i < vecSize; i++) {
 		coords = tempDrp[i]->getXY();
-		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
+		//std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_dropMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first * 2.0f, 0.0f, (-1 * coords.second * 2.0f))); 
 		if (tempDrp[i]->getDropType() == DropType::LEVEL_HATCH)
 		   _doorModel->render(_dropMatrice, view, projection);

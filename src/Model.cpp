@@ -2,17 +2,17 @@
 #include <Model.hpp>
 
 Model::Model(const char *modelPath, Shader *shader) {
-	std::cout << "model constructed\n";
+	//std::cout << "model constructed\n";
 	_shader = *shader;
 	loadFromFile(_shader, modelPath);
 }
 
 Model::~Model() {
-	std::cout << "model destructed\n";
+	//std::cout << "model destructed\n";
 }
 
 Model::Model() : _shader("resources/shaders/basic.vert", "resources/shaders/basic.frag") {
-	std::cout << "model constructed\n";
+	//std::cout << "model constructed\n";
 }
 Model::Model(Model const & src) { *this = src; }
 
@@ -32,7 +32,7 @@ glm::mat4	Model::makeMat() {
 
 bool Model::loadFromFile(Shader &shader, const char *path)
 {
-	std::cout << "loading model from path: " << path << std::endl;
+	//std::cout << "loading model from path: " << path << std::endl;
 	bool                ret;
 	std::string         err;
 	tinygltf::TinyGLTF  loader;
@@ -48,13 +48,13 @@ bool Model::loadFromFile(Shader &shader, const char *path)
 		std::cerr << "Failed to load glTF: " << path << std::endl;
 		return false;
 	}
-	std::cout << "model loaded\n";
+	//std::cout << "model loaded\n";
 	return _processModel();
 }
 
 bool Model::_processModel()
 {
-	std::cout << "processing model\n";
+	//std::cout << "processing model\n";
 //	std::vector<tinygltf::Accessor>& acc = _model.accessors;
 	//std::vector<tinygltf::BufferView>&  bufViews = _model.bufferViews;
 	//std::vector<tinygltf::Buffer>& bufs = _model.buffers;
@@ -78,13 +78,13 @@ bool Model::_processModel()
 		auto *anime = new Animation(animation, _model);
 		_animations.push_back(anime);
 	}
-	std::cout << "model processed\n";
+	//std::cout << "model processed\n";
 	return true;
 }
 
 void Model::_processNode(int index)
 {
-	std::cout << "processing node: " << index << std::endl;
+	//std::cout << "processing node: " << index << std::endl;
 	tinygltf::Node& node = _model.nodes[index];
 	/// getting mesh data
 	if (node.mesh >= 0)
@@ -95,12 +95,12 @@ void Model::_processNode(int index)
 	/// processing children nodes
 	for (int i : node.children)
 		_processNode(i);
-	std::cout << "node processed: " << index << std::endl;
+	//std::cout << "node processed: " << index << std::endl;
 }
 
 void Model::_processSkin(tinygltf::Skin &skin)
 {
-	std::cout << "processing skin\n";
+	//std::cout << "processing skin\n";
 	tinygltf::Accessor& acc = _model.accessors[skin.inverseBindMatrices];
 	tinygltf::BufferView& bufView = _model.bufferViews[acc.bufferView];
 
@@ -116,12 +116,12 @@ void Model::_processSkin(tinygltf::Skin &skin)
 		if (bone != nullptr)
 			_bones.push_back(bone);
 	}
-	std::cout << "skin processed\n";
+	//std::cout << "skin processed\n";
 }
 
 Joint   *getJointFromBones(std::vector<Joint *> bones, int id)
 {
-	std::cout << "geting joint from bones\n";
+	//std::cout << "geting joint from bones\n";
 	Joint *bone = nullptr;
 
 	for (Joint *tmp : bones)
@@ -134,13 +134,13 @@ Joint   *getJointFromBones(std::vector<Joint *> bones, int id)
 		if (!tmp->children.empty())
 			tmp = getJointFromBones(tmp->children, id);
 	}
-	std::cout << "got joint from bones\n";
+	//std::cout << "got joint from bones\n";
 	return bone;
 }
 
 Joint* Model::_processSkinJoints(int id, std::vector<glm::mat4> mats, int start, int skeleton)
 {
-	std::cout << "processing skin joints\n";
+	//std::cout << "processing skin joints\n";
 	tinygltf::Node& node = _model.nodes[id];
 
 	if (id < skeleton)
@@ -162,13 +162,13 @@ Joint* Model::_processSkinJoints(int id, std::vector<glm::mat4> mats, int start,
 		if (childBone != nullptr)
 			bone->children.push_back(childBone);
 	}
-	std::cout << "skin joints processed\n";
+	//std::cout << "skin joints processed\n";
 	return bone;
 }
 
 void Model::_processModelMesh(tinygltf::Mesh& mesh, int node)
 {
-	std::cout << "processing model mesh\n";
+	//std::cout << "processing model mesh\n";
 	std::vector<tinygltf::Accessor>&    acc = _model.accessors;
 	std::vector<tinygltf::BufferView>&  bufViews = _model.bufferViews;
 	std::vector<tinygltf::Buffer>&      bufs = _model.buffers;
@@ -295,20 +295,20 @@ void Model::_processModelMesh(tinygltf::Mesh& mesh, int node)
 		Acc = acc[prim.indices];
 		bufView = bufViews[Acc.bufferView];
 		auto indicesData = (GLushort*)(bufs[bufView.buffer].data.data() + bufView.byteOffset);
-		//std::cout << "Indices ";
+		////std::cout << "Indices ";
 		for (unsigned long i = 0; i < Acc.count; i++)
 		{
-			//std::cout << indicesData[i] << " ";
+			////std::cout << indicesData[i] << " ";
 			_indices.push_back((GLushort)(indicesData[i] + currVecSize));
 		}
-		//std::cout << std::endl;
+		////std::cout << std::endl;
 	}
-	std::cout << "mesh loaded\n";
+	//std::cout << "mesh loaded\n";
 }
 
 void Model::_loadDataToGpu()
 {
-	std::cout << "loading data to GPU\n";
+	//std::cout << "loading data to GPU\n";
 	GLuint  vbo[11];
 	GLint position = _shader.getAttribLocation((char *)"position");
 	GLint targetPosition = _shader.getAttribLocation((char *)"targetPosition");
@@ -394,12 +394,12 @@ void Model::_loadDataToGpu()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(GLushort), _indices.data(),
 			GL_STATIC_DRAW);
 	glBindVertexArray(0);
-	std::cout << "data loaded to GPU\n";
+	//std::cout << "data loaded to GPU\n";
 }
 
 void Model::_clearVectors()
 {
-	std::cout << "clearing vectors\n";
+	//std::cout << "clearing vectors\n";
 	_indicesCount = (GLushort)_indices.size();
 	_indices.clear();
 	_vertex.clear();
@@ -411,7 +411,7 @@ void Model::_clearVectors()
 
 void Model::_loadMaterials()
 {
-	std::cout << "loading materials\n";
+	//std::cout << "loading materials\n";
 	int     index = 0;
 
 	for (tinygltf::Material& mat : _model.materials)
@@ -457,7 +457,7 @@ void Model::_loadMaterials()
 		if (foundMat)
 			addMaterial(index++, newMat);
 	}
-	std::cout << "materials loaded\n";
+	//std::cout << "materials loaded\n";
 }
 
 void Model::_loadMatrices(Joint *bone, glm::mat4 parentTransform)
@@ -475,7 +475,7 @@ void Model::_loadMatrices(Joint *bone, glm::mat4 parentTransform)
 
 bool Model::loadAnimationMatrix(int animeType, float time)
 {
-	std::cout << "loading animation matrix\n";
+	//std::cout << "loading animation matrix\n";
 	if ((unsigned long)animeType >= _animations.size())
 		return false;
 	_animations[animeType]->setCurrentAnimationTime(time);
@@ -495,7 +495,7 @@ bool Model::loadAnimationMatrix(int animeType, float time)
 		_shader.setUniformMat4((GLchar *)"animeMat", _animations[0]->getJointAnimationMatrix(0));
 		_animeMatrice.clear();
 	}
-	std::cout << "animation matrix loaded\n";
+	//std::cout << "animation matrix loaded\n";
 	return true;
 }
 
