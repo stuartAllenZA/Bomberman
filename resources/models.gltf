@@ -1,0 +1,38 @@
+{
+    "accessors": {},
+    "animations": {},
+    "asset": {
+        "generator": "collada2gltf@54fd5d96f689fa31c7cb2cbfc4901a5428486f98",
+        "premultipliedAlpha": true,
+        "profile": {
+            "api": "WebGL",
+            "version": "1.0.2"
+        },
+        "version": "1.0.1"
+    },
+    "bufferViews": {
+        "bufferView_2": {
+            "buffer": "models",
+            "byteLength": 0,
+            "byteOffset": 0,
+            "target": 34963
+        },
+        "bufferView_3": {
+            "buffer": "models",
+            "byteLength": 0,
+            "byteOffset": 0,
+            "target": 34962
+        }
+    },
+    "buffers": {},
+    "images": {
+        "file1-image": {
+            "name": "file1",
+            "uri": "data:application/octet-stream;base64,"
+        }
+    },
+    "materials": {},
+    "meshes": {},
+    "nodes": {},
+    "skins": {}
+}
