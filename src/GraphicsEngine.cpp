@@ -345,16 +345,16 @@ void		GraphicsEngine::displayHUD() {
 	std::string	health = std::to_string(_game->getPlayer().getHealth());
 	std::string bombsText = "Bombs:";
 	std::string bombs = std::to_string(_game->getPlayer().getNumberOfBombs());
-	std::string rangeText = "Range:";
-	std::string range = std::to_string(_game->getPlayer().getNumberOfFlames());
+//	std::string rangeText = "Range:";
+//	std::string range = std::to_string(_game->getPlayer().getNumberOfFlames());
 	std::string upgradesText = "Drops:";
 	std::string upgrades = std::to_string(_game->getDrops().size());
 
 	printText2D("Time:", 10, 500, 20);
 	printText2D((to_string(displayTime)).c_str(), 120, 500, 20);
-	printText2D((healthText+health).c_str(), 10, 300, 20);
-	printText2D((bombsText+bombs).c_str(), 10, 450, 20);
-	printText2D((rangeText+range).c_str(), 10, 400, 20);
+	printText2D((healthText+health).c_str(), 10, 450, 20);
+	printText2D((bombsText+bombs).c_str(), 10, 400, 20);
+//	printText2D((rangeText+range).c_str(), 10, 400, 20);
 	printText2D((upgradesText+upgrades).c_str(), 10, 350, 20);
 }
 
