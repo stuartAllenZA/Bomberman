@@ -168,7 +168,32 @@ void GraphicsEngine::init() {
 	_bombMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_flameMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_floorMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
-	_enemyMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
+//	_enemyMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
+	
+	int vecSize;	
+	_enemyShader->enable();
+	std::vector<Enemy> tempEnmy = _game->getEnemies();
+	vecSize = tempEnmy.size();
+	for (int i = 0; i < vecSize; i++) {
+		coords = tempEnmy[i].getXY();
+		if (tempEnmy[i].getOri() == 'N')
+			_enemyRotate = 135.1f;	
+		else if (tempEnmy[i].getOri() == 'S')
+			_enemyRotate = -0.01f;	
+		else if (tempEnmy[i].getOri() == 'E')
+			_enemyRotate = -80.0f;	
+		else if (tempEnmy[i].getOri() == 'W')
+			_enemyRotate = 80.0f;	
+	//	glm::vec4 enemyPosition(1.0f, 1.0f, 1.0f, 1.0f);
+		glm::vec3 enemyRotationAxis(0.0f, 1.0f, 0.0f);
+		glm::mat4 enemyScalar = glm::scale(glm::mat4(), glm::vec3(0.4f, 0.4f, 0.4f));
+		glm::mat4 enemyRotator = glm::rotate(glm::mat4(), _playerRotate, rotationAxis);
+		glm::mat4 enemyTranslator = glm::translate(glm::mat4(), glm::vec3((coords.first * 2.0), 0.0f, ((-1 * coords.second) * 2.0f))); 
+		glm::mat4 enemyTransform = enemyTranslator * enemyRotator * enemyScalar;
+		_enemyMatrice = enemyTransform;
+		_enemyModel->renderAnimated(_enemyMatrice, view, projection);
+	}
+
 	_dropMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 	_doorMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 }
