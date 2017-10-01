@@ -46,6 +46,14 @@ void					Enemy::setNewCoOrd(const std::pair<float, float> newCoOrd) {
 	this->_newCoOrd = newCoOrd;
 }
 
+std::pair<int, int>		Enemy::getCastXY() const {
+    return (this->_castXY);
+}
+
+void					Enemy::setCastXY(const std::pair <int, int> newXY) {
+    this->_castXY = newXY;
+}
+
 void					Enemy::determineNewCoOrds(std::vector<char> able) {
 	static unsigned long int		cnt = 0;
 	int 							randomOri;
@@ -60,14 +68,34 @@ void					Enemy::determineNewCoOrds(std::vector<char> able) {
 	}
 	cnt++;
 	//Determine new co-ords
-	if (_ori == 'E')
-		_newCoOrd.first = static_cast<int>(_newCoOrd.first + (_speed * (0.5 * _size)));
-	else if (_ori == 'W')
-		_newCoOrd.first = static_cast<int>(_newCoOrd.first - (_speed * (0.5 * _size)));
-	else if (_ori == 'N')
-		_newCoOrd.second = static_cast<int>(_newCoOrd.second + (_speed * (0.5 * _size)));
-	else if (_ori == 'S')
-		_newCoOrd.second = static_cast<int>(_newCoOrd.second - (_speed * (0.5 * _size)));
+    float 						dist = (this->getSpeed() / 60.0f);
+    float 						widthOffset = (this->getSize() / 2);
+    std::pair<float, float> 	tempXY = this->getXY();
+
+    if (_ori == 'E') {
+        tempXY.first = tempXY.first + dist + widthOffset + 0.5f;
+        tempXY.second = tempXY.second + 0.5f;
+        _castXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
+		_newCoOrd.first = static_cast<int>(_newCoOrd.first + dist);
+	}
+	else if (_ori == 'W') {
+        tempXY.first = tempXY.first - dist - widthOffset + 0.5f;
+        tempXY.second = tempXY.second + 0.5f;
+        _castXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
+		_newCoOrd.first = static_cast<int>(_newCoOrd.first - dist);
+	}
+	else if (_ori == 'N') {
+		_newCoOrd.second = static_cast<int>(_newCoOrd.second + dist);
+        tempXY.first = tempXY.first + 0.5f;
+        tempXY.second = tempXY.second + dist + widthOffset + 0.5f;
+        _castXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
+	}
+	else if (_ori == 'S') {
+        tempXY.first = tempXY.first + 0.5f;
+        tempXY.second = tempXY.second - dist - widthOffset + 0.5f;
+        _castXY = std::make_pair((int)tempXY.first, (int)tempXY.second);
+        _newCoOrd.second = static_cast<int>(_newCoOrd.second - dist);
+    }
 	//if (_newCoOrd == playerPos)
 		//_newCoOrd = _xy;
 }

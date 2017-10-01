@@ -141,11 +141,11 @@ void			Core::play() {
 	}
 	else if (_game.getPlayState() == PlayState::GAME_LOAD) {
 		_game.reset();
-		if (_game.getPlayer().getLevel() == 0)
+		if (_game.getPlayer().getProgress() == 0)
 			_game.initLevelOne();
-		else if (_game.getPlayer().getLevel() == 1)
+		else if (_game.getPlayer().getProgress() == 1)
 			_game.initLevelTwo();
-		else if (_game.getPlayer().getLevel() == 2)
+		else if (_game.getPlayer().getProgress() == 2)
 			_game.initLevelThree();
 	}
 	_game.initMapState();
