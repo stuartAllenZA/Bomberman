@@ -10,8 +10,8 @@
 #include <stdlib.h>
 #include <vector>
 
-
 #include "Game.hpp"
+#include "Drop.hpp"
 #include "Camera.hpp"
 #include "ModelShader.hpp"
 #include "Model.hpp"
@@ -47,6 +47,8 @@ class GraphicsEngine {
 		Model								*_enemyModel;
 		Model								*_dropModel;
 		Model								*_doorModel;
+		Model								*_flameExtModel;
+		Model								*_extBombModel;
 
 		glm::mat4							_playerMatrice;
 		glm::mat4							_wallMatrice;

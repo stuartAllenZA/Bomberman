@@ -357,11 +357,11 @@ void					Game::processEnemies() {
 	std::vector<char>		able;
 
 	for (unsigned int j = 0; j < _enemies.size(); j++) {
-        able.clear();
-        able.push_back('N');
-        able.push_back('E');
-        able.push_back('S');
-        able.push_back('W');
+		able.clear();
+		able.push_back('N');
+		able.push_back('E');
+		able.push_back('S');
+		able.push_back('W');
 		curPos = _enemies[j].getXY();
 		for (int i = 0; i < 4; i++) {
 			_enemies[j].determineNewCoOrds(able);
@@ -376,20 +376,20 @@ void					Game::processEnemies() {
                 break;
 			}
 			else {
-                for (unsigned int i = 0; i < able.size(); i++) {
-                    if (able[i] == _enemies[j].getOri())
-                        able.erase(able.begin() + i);
-                }
-            }
+				for (unsigned int i = 0; i < able.size(); i++) {
+					if (able[i] == _enemies[j].getOri())
+						able.erase(able.begin() + i);
+				}
+			}
 		}
 	}
 }
 
 bool				Game::enemyCanMove(std::pair<float, float> newXY) {
-    if (_mapState[newXY.first][newXY.second] == CS::UB || _mapState[newXY.first][newXY.second] == CS::BB || _mapState[newXY.first][newXY.second] == CS::BOMB || _mapState[newXY.first][newXY.second] == CS::FLAME)
-        return (false);
-    else
-        return (true);
+	if (_mapState[newXY.first][newXY.second] == CS::UB || _mapState[newXY.first][newXY.second] == CS::BB || _mapState[newXY.first][newXY.second] == CS::BOMB || _mapState[newXY.first][newXY.second] == CS::FLAME)
+		return (false);
+	else
+		return (true);
 }
 
 bool				Game::playerCanMove(std::pair<int, int> newXY) {
@@ -402,26 +402,26 @@ bool				Game::playerCanMove(std::pair<int, int> newXY) {
 void				Game::playerHasMoved() {
 	if (checkDropCollision(_player.getXY())) {
 		for (unsigned int i = 0; i < _drops.size(); i++) {
-            if (_drops[i]->getXY() == _player.getXY()) {
-                DropType    type = _drops[i]->getDropType();
-                switch (type) {
-                    case DropType::BOMB_ADD :
-                        _player.setNumberOfBombs(_player.getNumberOfBombs() + 1);
-                        break;
-                    case DropType::ENEMY_SPAWN :
-                        break;
-                    case DropType::FLAME_EXT :
-                        _player.setNumberOfFlames(_player.getNumberOfFlames() + 1);
-                        break;
-                    case DropType::LEVEL_HATCH :
-                        this->_gameState = GameState::MENU;
-                        this->_playState = PlayState::PLAYER_WIN;
-                        break;
-                }
-                _mapState[_drops[i]->getXY().first][_drops[i]->getXY().second] = CS::OPEN;
-                _drops.erase(_drops.begin() + i);
-            }
-        }
+			if (_drops[i]->getXY() == _player.getXY()) {
+				DropType    type = _drops[i]->getDropType();
+				switch (type) {
+					case DropType::BOMB_ADD :
+					_player.setNumberOfBombs(_player.getNumberOfBombs() + 1);
+					break;
+					case DropType::ENEMY_SPAWN :
+					break;
+					case DropType::FLAME_EXT :
+					_player.setNumberOfFlames(_player.getNumberOfFlames() + 1);
+					break;
+					case DropType::LEVEL_HATCH :
+					this->_gameState = GameState::MENU;
+					this->_playState = PlayState::PLAYER_WIN;
+					break;
+				}
+				_mapState[_drops[i]->getXY().first][_drops[i]->getXY().second] = CS::OPEN;
+				_drops.erase(_drops.begin() + i);
+			}
+		}
 	}
 	if (checkFlameCollision(_player.getXY()))
 		_player.setHealth(_player.getHealth() - 100);
@@ -444,7 +444,7 @@ void				Game::controller() {
 			moveRight();
 		if (_keyPressArr[ACTION])
 			dropBomb(1.0f);
-        playerHasMoved();
+		playerHasMoved();
 		processEnemies();
 		checkBombAndFlameTimers();
 	}
@@ -531,12 +531,12 @@ void				Game::checkBombAndFlameTimers() {
 	std::cout << "checking flame timers" << std::endl;
 	for (int i = 0; (unsigned long)i < _flames.size(); i++) {
 		if (currentEpochTime >= _flames[i].getTimeToDie()) {
-            if (_mapState[_flames[i].getXY().first][_flames[i].getXY().second] == CS::DROP) {
-                for (unsigned int j = 0; j < _drops.size(); j++) {
-                    if (_drops[j]->getDropType() == DropType::ENEMY_SPAWN && _drops[j]->getXY() == _flames[i].getXY())
-                        _enemies.push_back(Enemy(_drops[j]->getXY()));
-                }
-            }
+			if (_mapState[_flames[i].getXY().first][_flames[i].getXY().second] == CS::DROP) {
+				for (unsigned int j = 0; j < _drops.size(); j++) {
+					if (_drops[j]->getDropType() == DropType::ENEMY_SPAWN && _drops[j]->getXY() == _flames[i].getXY())
+						_enemies.push_back(Enemy(_drops[j]->getXY()));
+				}
+			}
 			_flames.erase(_flames.begin() + i);
 		}
 	}
@@ -544,13 +544,13 @@ void				Game::checkBombAndFlameTimers() {
 }
 
 void                            Game::breakBox(unsigned int i) {
-    if (_breakableBs[i].getDrop()) {
-        _drops.push_back(_breakableBs[i].getDrop());
-        _mapState[_breakableBs[i].getXY().first][_breakableBs[i].getXY().second] = CS::DROP;
-    }
-    else
-        _mapState[_breakableBs[i].getXY().first][_breakableBs[i].getXY().second] = CS::OPEN;
-    _breakableBs.erase(_breakableBs.begin() + i);
+	if (_breakableBs[i].getDrop()) {
+		_drops.push_back(_breakableBs[i].getDrop());
+		_mapState[_breakableBs[i].getXY().first][_breakableBs[i].getXY().second] = CS::DROP;
+	}
+	else
+		_mapState[_breakableBs[i].getXY().first][_breakableBs[i].getXY().second] = CS::OPEN;
+	_breakableBs.erase(_breakableBs.begin() + i);
 }
 
 void				Game::dropFlames(Bomb explodingBomb) {
@@ -685,17 +685,17 @@ void					Game::initMapState() {
 			temp = std::make_pair(x, y);
 			if (checkUBCollision(temp))
 				tempVec.push_back(CS::UB);
-            else if (checkFlameCollision(temp))
-                tempVec.push_back(CS::FLAME);
-            else if (checkBBCollision(temp))
-                tempVec.push_back(CS::BB);
-            else if (checkBombCollision(temp))
-                tempVec.push_back(CS::BOMB);
-            else if (checkDropCollision(temp))
-                tempVec.push_back(CS::DROP);
-            else
-                tempVec.push_back(CS::OPEN);
-        }
+			else if (checkFlameCollision(temp))
+				tempVec.push_back(CS::FLAME);
+			else if (checkBBCollision(temp))
+				tempVec.push_back(CS::BB);
+			else if (checkBombCollision(temp))
+				tempVec.push_back(CS::BOMB);
+			else if (checkDropCollision(temp))
+				tempVec.push_back(CS::DROP);
+			else
+				tempVec.push_back(CS::OPEN);
+		}
 		_mapState.push_back(tempVec);
 	}
 }
@@ -785,7 +785,7 @@ int					Game::dropFreeBoxInd() {
 	}
 }
 
-void					Game::initLevelOne() {
+void					Game::initLevelTwo() {
 	int		index;
 	//determine _mapSize
 	_mapSize = std::make_pair(_player.getDifficulty() * 10, _player.getDifficulty() * 10);
@@ -814,20 +814,67 @@ void					Game::initLevelOne() {
 		index = dropFreeBoxInd();
 		_breakableBs[index].setDrop(new RangeExtender(_breakableBs[index].getXY()));
 	}
+	for (int i = 0; i < (_player.getDifficulty() * 10) / 2; i++) {
+		index = dropFreeBoxInd();
+		_breakableBs[index].setDrop(new EnemyDrop(_breakableBs[index].getXY()));
+	}
 }
 
-void					Game::initLevelTwo() {
-	//int		index;
+void					Game::initLevelOne() {
+	int		index;
 	//determine _mapSize
 	_mapSize = std::make_pair(_player.getDifficulty() * 10, _player.getDifficulty() * 10);
 	//Spawn Boxes
 	unbreakableRing(_mapSize.first, _mapSize.second);
 	for (int i = 1; i < (_mapSize.first / 2); i++) {
-		//cornerBox(_mapSize.first - i, _mapSize.second - i);
+		cornerBox(_mapSize.first - i, _mapSize.second - i);
+	}
+	//Spawn Player
+	_player.setXY(std::make_pair(1, 2));
+	//Randomize one of each Drop
+	index = dropFreeBoxInd();
+	_breakableBs[index].setDrop(new LevelHatch(_breakableBs[index].getXY()));
+	index = dropFreeBoxInd();
+	_breakableBs[index].setDrop(new RemoteDetonator(_breakableBs[index].getXY()));
+	if (_player.getLevel() == 0) {
+		index = dropFreeBoxInd();
+		_breakableBs[index].setDrop(new ExtraBomb(_breakableBs[index].getXY()));
+		index = dropFreeBoxInd();
+		_breakableBs[index].setDrop(new RangeExtender(_breakableBs[index].getXY()));
+	}
+	for (int i = 0; i < (_player.getDifficulty() * 10) / 2; i++) {
+		index = dropFreeBoxInd();
+		_breakableBs[index].setDrop(new EnemyDrop(_breakableBs[index].getXY()));
 	}
 }
 
 void					Game::initLevelThree() {
+	int		index;
+	//determine _mapSize
+	_mapSize = std::make_pair(_player.getDifficulty() * 10, _player.getDifficulty() * 10);
+	//Spawn Boxes
+	unbreakableRing(_mapSize.first, _mapSize.second);
+	for (int i = 1; i < (_mapSize.first / 2); i++) {
+		if (i != (_mapSize.first / 2) - 2)
+			breakableRing(_mapSize.first - i, _mapSize.second - i);
+	}
+	//Spawn Player
+	_player.setXY(std::make_pair((_mapSize.first / 2) - 2, (_mapSize.first / 2) - 2));
+	//Randomize one of each Drop
+	index = dropFreeBoxInd();
+	_breakableBs[index].setDrop(new LevelHatch(_breakableBs[index].getXY()));
+	index = dropFreeBoxInd();
+	_breakableBs[index].setDrop(new RemoteDetonator(_breakableBs[index].getXY()));
+	if (_player.getLevel() == 0) {
+		index = dropFreeBoxInd();
+		_breakableBs[index].setDrop(new ExtraBomb(_breakableBs[index].getXY()));
+		index = dropFreeBoxInd();
+		_breakableBs[index].setDrop(new RangeExtender(_breakableBs[index].getXY()));
+	}
+	for (int i = 0; i < (_player.getDifficulty() * 10) / 2; i++) {
+		index = dropFreeBoxInd();
+		_breakableBs[index].setDrop(new EnemyDrop(_breakableBs[index].getXY()));
+	}
 }
 
 void					Game::initTestMap() {
