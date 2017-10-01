@@ -84,10 +84,10 @@ void			Core::gameLoop() {
 		gs = this->_game.getGameState();
 		switch (gs) {
 			case GameState::MENU :
-//				if (_menu->getMenuState() == MenuState::PLAYER_SELECT)
-//					_game.startMenuMusic();
-//				else if (_menu->getMenuState() == MenuState::PAUSE)
-//					_game.resumeMenuMusic();
+				if (_menu->getMenuState() == MenuState::PLAYER_SELECT)
+					_game.startMenuMusic();
+				else if (_menu->getMenuState() == MenuState::PAUSE)
+					_game.resumeMenuMusic();
 				_menu->menu();
 				_game.pauseMenuMusic();
 				break;
@@ -136,8 +136,8 @@ void			Core::play() {
 	//std::cout << "Playing, ESC to exit" << std::endl;
 	if (_game.getPlayState() == PlayState::GAME_INIT) {
 		_game.reset();
-		//_game.initLevelOne();
-		_game.initTestMap();
+		_game.initLevelOne();
+		//_game.initTestMap();
 	}
 	else if (_game.getPlayState() == PlayState::GAME_LOAD) {
 		_game.reset();
