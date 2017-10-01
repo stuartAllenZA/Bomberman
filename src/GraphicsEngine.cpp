@@ -121,6 +121,7 @@ void	GraphicsEngine::initCamera() {
 	_cameraLoaded = true;
 	_prevZ = 0.0f;
 	_prevX = 0.0f;
+	displayTime = 0;
 }
 
 void GraphicsEngine::init() {
@@ -377,14 +378,11 @@ void		GraphicsEngine::displayHUD() {
 	std::string	health = std::to_string(_game->getPlayer().getHealth());
 	std::string bombsText = "Bombs:";
 	std::string bombs = std::to_string(_game->getPlayer().getNumberOfBombs());
-	std::string upgradesText = "Drops:";
-	std::string upgrades = std::to_string(_game->getDrops().size());
 
 	printText2D("Time:", 10, 570, 20);
 	printText2D((to_string(displayTime)).c_str(), 120, 570, 20);
 	printText2D((healthText+health).c_str(), 10, 545, 20);
 	printText2D((bombsText+bombs).c_str(), 10, 520, 20);
-	printText2D((upgradesText+upgrades).c_str(), 10, 495, 20);
 }
 
 // getters
