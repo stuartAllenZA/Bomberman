@@ -1205,7 +1205,7 @@ void			Menu::levelPassMenu() {
 
 	nanogui::Button *nanoNextLevelButton = nanoguiWindow->add<nanogui::Button>("Next Level");
 	nanoNextLevelButton->setCallback([&] {
-		//add in a next level thing
+		this->_game->setProgress(this->_game->getProgress() + 1);
 		newGameButton();
 	});
 	if (index == 3)

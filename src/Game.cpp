@@ -348,6 +348,14 @@ int						Game::getPlayerLevel() {
 	return (_player.getLevel());
 }
 
+int                     Game::getProgress() const {
+    return (this->_player.getProgress());
+}
+
+void                    Game::setProgress(const int prog) {
+    _player.setProgress(prog);
+}
+
 void					Game::setDifficulty(const int dif) {
 	this->_player.setDifficulty(dif);
 }
@@ -402,7 +410,7 @@ bool				Game::playerCanMove(std::pair<int, int> newXY) {
 void				Game::playerHasMoved() {
 	if (checkDropCollision(_player.getXY())) {
 		for (unsigned int i = 0; i < _drops.size(); i++) {
-			if (_drops[i]->getXY() == _player.getXY()) {
+			if (checkDropCollision(std::make_pair(static_cast<int>(_player.getXY().first), static_cast<int>(_player.getXY().second)))) {
 				DropType    type = _drops[i]->getDropType();
 				switch (type) {
 					case DropType::BOMB_ADD :

@@ -157,6 +157,8 @@ public:
 	void							initTestMap();
 	int								dropFreeBoxInd();
 	void 							setDifficulty(const int dif);
+    int                             getProgress() const;
+    void                            setProgress(const int prog);
 	void							reset();
 
 private:
