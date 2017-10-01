@@ -2,6 +2,7 @@
 *._*
 *.DS*
 Bomberman
+Bomberman.cbp
 cmake-build-debug/
 CMakeCache.txt
 CMakeFiles

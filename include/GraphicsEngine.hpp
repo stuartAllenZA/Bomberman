@@ -63,6 +63,7 @@ class GraphicsEngine {
 		float								_prevZ;
 		float								_prevX;
 		float								_playerRotate;
+		float								_enemyRotate;
 		bool								_isAnime;
 		GLuint 								_textVertexArrayID;
 

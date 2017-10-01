@@ -62,12 +62,10 @@ enum class PlayState {
 
 enum class CS {
 	UB,
+    DROP,
 	FLAME,
 	BB,
 	BOMB,
-	DROP,
-	ENEMY,
-	PLAYER,
 	OPEN
 };
 
@@ -99,8 +97,6 @@ public:
 	void							setDrops(const std::vector<Drop*> newDrops);
 	std::pair<int, int>				getMapSize() const;
 	void							setMapSize(const std::pair<int, int> newMapSize);
-	int								getRange() const;
-	void 							setRange(const int newRange);
 	std::vector<Bomb>				getBombs() const;
 	void 							setBombs(const std::vector<Bomb> newBombs);
 	std::vector<Flame>				getFlames() const;
@@ -141,6 +137,8 @@ public:
 	void 							moveRight();
 	void 							dropBomb(float delayTimer);
 	void 							checkBombAndFlameTimers();
+    void                            flameDestroyBoxes(std::pair<int, int> xy);
+    void                            breakBox(unsigned int i);
 	void 							dropFlames(Bomb explodingBomb);
 	bool							checkEnemiesCollision(std::pair<int, int> xy);
 	bool							checkBBCollision(std::pair<int, int> xy);
@@ -177,7 +175,6 @@ private:
 	std::vector<Flame>				_flames;
 	std::pair<int, int>				_mapSize;
 	std::vector<std::vector<CS>>	_mapState;
-	int								_range;
 	unsigned long int				_frameCountTimer;
 };
 
