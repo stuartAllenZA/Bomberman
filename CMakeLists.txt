@@ -8,6 +8,7 @@ set(NANOGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.libraries/nanogui)
 set(TINYGLTF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.libraries/tinygltf)
 set(IRRKLANG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.libraries/irrklang)
 set(GLM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.libraries/glm)
+set(RESOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -g3")
@@ -27,6 +28,10 @@ endif()
 
 if (NOT IS_DIRECTORY "${TINYGLTF_DIR}")
 	execute_process(COMMAND git clone https://github.com/syoyo/tinygltf.git .libraries/tinygltf)
+endif()
+
+if (NOT IS_DIRECTORY "${RESOURCES_DIR}")
+	execute_process(COMMAND git clone https://github.com/stuartAllenZA/BombermanResources.git resources)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
