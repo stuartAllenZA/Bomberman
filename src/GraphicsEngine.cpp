@@ -2,7 +2,7 @@
 #include <Model.hpp>
 
 float previous = 0.0f;
-int displayTime = 59;
+int displayTime = 0;
 //settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -133,22 +133,26 @@ void GraphicsEngine::init() {
 	_bombShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_flameShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_dropShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
-	_doorShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
+//	_doorShader = new Shader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	_enemyShader = new Shader("resources/shaders/anime.vert", "resources/shaders/basic.frag");
 
 	// init models
 	_playerShader->enable();
 	_playerModel = new Model("resources/models/BMwalk3.gltf", _playerShader);
 	_wallModel = new Model("resources/models/Cube.gltf", _wallShader);
+//	_wallModel = new Model("resources/models/scene.gltf", _wallShader);
 	_floorModel = new Model("resources/models/BMfloor.gltf", _floorShader);
 	_boxModel = new Model("resources/models/block1.gltf", _boxShader);
 	_bombModel = new Model("resources/models/BMbomb.gltf", _bombShader);
-	_flameModel = new Model("resources/models/boneBox.gltf", _flameShader);
+	_flameModel = new Model("resources/models/BMflame.gltf", _flameShader);
 	//_enemyModel = new Model("resources/models/MechGoblin_Anim_Walk01.gltf", _enemyShader);
 	_enemyModel = new Model("resources/models/man.gltf", _enemyShader);
-	_dropModel = new Model("resources/models/BMextraflame.gltf", _dropShader);
+	_dropModel = new Model("resources/models/BMflame.gltf", _dropShader);
+	//_dropModel = new Model("resources/models/BMextraflame.gltf", _dropShader);
 //	_dropModel = new Model("resources/models/BMextrabombNEW.gltf", _dropShader);
-	_doorModel = new Model("resources/models/BMtrapdoor.gltf", _doorShader);
+	_doorModel = new Model("resources/models/BMtrapdoor.gltf", _dropShader);
+	_flameExtModel = new Model("resources/models/BMextraflame.gltf", _dropShader);
+	_extBombModel = new Model("resources/models/BMextrabombNEW.gltf", _dropShader);
 
 	std::pair<float, float> coords;
 	coords = _game->getPlayer().getXY();
@@ -195,7 +199,6 @@ void GraphicsEngine::init() {
 	}
 
 	_dropMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
-	_doorMatrice = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
 }
 
 void GraphicsEngine::render() {
@@ -313,17 +316,6 @@ void GraphicsEngine::render() {
 		_boxModel->render(_boxMatrice, view, projection);
 	}
 
-	// NEED TO KNOW WHICH TYPE TO RENDER
-	// testing
-	std::vector<Drop*> newDrops;
-	std::pair<float, float> dropCoords;
-	dropCoords.first = 3.0f;
-	dropCoords.second = 3.0f;
-	Drop	*tempDrop = new EnemyDrop(dropCoords);
-	newDrops.push_back(tempDrop);
-	_game->setDrops(newDrops);
-	// testing
-
 	/// DROPS & ENEMIES
 	_dropShader->enable();
 	std::vector<Drop*> tempDrp = _game->getDrops();
@@ -333,7 +325,12 @@ void GraphicsEngine::render() {
 		coords = tempDrp[i]->getXY();
 		std::cout << "coords x: " << coords.first << " coords y: " << coords.second << std::endl;
 		_dropMatrice = glm::translate(glm::mat4(), glm::vec3(coords.first * 2.0f, 0.0f, (-1 * coords.second * 2.0f))); 
-		_dropModel->render(_dropMatrice, view, projection);
+		if (tempDrp[i]->getDropType() == DropType::LEVEL_HATCH)
+		   _doorModel->render(_dropMatrice, view, projection);
+		else if (tempDrp[i]->getDropType() == DropType::FLAME_EXT)
+		   _flameExtModel->render(_dropMatrice, view, projection);
+		else if (tempDrp[i]->getDropType() == DropType::BOMB_ADD)
+		   _extBombModel->render(_dropMatrice, view, projection);
 	}
 
 	_enemyShader->enable();
@@ -368,7 +365,7 @@ void		GraphicsEngine::displayHUD() {
 	//	glUseProgram(getText2DShaderID());
 	float current = glfwGetTime();
 	if (current - previous >= 1.0f) {
-		displayTime--;
+		displayTime++;
 		previous = current;
 	}
 	glGenVertexArrays(1, &_textVertexArrayID);
@@ -380,17 +377,14 @@ void		GraphicsEngine::displayHUD() {
 	std::string	health = std::to_string(_game->getPlayer().getHealth());
 	std::string bombsText = "Bombs:";
 	std::string bombs = std::to_string(_game->getPlayer().getNumberOfBombs());
-//	std::string rangeText = "Range:";
-//	std::string range = std::to_string(_game->getPlayer().getNumberOfFlames());
 	std::string upgradesText = "Drops:";
 	std::string upgrades = std::to_string(_game->getDrops().size());
 
-	printText2D("Time:", 10, 500, 20);
-	printText2D((to_string(displayTime)).c_str(), 120, 500, 20);
-	printText2D((healthText+health).c_str(), 10, 450, 20);
-	printText2D((bombsText+bombs).c_str(), 10, 400, 20);
-//	printText2D((rangeText+range).c_str(), 10, 400, 20);
-	printText2D((upgradesText+upgrades).c_str(), 10, 350, 20);
+	printText2D("Time:", 10, 570, 20);
+	printText2D((to_string(displayTime)).c_str(), 120, 570, 20);
+	printText2D((healthText+health).c_str(), 10, 545, 20);
+	printText2D((bombsText+bombs).c_str(), 10, 520, 20);
+	printText2D((upgradesText+upgrades).c_str(), 10, 495, 20);
 }
 
 // getters
