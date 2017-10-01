@@ -381,9 +381,8 @@ void					Game::processEnemies() {
 				}
 				if (it->getPenetration(_player.getXY()) > 0) {
 					//render attack anim
-					_player.setHealth(_player.getHealth() - 100 * it->getPenetration(_player.getXY()));
+					_player.setHealth(_player.getHealth() - (100 * it->getPenetration(_player.getXY())));
 				}
-				//Check flame damage
 			}
 			else
 				unable.push_back(it->getOri());
