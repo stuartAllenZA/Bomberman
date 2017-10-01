@@ -137,7 +137,6 @@ public:
 	void 							moveRight();
 	void 							dropBomb(float delayTimer);
 	void 							checkBombAndFlameTimers();
-    void                            flameDestroyBoxes(std::pair<int, int> xy);
     void                            breakBox(unsigned int i);
 	void 							dropFlames(Bomb explodingBomb);
 	bool							checkEnemiesCollision(std::pair<int, int> xy);

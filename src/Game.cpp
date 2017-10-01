@@ -365,7 +365,7 @@ void					Game::processEnemies() {
 		curPos = _enemies[j].getXY();
 		for (int i = 0; i < 4; i++) {
 			_enemies[j].determineNewCoOrds(able);
-			if (_enemies[j].getNewCoOrd() != _enemies[j].getXY() && enemyCanMove(_enemies[j].getNewCoOrd())) {
+			if (_enemies[j].getNewCoOrd() != _enemies[j].getXY() && enemyCanMove(_enemies[j].getCastXY())) {
 				_enemies[j].setXY(_enemies[j].getNewCoOrd());
 				if (_enemies[j].getPenetration(_player.getXY()) > 0) {
 					//render attack anim
@@ -373,6 +373,7 @@ void					Game::processEnemies() {
 				}
                 if (checkFlameCollision(_enemies[j].getXY()))
                     _enemies.erase(_enemies.begin() + j);
+                break;
 			}
 			else {
                 for (unsigned int i = 0; i < able.size(); i++) {
@@ -529,7 +530,6 @@ void				Game::checkBombAndFlameTimers() {
 	}
 	std::cout << "checking flame timers" << std::endl;
 	for (int i = 0; (unsigned long)i < _flames.size(); i++) {
-        flameDestroyBoxes(_flames[i].getXY());
 		if (currentEpochTime >= _flames[i].getTimeToDie()) {
             if (_mapState[_flames[i].getXY().first][_flames[i].getXY().second] == CS::DROP) {
                 for (unsigned int j = 0; j < _drops.size(); j++) {
@@ -541,15 +541,6 @@ void				Game::checkBombAndFlameTimers() {
 		}
 	}
 	std::cout << "done checking bomb and flame timers" << std::endl;
-}
-
-void                            Game::flameDestroyBoxes(std::pair<int, int> xy) {
-    if (_mapState[xy.first][xy.second] == CS::BB) {
-        for (unsigned int i = 0; i < _breakableBs.size(); i++) {
-            if (_breakableBs[i].getXY() == std::make_pair(static_cast<float>(xy.first), static_cast<float>(xy.second)))
-                breakBox(i);
-        }
-    }
 }
 
 void                            Game::breakBox(unsigned int i) {
@@ -578,7 +569,7 @@ void				Game::dropFlames(Bomb explodingBomb) {
 	for (unsigned long int i = 0; i < (unsigned long)_breakableBs.size(); i++) {
 		for (std::vector<Flame>::iterator iter = _flames.begin(); iter != _flames.end(); ++iter) {
 			if (iter->getXY() == _breakableBs[i].getXY())
-				_breakableBs.erase(_breakableBs.begin() + i);
+				breakBox(i);
 		}
 	}
 }

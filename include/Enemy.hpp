@@ -23,11 +23,14 @@ public:
 	Enemy &	operator=(Enemy const & src);
 	std::pair<float, float>	getNewCoOrd() const;
 	void					setNewCoOrd(const std::pair<float, float> newCoOrd);
+	std::pair<int, int>		getCastXY() const;
+	void					setCastXY(const std::pair <int, int> newXY);
 	void					determineNewCoOrds(std::vector<char> unable);
 	float					getPenetration(std::pair<float, float> playerPos);
 
 private:
 	std::pair<float, float> _newCoOrd;
+	std::pair<int, int>		_castXY;
 	float					_attackSize;
 };
 
